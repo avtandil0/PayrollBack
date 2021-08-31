@@ -21,6 +21,9 @@ namespace PayrollServer.Profiles
 
             CreateMap<Project, ProjectDTO>();
             CreateMap<ProjectDTO, Project>();
+
+            CreateMap<CostCenter, CostCenterDTO>();
+            CreateMap<CostCenterDTO, CostCenter>();
         }
     }
 }
