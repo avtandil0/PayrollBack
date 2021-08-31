@@ -9,5 +9,7 @@ namespace Contracts
     {
         IEnumerable<Department> GetAllDepartments();
         void CreateDepartment(Department department);
+        void UpdateDepartment(Department department);
+        void DeleteDepartment(Department department);
     }
 }

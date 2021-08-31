@@ -17,7 +17,7 @@ namespace Repository
 
         public IEnumerable<Department> GetAllDepartments()
         {
-            return FindAll()
+            return FindByCondition(r => r.DateDeleted == null)
                 .OrderByDescending(ow => ow.DateCreated);
         }
 
@@ -26,6 +26,25 @@ namespace Repository
             department.Id = Guid.NewGuid();
             department.DateCreated = DateTime.Now;
             Create(department);
+            Save();
+        }
+
+        public void UpdateDepartment(Department department)
+        {
+            var dep = FindByCondition(r=> r.Id == department.Id).FirstOrDefault();
+
+            dep.Name = department.Name;
+            dep.DateChange = DateTime.Now;
+            Update(dep);
+            Save();
+        }
+
+        public void DeleteDepartment(Department department)
+        {
+            var dep = FindByCondition(r => r.Id == department.Id).FirstOrDefault();
+
+            dep.DateDeleted = DateTime.Now;
+            Update(dep);
             Save();
         }
 
