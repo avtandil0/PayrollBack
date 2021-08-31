@@ -50,7 +50,30 @@ namespace PayrollServer.Controllers
             _logger.LogInfo($"Created new Cepartment.");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
+        }
 
+        [HttpPut]
+        public Result UpdateDepartment([FromBody] ProjectDTO projectDTO)
+        {
+            Project project = _mapper.Map<Project>(projectDTO);
+
+            _repository.Project.UpdateProject(project);
+
+            _logger.LogInfo($"Update Project id = &{project.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+        }
+
+        [HttpDelete]
+        public Result DeleteDepartment([FromBody] ProjectDTO projectDTO)
+        {
+            Project project = _mapper.Map<Project>(projectDTO);
+
+            _repository.Project.DeleteProject(project);
+
+            _logger.LogInfo($"Delete Project id = &{project.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
         }
     }
 }

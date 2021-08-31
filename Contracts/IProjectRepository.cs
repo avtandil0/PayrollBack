@@ -9,5 +9,7 @@ namespace Contracts
     {
         IEnumerable<Project> GetAllProjects();
         void CreateProject(Project project);
+        void UpdateProject(Project department);
+        void DeleteProject(Project department);
     }
 }
