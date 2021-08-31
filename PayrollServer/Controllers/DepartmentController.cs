@@ -47,7 +47,33 @@ namespace PayrollServer.Controllers
 
             _repository.Department.CreateDepartment(department);
 
-            _logger.LogInfo($"Created new Cepartment.");
+            _logger.LogInfo($"Created new Department.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpPut]
+        public Result UpdateDepartment([FromBody] DepartmentDTO departmentDTO)
+        {
+            Department department = _mapper.Map<Department>(departmentDTO);
+
+            _repository.Department.UpdateDepartment(department);
+
+            _logger.LogInfo($"Update Department id = &{department.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpDelete]
+        public Result DeleteDepartment([FromBody] DepartmentDTO departmentDTO)
+        {
+            Department department = _mapper.Map<Department>(departmentDTO);
+
+            _repository.Department.DeleteDepartment(department);
+
+            _logger.LogInfo($"Delete Department id = &{department.Id}");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 
