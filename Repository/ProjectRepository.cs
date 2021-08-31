@@ -17,7 +17,7 @@ namespace Repository
 
         public IEnumerable<Project> GetAllProjects()
         {
-            return FindAll()
+            return FindByCondition(r => r.DateDeleted == null)
                 .OrderByDescending(r => r.DateCreated);
         }
 
@@ -28,6 +28,29 @@ namespace Repository
             Create(project);
             Save();
         }
+
+        public void UpdateProject(Project project)
+        {
+            var pr = FindByCondition(r => r.Id == project.Id).FirstOrDefault();
+
+            pr.DateChange = DateTime.Now;
+            pr.Code = project.Code;
+            pr.Description = project.Description;
+
+            Update(pr);
+            Save();
+        }
+
+        public void DeleteProject(Project project)
+        {
+            var pr = FindByCondition(r => r.Id == project.Id).FirstOrDefault();
+
+            pr.DateDeleted = DateTime.Now;
+
+            Update(pr);
+            Save();
+        }
+
 
     }
 }
