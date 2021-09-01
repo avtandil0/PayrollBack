@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,12 @@ namespace Repository
         public IEnumerable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
             return this.RepositoryContext.Set<T>().Where(expression);
+        }
+
+        public IQueryable<T> GetAllIncluded(params Expression<Func<T, object>>[] includes)
+        {
+            var query = this.RepositoryContext.Set<T>().AsQueryable();
+            return includes.Aggregate(query, (q, w) => q.Include(w));
         }
 
         public void Create(T entity)

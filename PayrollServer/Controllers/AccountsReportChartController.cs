@@ -29,25 +29,51 @@ namespace PayrollServer.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<AccountsReportChartDTO> GetAllCostCenter()
+        public IEnumerable<AccountsReportChartDTO> GetAllAccountsReportChart()
         {
             var accountsReportCharts = _repository.AccountsReportChart.GetAllAccountsReportChart();
 
-            IEnumerable<AccountsReportChartDTO> costCenterDTOs = _mapper.Map<IEnumerable<AccountsReportChartDTO>>(accountsReportCharts);
+            IEnumerable<AccountsReportChartDTO> accountsReportChartDTOs = _mapper.Map<IEnumerable<AccountsReportChartDTO>>(accountsReportCharts);
 
             _logger.LogInfo($"Returned all AccountsReportChart from database.");
 
-            return costCenterDTOs;
+            return accountsReportChartDTOs;
         }
 
         [HttpPost]
-        public Result CreateDepartment([FromBody] AccountsReportChartDTO accountsReportChartDTO)
+        public Result CreateAccountsReportChart([FromBody] AccountsReportChartDTO accountsReportChartDTO)
         {
             AccountsReportChart accountsReportChart = _mapper.Map<AccountsReportChart>(accountsReportChartDTO);
 
             _repository.AccountsReportChart.CreateAccountsReportChart(accountsReportChart);
 
             _logger.LogInfo($"Created new AccountsReportChart.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpPut]
+        public Result UpdateAccountsReportChart([FromBody] AccountsReportChartDTO accountsReportChartDTO)
+        {
+            AccountsReportChart accountsReportChart = _mapper.Map<AccountsReportChart>(accountsReportChartDTO);
+
+            _repository.AccountsReportChart.UpdateAccountsReportChart(accountsReportChart);
+
+            _logger.LogInfo($"Update AccountsReportChart id = &{accountsReportChart.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpDelete]
+        public Result DeleteCostCenter([FromBody] AccountsReportChartDTO accountsReportChartDTO)
+        {
+            AccountsReportChart accountsReportChart = _mapper.Map<AccountsReportChart>(accountsReportChartDTO);
+
+            _repository.AccountsReportChart.DeleteAccountsReportChart(accountsReportChart);
+
+            _logger.LogInfo($"Delete AccountsReportChart id = &{accountsReportChart.Id}");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 
