@@ -9,5 +9,7 @@ namespace Contracts
     {
         IEnumerable<AccountsReportChart> GetAllAccountsReportChart();
         void CreateAccountsReportChart(AccountsReportChart costCenter);
+        void UpdateAccountsReportChart(AccountsReportChart costCenter);
+        void DeleteAccountsReportChart(AccountsReportChart costCenter);
     }
 }
