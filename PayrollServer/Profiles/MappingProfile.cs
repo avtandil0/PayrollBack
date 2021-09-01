@@ -24,6 +24,12 @@ namespace PayrollServer.Profiles
 
             CreateMap<CostCenter, CostCenterDTO>();
             CreateMap<CostCenterDTO, CostCenter>();
+
+            CreateMap<AccountsReportChart, AccountsReportChartDTO>();
+            CreateMap<AccountsReportChartDTO, AccountsReportChart>();
+
+            CreateMap<AccountsReportChartType, AccountsReportChartTypeDTO>();
+            CreateMap<AccountsReportChartTypeDTO, AccountsReportChartType>();
         }
     }
 }

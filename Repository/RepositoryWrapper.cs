@@ -12,7 +12,20 @@ namespace Repository
         private ICostCenterRepository _costCenter;
         private IAccountsReportChartRepository _accountsReportChart;
         private ICoefficientGroupRepository _coefficientGroup;
+        private ICommonRepository _common;
 
+        public ICommonRepository Common
+        {
+            get
+            {
+                if (_common == null)
+                {
+                    _common = new CommonRepository(_repoContext);
+                }
+
+                return _common;
+            }
+        }
         public ICoefficientGroupRepository CoefficientGroup
         {
             get
