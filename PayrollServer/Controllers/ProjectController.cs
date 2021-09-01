@@ -33,11 +33,11 @@ namespace PayrollServer.Controllers
         {
             var departmenrts = _repository.Project.GetAllProjects();
 
-            IEnumerable<ProjectDTO> departmentDTOs = _mapper.Map<IEnumerable<ProjectDTO>>(departmenrts);
+            IEnumerable<ProjectDTO> projectDTOs = _mapper.Map<IEnumerable<ProjectDTO>>(departmenrts);
 
             _logger.LogInfo($"Returned all Projects from database.");
 
-            return departmentDTOs;
+            return projectDTOs;
         }
 
         [HttpPost]

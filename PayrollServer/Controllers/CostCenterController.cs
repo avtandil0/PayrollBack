@@ -41,13 +41,39 @@ namespace PayrollServer.Controllers
         }
 
         [HttpPost]
-        public Result CreateDepartment([FromBody] CostCenterDTO costCenterDTO)
+        public Result CreateCostCenter([FromBody] CostCenterDTO costCenterDTO)
         {
             CostCenter costCenter = _mapper.Map<CostCenter>(costCenterDTO);
 
             _repository.CostCenter.CreateCostCenter(costCenter);
 
             _logger.LogInfo($"Created new CostCenter.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpPut]
+        public Result UpdateCostCenter([FromBody] CostCenterDTO costCenterDTO)
+        {
+            CostCenter costCenter = _mapper.Map<CostCenter>(costCenterDTO);
+
+            _repository.CostCenter.UpdateCostCenter(costCenter);
+
+            _logger.LogInfo($"Update CostCenter id = &{costCenter.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpDelete]
+        public Result DeleteCostCenter([FromBody] CostCenterDTO costCenterDTO)
+        {
+            CostCenter costCenter = _mapper.Map<CostCenter>(costCenterDTO);
+
+            _repository.CostCenter.DeleteCostCenter(costCenter);
+
+            _logger.LogInfo($"Delete CostCenter id = &{costCenter.Id}");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 

@@ -9,5 +9,7 @@ namespace Contracts
     {
         IEnumerable<CostCenter> GetAllCostCenter();
         void CreateCostCenter(CostCenter costCenter);
+        void UpdateCostCenter(CostCenter costCenter);
+        void DeleteCostCenter(CostCenter costCenter);
     }
 }

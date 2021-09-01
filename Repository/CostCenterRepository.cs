@@ -17,7 +17,7 @@ namespace Repository
 
         public IEnumerable<CostCenter> GetAllCostCenter()
         {
-            return FindAll()
+            return FindByCondition(r => r.DateDeleted == null)
                 .OrderByDescending(r => r.DateCreated);
         }
 
@@ -26,6 +26,28 @@ namespace Repository
             costCenter.Id = Guid.NewGuid();
             costCenter.DateCreated = DateTime.Now;
             Create(costCenter);
+            Save();
+        }
+
+        public void UpdateCostCenter(CostCenter costCenter)
+        {
+            var cs = FindByCondition(r => r.Id == costCenter.Id).FirstOrDefault();
+
+            cs.DateChange = DateTime.Now;
+            cs.Description = costCenter.Description;
+            cs.Code = costCenter.Code;
+
+            Update(cs);
+            Save();
+        }
+
+        public void DeleteCostCenter(CostCenter costCenter)
+        {
+            var cs = FindByCondition(r => r.Id == costCenter.Id).FirstOrDefault();
+
+            cs.DateDeleted = DateTime.Now;
+
+            Update(cs);
             Save();
         }
 
