@@ -8,6 +8,8 @@ CREATE TABLE Department (
 
 CREATE TABLE Coefficient (
 	Id uniqueidentifier PRIMARY KEY ,
+	Name nvarchar(255) not null,
+	Description nvarchar(255) not null,
 	--Standart
     SGross float not null,
     SNet float not null,
@@ -79,3 +81,18 @@ CREATE TABLE AccountsReportChart (
     DateChange datetime,
     DateDeleted datetime,
 );
+
+CREATE TABLE Component (
+	Id uniqueidentifier PRIMARY KEY ,
+	Name nvarchar(255) not null,
+	CreditAccountId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChart(ID),
+	DebitAccountId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChart(ID),
+	CoefficientId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChart(ID),
+	StartDate datetime not null,
+	EndDate datetime not null,
+	DateCreated datetime not null,
+    DateChange datetime,
+    DateDeleted datetime,
+);
+
+

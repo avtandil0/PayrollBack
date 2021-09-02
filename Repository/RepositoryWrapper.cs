@@ -11,8 +11,23 @@ namespace Repository
         private IProjectRepository _project;
         private ICostCenterRepository _costCenter;
         private IAccountsReportChartRepository _accountsReportChart;
-        private ICoefficientGroupRepository _coefficientGroup;
         private ICommonRepository _common;
+        private IComponentRepository _component;
+
+
+        public IComponentRepository Component
+        {
+            get
+            {
+                if (_component == null)
+                {
+                    _component = new ComponentRepository(_repoContext);
+                }
+
+                return _component;
+            }
+        }
+
 
         public ICommonRepository Common
         {
@@ -26,16 +41,17 @@ namespace Repository
                 return _common;
             }
         }
-        public ICoefficientGroupRepository CoefficientGroup
+
+        public ICoefficientRepository Coefficient
         {
             get
             {
-                if (_coefficientGroup == null)
+                if (_coefficient == null)
                 {
-                    _coefficientGroup = new CoefficientGroupRepository(_repoContext);
+                    _coefficient = new CoefficientRepository(_repoContext);
                 }
 
-                return _coefficientGroup;
+                return _coefficient;
             }
         }
 
@@ -78,18 +94,6 @@ namespace Repository
             }
         }
 
-        public ICoefficientRepository Coefficient
-        {
-            get
-            {
-                if (_coefficient == null)
-                {
-                    _coefficient = new CoefficientRepository(_repoContext);
-                }
-
-                return _coefficient;
-            }
-        }
 
         public IDepartmentRepository Department
         {

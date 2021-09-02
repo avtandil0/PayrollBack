@@ -29,8 +29,11 @@ namespace PayrollServer.Profiles
                 .ForMember(dest => dest.AccountsReportChartTypeName, act => act.MapFrom(src => src.AccountsReportChartType.Name));
             CreateMap<AccountsReportChartDTO, AccountsReportChart>();
 
-            CreateMap<AccountsReportChartType, AccountsReportChartTypeDTO>();
-            CreateMap<AccountsReportChartTypeDTO, AccountsReportChartType>();
+            CreateMap<Component, ComponentDTO>()
+                 .ForMember(dest => dest.CreditAccountName, act => act.MapFrom(src => src.CreditAccount.Description))
+                 .ForMember(dest => dest.DebitAccountName, act => act.MapFrom(src => src.DebitAccount.Description))
+                 .ForMember(dest => dest.CoefficientName, act => act.MapFrom(src => src.Coefficient.Description));
+            CreateMap<ComponentDTO, Component>();
         }
     }
 }

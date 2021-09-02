@@ -7,6 +7,11 @@ namespace Entities.Models
 {
     public partial class Coefficient
     {
+        public Coefficient()
+        {
+            Components = new HashSet<Component>();
+        }
+
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -27,5 +32,7 @@ namespace Entities.Models
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
+
+        public virtual ICollection<Component> Components { get; set; }
     }
 }
