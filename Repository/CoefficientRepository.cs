@@ -17,7 +17,7 @@ namespace Repository
 
         public IEnumerable<Coefficient> GetAllCoefficients()
         {
-            return FindAll()
+            return FindByCondition(r => r.DateDeleted == null)
                 .OrderByDescending(ow => ow.DateCreated);
         }
 
@@ -29,5 +29,42 @@ namespace Repository
             Save();
         }
 
+        public void UpdateCoefficient(Coefficient coefficient)
+        {
+            var coef = FindByCondition(r => r.Id == coefficient.Id).FirstOrDefault();
+
+            coef.DateChange = DateTime.Now;
+
+            coef.Sgross = coefficient.Sgross;
+            coef.Snet = coefficient.Snet;
+            coef.Spaid = coefficient.Spaid;
+            coef.Spension = coefficient.Spension;
+            coef.SincomeTax = coefficient.SincomeTax;
+            coef.Stax1 = coefficient.Stax1;
+            coef.Stax2 = coefficient.Stax2;
+
+            coef.Pgross = coefficient.Pgross;
+            coef.Pnet = coefficient.Pnet;
+            coef.Ppaid = coefficient.Ppaid;
+            coef.Ppension = coefficient.Ppension;
+            coef.PincomeTax = coefficient.PincomeTax;
+            coef.Ptax1 = coefficient.Ptax1;
+            coef.Ptax2 = coefficient.Ptax2;
+
+            coef.Sgross = coefficient.Sgross;
+            coef.Sgross = coefficient.Sgross;
+
+            Update(coef);
+            Save();
+        }
+
+        public void DeleteCoefficient(Coefficient coefficient)
+        {
+            var coef = FindByCondition(r => r.Id == coefficient.Id).FirstOrDefault();
+
+            coef.DateDeleted = DateTime.Now;
+            Update(coef);
+            Save();
+        }
     }
 }

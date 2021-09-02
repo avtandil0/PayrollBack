@@ -14,14 +14,14 @@ namespace PayrollServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CoefficientGroupController : ControllerBase
+    public class CoefficientGroupControllerOLD : ControllerBase
     {
         private ILoggerManager _logger;
         private IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
 
 
-        public CoefficientGroupController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+        public CoefficientGroupControllerOLD(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
         {
             _logger = logger;
             _repository = repository;

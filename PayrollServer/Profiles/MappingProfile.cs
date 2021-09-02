@@ -26,7 +26,7 @@ namespace PayrollServer.Profiles
             CreateMap<CostCenterDTO, CostCenter>();
 
             CreateMap<AccountsReportChart, AccountsReportChartDTO>()
-                .ForMember(dest => dest.AccountsReportChartTypeName, act => act.MapFrom(src => src.AccountsReportChartType.Description));
+                .ForMember(dest => dest.AccountsReportChartTypeName, act => act.MapFrom(src => src.AccountsReportChartType.Name));
             CreateMap<AccountsReportChartDTO, AccountsReportChart>();
 
             CreateMap<AccountsReportChartType, AccountsReportChartTypeDTO>();

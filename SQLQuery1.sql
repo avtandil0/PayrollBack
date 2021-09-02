@@ -8,13 +8,23 @@ CREATE TABLE Department (
 
 CREATE TABLE Coefficient (
 	Id uniqueidentifier PRIMARY KEY ,
-    Gross float not null,
-    Net float not null,
-    Paid float not null,
-    IncomeTax float not null,
-    Pension float not null,
-    Tax1 float not null,
-    Tax2 float not null,
+	--Standart
+    SGross float not null,
+    SNet float not null,
+    SPaid float not null,
+    SIncomeTax float not null,
+    SPension float not null,
+    STax1 float not null,
+    STax2 float not null,
+	--Pension
+	PGross float not null,
+    PNet float not null,
+    PPaid float not null,
+    PIncomeTax float not null,
+    PPension float not null,
+    PTax1 float not null,
+    PTax2 float not null,
+
     DateCreated datetime not null,
     DateChange datetime,
     DateDeleted datetime,
@@ -22,16 +32,16 @@ CREATE TABLE Coefficient (
 
 
 
-CREATE TABLE CoefficientGroup (
-	Id uniqueidentifier PRIMARY KEY ,
-	Name nvarchar(255) not null,
-	DateCreated datetime not null,
-    DateChange datetime,
-    DateDeleted datetime,
-	PensionCoefficientId uniqueidentifier FOREIGN KEY  REFERENCES Coefficient(ID),
-	StandartCoefficientId uniqueidentifier FOREIGN KEY  REFERENCES Coefficient(ID)
+--CREATE TABLE CoefficientGroup (
+--	Id uniqueidentifier PRIMARY KEY ,
+--	Name nvarchar(255) not null,
+--	DateCreated datetime not null,
+--    DateChange datetime,
+--    DateDeleted datetime,
+--	PensionCoefficientId uniqueidentifier FOREIGN KEY  REFERENCES Coefficient(ID),
+--	StandartCoefficientId uniqueidentifier FOREIGN KEY  REFERENCES Coefficient(ID)
 
-);
+--);
 
 
 CREATE TABLE Project (
@@ -54,7 +64,7 @@ CREATE TABLE CostCenter (
 
 CREATE TABLE AccountsReportChartType (
 	Id uniqueidentifier PRIMARY KEY ,
-	Description nvarchar(255) not null,
+	Name nvarchar(255) not null,
 	DateCreated datetime not null,
     DateChange datetime,
     DateDeleted datetime,
@@ -63,6 +73,7 @@ CREATE TABLE AccountsReportChartType (
 CREATE TABLE AccountsReportChart (
 	Id uniqueidentifier PRIMARY KEY ,
 	Description nvarchar(255) not null,
+	Code nvarchar(255) not null,
 	AccountsReportChartTypeId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChartType(ID),
 	DateCreated datetime not null,
     DateChange datetime,
