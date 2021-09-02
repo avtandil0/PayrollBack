@@ -87,7 +87,7 @@ CREATE TABLE Component (
 	Name nvarchar(255) not null,
 	CreditAccountId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChart(ID),
 	DebitAccountId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChart(ID),
-	CoefficientId uniqueidentifier FOREIGN KEY  REFERENCES AccountsReportChart(ID),
+	CoefficientId uniqueidentifier FOREIGN KEY  REFERENCES Coefficient(ID),
 	StartDate datetime not null,
 	EndDate datetime not null,
 	DateCreated datetime not null,
