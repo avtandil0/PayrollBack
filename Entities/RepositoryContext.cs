@@ -18,9 +18,10 @@ namespace Entities
         {
         }
 
-        public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }
+        public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }    
         public virtual DbSet<AccountsReportChartType> AccountsReportChartTypes { get; set; }
         public virtual DbSet<Coefficient> Coefficients { get; set; }
+        public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<CostCenter> CostCenters { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
@@ -128,6 +129,42 @@ namespace Entities
                 entity.Property(e => e.Stax1).HasColumnName("STax1");
 
                 entity.Property(e => e.Stax2).HasColumnName("STax2");
+            });
+
+            modelBuilder.Entity<Component>(entity =>
+            {
+                entity.ToTable("Component");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Coefficient)
+                    .WithMany(p => p.Components)
+                    .HasForeignKey(d => d.CoefficientId)
+                    .HasConstraintName("FK__Component__Coeff__5DCAEF64");
+
+                entity.HasOne(d => d.CreditAccount)
+                    .WithMany(p => p.ComponentCreditAccounts)
+                    .HasForeignKey(d => d.CreditAccountId)
+                    .HasConstraintName("FK__Component__Credi__5BE2A6F2");
+
+                entity.HasOne(d => d.DebitAccount)
+                    .WithMany(p => p.ComponentDebitAccounts)
+                    .HasForeignKey(d => d.DebitAccountId)
+                    .HasConstraintName("FK__Component__Debit__5CD6CB2B");
             });
 
             modelBuilder.Entity<CostCenter>(entity =>

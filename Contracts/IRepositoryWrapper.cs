@@ -11,7 +11,8 @@ namespace Contracts
         IProjectRepository Project { get; }
         ICostCenterRepository CostCenter { get; }
         IAccountsReportChartRepository AccountsReportChart { get; }
-        ICoefficientGroupRepository CoefficientGroup { get; }
+        //ICoefficientGroupRepository CoefficientGroup { get; }
         ICommonRepository Common { get; }
+        IComponentRepository Component { get; }
     }
 }

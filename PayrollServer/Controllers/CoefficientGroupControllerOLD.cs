@@ -28,30 +28,30 @@ namespace PayrollServer.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IEnumerable<CoefficientGroupDTO> GetAllCoefficientGroup()
-        {
-            var coefficientGroups = _repository.CoefficientGroup.GetAllCoefficientGroup();
+        //[HttpGet]
+        //public IEnumerable<CoefficientGroupDTO> GetAllCoefficientGroup()
+        //{
+        //    var coefficientGroups = _repository.CoefficientGroup.GetAllCoefficientGroup();
 
-            IEnumerable<CoefficientGroupDTO> coefficientGroupDTOs = _mapper.Map<IEnumerable<CoefficientGroupDTO>>(coefficientGroups);
+        //    IEnumerable<CoefficientGroupDTO> coefficientGroupDTOs = _mapper.Map<IEnumerable<CoefficientGroupDTO>>(coefficientGroups);
 
-            _logger.LogInfo($"Returned all CostCenter from database.");
+        //    _logger.LogInfo($"Returned all CostCenter from database.");
 
-            return coefficientGroupDTOs;
-        }
+        //    return coefficientGroupDTOs;
+        //}
 
-        [HttpPost]
-        public Result CreateDepartment([FromBody] CoefficientGroupDTO coefficientGroupDTO)
-        {
-            CoefficientGroup coefficientGroup = _mapper.Map<CoefficientGroup>(coefficientGroupDTO);
+        //[HttpPost]
+        //public Result CreateDepartment([FromBody] CoefficientGroupDTO coefficientGroupDTO)
+        //{
+        //    CoefficientGroup coefficientGroup = _mapper.Map<CoefficientGroup>(coefficientGroupDTO);
 
-            _repository.CoefficientGroup.CreateCoefficientGroup(coefficientGroup);
+        //    _repository.CoefficientGroup.CreateCoefficientGroup(coefficientGroup);
 
-            _logger.LogInfo($"Created new CostCenter.");
+        //    _logger.LogInfo($"Created new CostCenter.");
 
-            return new Result(true, 1, "წარმატებით დასრულდა");
+        //    return new Result(true, 1, "წარმატებით დასრულდა");
 
-        }
+        //}
 
     }
 }
