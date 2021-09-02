@@ -10,5 +10,7 @@ namespace Contracts
     {
         IEnumerable<Coefficient> GetAllCoefficients();
         void CreateCoefficient(Coefficient coefficient);
+        void UpdateCoefficient(Coefficient department);
+        void DeleteCoefficient(Coefficient department);
     }
 }

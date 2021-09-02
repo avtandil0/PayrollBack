@@ -9,6 +9,7 @@ namespace PayrollServer.Models.DTOs
     {
         public Guid Id { get; set; }
         public string Description { get; set; }
+        public string Code { get; set; }
         public Guid? AccountsReportChartTypeId { get; set; }
         public string AccountsReportChartTypeName { get; set; }
         public DateTime DateCreated { get; set; }

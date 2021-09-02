@@ -35,7 +35,7 @@ namespace PayrollServer.Controllers
 
             IEnumerable<CoefficientDTO> coefficientDTOs = _mapper.Map<IEnumerable<CoefficientDTO>>(coefficients);
 
-            _logger.LogInfo($"Returned all Coefficients from database.");
+            //_logger.LogInfo($"Returned all Coefficients from database.");
 
             return coefficientDTOs;
         }
@@ -48,6 +48,32 @@ namespace PayrollServer.Controllers
             _repository.Coefficient.CreateCoefficient(coefficient);
 
             _logger.LogInfo($"Created new Coefficient.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpPut]
+        public Result UpdateDepartment([FromBody] CoefficientDTO departmentDTO)
+        {
+            Coefficient coefficient = _mapper.Map<Coefficient>(departmentDTO);
+
+            _repository.Coefficient.UpdateCoefficient(coefficient);
+
+            _logger.LogInfo($"Update Coefficient id = &{coefficient.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpDelete]
+        public Result DeleteDepartment([FromBody] CoefficientDTO departmentDTO)
+        {
+            Coefficient coefficient = _mapper.Map<Coefficient>(departmentDTO);
+
+            _repository.Coefficient.DeleteCoefficient(coefficient);
+
+            _logger.LogInfo($"Delete Coefficient id = &{coefficient.Id}");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 
