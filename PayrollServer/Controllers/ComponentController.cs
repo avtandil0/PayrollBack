@@ -41,39 +41,39 @@ namespace PayrollServer.Controllers
         }
 
         [HttpPost]
-        public Result CreateDepartment([FromBody] DepartmentDTO departmentDTO)
+        public Result CreateDepartment([FromBody] ComponentDTO componentDTO)
         {
-            Department department = _mapper.Map<Department>(departmentDTO);
+            Component component = _mapper.Map<Component>(componentDTO);
 
-            _repository.Department.CreateDepartment(department);
+            _repository.Component.CreateComponent(component);
 
-            _logger.LogInfo($"Created new Department.");
+            _logger.LogInfo($"Created new Component.");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
 
         [HttpPut]
-        public Result UpdateDepartment([FromBody] DepartmentDTO departmentDTO)
+        public Result UpdateDepartment([FromBody] ComponentDTO componentDTO)
         {
-            Department department = _mapper.Map<Department>(departmentDTO);
+            Component component = _mapper.Map<Component>(componentDTO);
 
-            _repository.Department.UpdateDepartment(department);
+            _repository.Component.UpdateComponent(component);
 
-            _logger.LogInfo($"Update Department id = &{department.Id}");
+            _logger.LogInfo($"Update Component id = &{component.Id}");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
 
         [HttpDelete]
-        public Result DeleteDepartment([FromBody] DepartmentDTO departmentDTO)
+        public Result DeleteDepartment([FromBody] ComponentDTO componentDTO)
         {
-            Department department = _mapper.Map<Department>(departmentDTO);
+            Component component = _mapper.Map<Component>(componentDTO);
 
-            _repository.Department.DeleteDepartment(department);
+            _repository.Component.DeleteComponent(component);
 
-            _logger.LogInfo($"Delete Department id = &{department.Id}");
+            _logger.LogInfo($"Delete Component id = &{component.Id}");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 

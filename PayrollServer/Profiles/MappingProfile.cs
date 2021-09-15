@@ -22,6 +22,9 @@ namespace PayrollServer.Profiles
             CreateMap<Project, ProjectDTO>();
             CreateMap<ProjectDTO, Project>();
 
+            CreateMap<AccountsReportChartType, AccountsReportChartTypeDTO>();
+            CreateMap<AccountsReportChartTypeDTO, AccountsReportChartType>();
+
             CreateMap<CostCenter, CostCenterDTO>();
             CreateMap<CostCenterDTO, CostCenter>();
 
