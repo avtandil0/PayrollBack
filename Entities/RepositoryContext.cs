@@ -18,12 +18,14 @@ namespace Entities
         {
         }
 
-        public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }    
+        public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }
         public virtual DbSet<AccountsReportChartType> AccountsReportChartTypes { get; set; }
         public virtual DbSet<Coefficient> Coefficients { get; set; }
         public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<CostCenter> CostCenters { get; set; }
         public virtual DbSet<Department> Departments { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<EmployeeComponent> EmployeeComponents { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,13 +33,13 @@ namespace Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=.;database=Payroll;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-BMDJPME\\SQLEXPRESS;database=Payroll;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Cyrillic_General_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<AccountsReportChart>(entity =>
             {
@@ -62,7 +64,7 @@ namespace Entities
                 entity.HasOne(d => d.AccountsReportChartType)
                     .WithMany(p => p.AccountsReportCharts)
                     .HasForeignKey(d => d.AccountsReportChartTypeId)
-                    .HasConstraintName("FK__AccountsR__Accou__5441852A");
+                    .HasConstraintName("FK__AccountsR__Accou__4CA06362");
             });
 
             modelBuilder.Entity<AccountsReportChartType>(entity =>
@@ -154,17 +156,17 @@ namespace Entities
                 entity.HasOne(d => d.Coefficient)
                     .WithMany(p => p.Components)
                     .HasForeignKey(d => d.CoefficientId)
-                    .HasConstraintName("FK__Component__Coeff__5DCAEF64");
+                    .HasConstraintName("FK__Component__Coeff__5165187F");
 
                 entity.HasOne(d => d.CreditAccount)
                     .WithMany(p => p.ComponentCreditAccounts)
                     .HasForeignKey(d => d.CreditAccountId)
-                    .HasConstraintName("FK__Component__Credi__5BE2A6F2");
+                    .HasConstraintName("FK__Component__Credi__4F7CD00D");
 
                 entity.HasOne(d => d.DebitAccount)
                     .WithMany(p => p.ComponentDebitAccounts)
                     .HasForeignKey(d => d.DebitAccountId)
-                    .HasConstraintName("FK__Component__Debit__5CD6CB2B");
+                    .HasConstraintName("FK__Component__Debit__5070F446");
             });
 
             modelBuilder.Entity<CostCenter>(entity =>
@@ -203,6 +205,97 @@ namespace Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.ToTable("Employee");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Address).HasMaxLength(255);
+
+                entity.Property(e => e.BankAccountNumber)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.Email).HasMaxLength(255);
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.MobilePhone).HasMaxLength(255);
+
+                entity.Property(e => e.PersonalNumber).HasMaxLength(255);
+
+                entity.Property(e => e.Scheme)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.HasOne(d => d.Department)
+                    .WithMany(p => p.Employees)
+                    .HasForeignKey(d => d.DepartmentId)
+                    .HasConstraintName("FK__Employee__Depart__5CD6CB2B");
+            });
+
+            modelBuilder.Entity<EmployeeComponent>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.CashAmount).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.Currency)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.Days).HasMaxLength(255);
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Scheme)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Component)
+                    .WithMany(p => p.EmployeeComponents)
+                    .HasForeignKey(d => d.ComponentId)
+                    .HasConstraintName("FK__EmployeeC__Compo__60A75C0F");
+
+                entity.HasOne(d => d.CostCenter)
+                    .WithMany(p => p.EmployeeComponents)
+                    .HasForeignKey(d => d.CostCenterId)
+                    .HasConstraintName("FK__EmployeeC__CostC__628FA481");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.EmployeeComponents)
+                    .HasForeignKey(d => d.EmployeeId)
+                    .HasConstraintName("FK__EmployeeC__Emplo__5FB337D6");
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(p => p.EmployeeComponents)
+                    .HasForeignKey(d => d.ProjectId)
+                    .HasConstraintName("FK__EmployeeC__Proje__619B8048");
             });
 
             modelBuilder.Entity<Project>(entity =>

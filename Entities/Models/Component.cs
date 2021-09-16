@@ -7,6 +7,11 @@ namespace Entities.Models
 {
     public partial class Component
     {
+        public Component()
+        {
+            EmployeeComponents = new HashSet<EmployeeComponent>();
+        }
+
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid? CreditAccountId { get; set; }
@@ -21,5 +26,6 @@ namespace Entities.Models
         public virtual Coefficient Coefficient { get; set; }
         public virtual AccountsReportChart CreditAccount { get; set; }
         public virtual AccountsReportChart DebitAccount { get; set; }
+        public virtual ICollection<EmployeeComponent> EmployeeComponents { get; set; }
     }
 }

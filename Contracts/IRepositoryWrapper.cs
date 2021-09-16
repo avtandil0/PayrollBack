@@ -14,5 +14,6 @@ namespace Contracts
         //ICoefficientGroupRepository CoefficientGroup { get; }
         ICommonRepository Common { get; }
         IComponentRepository Component { get; }
+        IEmployeeRepository Employee { get; }
     }
 }
