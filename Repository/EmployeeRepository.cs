@@ -11,9 +11,12 @@ namespace Repository
   
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
-        public EmployeeRepository(RepositoryContext repositoryContext)
+        private IEmployeeComponentsRepository employeeComponentsRepository;
+
+        public EmployeeRepository(RepositoryContext repositoryContext, IEmployeeComponentsRepository repository)
             : base(repositoryContext)
         {
+            employeeComponentsRepository = repository;
         }
 
         public void CreateEmployee(Employee employee)
@@ -24,7 +27,9 @@ namespace Repository
 
             foreach (var item in employee.EmployeeComponents)
             {
+                employeeComponentsRepository.CreateEmployeeComponent(item);
             }
+
             Save();
         }
 
@@ -33,6 +38,12 @@ namespace Repository
             var emp = FindByCondition(r => r.Id == employee.Id).FirstOrDefault();
 
             emp.DateDeleted = DateTime.Now;
+
+            foreach (var item in employee.EmployeeComponents)
+            {
+                employeeComponentsRepository.DeleteEmployeeComponent(item);
+            }
+
 
             Update(emp);
             Save();
@@ -59,6 +70,12 @@ namespace Repository
             emp.BankAccountNumber = emp.BankAccountNumber;
             emp.Scheme = emp.Scheme;
             emp.DepartmentId = emp.DepartmentId;
+
+            foreach (var item in employee.EmployeeComponents)
+            {
+                employeeComponentsRepository.UpdateEmployeeComponent(item);
+            }
+
 
             Update(emp);
             Save();

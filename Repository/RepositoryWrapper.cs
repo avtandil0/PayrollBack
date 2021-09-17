@@ -13,7 +13,35 @@ namespace Repository
         private IAccountsReportChartRepository _accountsReportChart;
         private ICommonRepository _common;
         private IComponentRepository _component;
+        private IEmployeeRepository _employee;
+        private IEmployeeComponentsRepository _employeeComponents;
 
+
+        public IEmployeeComponentsRepository EmployeeComponents
+        {
+            get
+            {
+                if (_employeeComponents == null)
+                {
+                    _employeeComponents = new EmployeeComponentsRepository(_repoContext);
+                }
+
+                return _employeeComponents;
+            }
+        }
+
+        public IEmployeeRepository Employee
+        {
+            get
+            {
+                if (_employee == null)
+                {
+                    _employee = new EmployeeRepository(_repoContext, _employeeComponents);
+                }
+
+                return _employee;
+            }
+        }
 
         public IComponentRepository Component
         {

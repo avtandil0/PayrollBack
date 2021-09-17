@@ -37,6 +37,16 @@ namespace PayrollServer.Profiles
                  .ForMember(dest => dest.DebitAccountName, act => act.MapFrom(src => src.DebitAccount.Description))
                  .ForMember(dest => dest.CoefficientName, act => act.MapFrom(src => src.Coefficient.Description));
             CreateMap<ComponentDTO, Component>();
+
+            CreateMap<Employee, EmployeeDTO>()
+                .ForMember(dest => dest.DepartmentName, act => act.MapFrom(src => src.Department.Name));
+            CreateMap<EmployeeDTO, Employee>();
+
+            CreateMap<EmployeeComponent, EmployeeComponentDTO>()
+                 .ForMember(dest => dest.ComponentName, act => act.MapFrom(src => src.Component.Name))
+                 .ForMember(dest => dest.ProjectCode, act => act.MapFrom(src => src.Project.Code))
+                 .ForMember(dest => dest.CostCenterCode, act => act.MapFrom(src => src.CostCenter.Code));
+            CreateMap<EmployeeComponentDTO, EmployeeComponent>();
         }
     }
 }
