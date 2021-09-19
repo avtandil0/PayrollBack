@@ -35,6 +35,9 @@ namespace Repository
 
             coef.DateChange = DateTime.Now;
 
+            coef.Description = coefficient.Description;
+            coef.Name = coefficient.Name;
+
             coef.Sgross = coefficient.Sgross;
             coef.Snet = coefficient.Snet;
             coef.Spaid = coefficient.Spaid;

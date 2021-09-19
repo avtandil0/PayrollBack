@@ -96,3 +96,71 @@ CREATE TABLE Component (
 );
 
 
+CREATE TABLE [dbo].[Employee](
+	[Id] [uniqueidentifier] NOT NULL,
+	[FirstName] [nvarchar](255) NOT NULL,
+	[LastName] [nvarchar](255) NOT NULL,
+	[MobilePhone] [nvarchar](255) NULL,
+	[Email] [nvarchar](255) NULL,
+	[PersonalNumber] [nvarchar](255) NULL,
+	[Address] [nvarchar](255) NULL,
+	[BankAccountNumber] [nvarchar](255) NOT NULL,
+	[Scheme] [nvarchar](255) NOT NULL,
+	[DepartmentId] [uniqueidentifier] NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[DateChange] [datetime] NULL,
+	[DateDeleted] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Employee]  WITH CHECK ADD FOREIGN KEY([DepartmentId])
+REFERENCES [dbo].[Department] ([Id])
+GO
+
+
+CREATE TABLE [dbo].[EmployeeComponents](
+	[Id] [uniqueidentifier] NOT NULL,
+	[EmployeeId] [uniqueidentifier] NULL,
+	[ComponentId] [uniqueidentifier] NULL,
+	[ProjectId] [uniqueidentifier] NULL,
+	[CostCenterId] [uniqueidentifier] NULL,
+	[Days] [nvarchar](255) NULL,
+	[StartDate] [datetime] NOT NULL,
+	[EndDate] [datetime] NOT NULL,
+	[Scheme] [nvarchar](255) NOT NULL,
+	[Amount] [decimal](18, 0) NOT NULL,
+	[Currency] [nvarchar](255) NOT NULL,
+	[PaidByCash] [bit] NOT NULL,
+	[CashAmount] [decimal](18, 0) NOT NULL,
+	[PaidMultiple] [bit] NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[DateChange] [datetime] NULL,
+	[DateDeleted] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([ComponentId])
+REFERENCES [dbo].[Component] ([Id])
+GO
+
+ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([CostCenterId])
+REFERENCES [dbo].[CostCenter] ([Id])
+GO
+
+ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([EmployeeId])
+REFERENCES [dbo].[Employee] ([Id])
+GO
+
+ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([ProjectId])
+REFERENCES [dbo].[Project] ([Id])
+GO
+
+
