@@ -26,11 +26,9 @@ namespace Repository
 
             foreach (var item in employee.EmployeeComponents)
             {
-                //employeeComponentsRepository.CreateEmployeeComponent(item);
                 item.Id = Guid.NewGuid();
                 item.DateCreated = DateTime.Now;
                 this.RepositoryContext.EmployeeComponents.Add(item);
-                //Save();
             }
 
             Save();
@@ -42,10 +40,10 @@ namespace Repository
 
             emp.DateDeleted = DateTime.Now;
 
-            //foreach (var item in employee.EmployeeComponents)
-            //{
-            //    employeeComponentsRepository.DeleteEmployeeComponent(item);
-            //}
+            foreach (var item in employee.EmployeeComponents)
+            {
+                item.DateDeleted = DateTime.Now; ;
+            }
 
 
             Update(emp);
@@ -71,12 +69,25 @@ namespace Repository
             emp.Address = employee.Address;
             emp.PersonalNumber = emp.PersonalNumber;
             emp.BankAccountNumber = emp.BankAccountNumber;
-            emp.Scheme = emp.Scheme;
             emp.DepartmentId = emp.DepartmentId;
 
             //foreach (var item in employee.EmployeeComponents)
             //{
-            //    employeeComponentsRepository.UpdateEmployeeComponent(item);
+            //    item.DateChange = DateTime.Now;
+
+            //    item.EmployeeId = employee.EmployeeComponents.EmployeeId;
+            //    item.ComponentId = employeeComponent.ComponentId;
+            //    item.ProjectId = employeeComponent.ProjectId;
+            //    item.CostCenterId = employeeComponent.CostCenterId;
+            //    item.Days = employeeComponent.Days;
+            //    item.StartDate = employeeComponent.StartDate;
+            //    item.EndDate = employeeComponent.EndDate;
+            //    item.Scheme = employeeComponent.Scheme;
+            //    item.Amount = employeeComponent.Amount;
+            //    item.Currency = employeeComponent.Currency;
+            //    item.PaidByCash = employeeComponent.PaidByCash;
+            //    item.CashAmount = employeeComponent.CashAmount;
+            //    item.PaidMultiple = employeeComponent.PaidMultiple;
             //}
 
 

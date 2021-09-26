@@ -96,6 +96,24 @@ CREATE TABLE Component (
 );
 
 
+
+CREATE TABLE SchemeType (
+	Id int PRIMARY KEY ,
+	Name nvarchar(255) not null,
+	DateCreated datetime not null,
+    DateChange datetime,
+    DateDeleted datetime,
+);
+
+CREATE TABLE PaymentDaysType (
+	Id int PRIMARY KEY ,
+	Name nvarchar(255) not null,
+	DateCreated datetime not null,
+    DateChange datetime,
+    DateDeleted datetime,
+);
+
+
 CREATE TABLE [dbo].[Employee](
 	[Id] [uniqueidentifier] NOT NULL,
 	[FirstName] [nvarchar](255) NOT NULL,
@@ -105,7 +123,7 @@ CREATE TABLE [dbo].[Employee](
 	[PersonalNumber] [nvarchar](255) NULL,
 	[Address] [nvarchar](255) NULL,
 	[BankAccountNumber] [nvarchar](255) NOT NULL,
-	[Scheme] [nvarchar](255) NOT NULL,
+	[SchemeTypeId] [int] NOT NULL,
 	[DepartmentId] [uniqueidentifier] NULL,
 	[DateCreated] [datetime] NOT NULL,
 	[DateChange] [datetime] NULL,
@@ -120,7 +138,9 @@ GO
 ALTER TABLE [dbo].[Employee]  WITH CHECK ADD FOREIGN KEY([DepartmentId])
 REFERENCES [dbo].[Department] ([Id])
 GO
-
+ALTER TABLE [dbo].[Employee]  WITH CHECK ADD FOREIGN KEY([SchemeTypeId])
+REFERENCES [dbo].[SchemeType] ([Id])
+GO
 
 CREATE TABLE [dbo].[EmployeeComponents](
 	[Id] [uniqueidentifier] NOT NULL,
@@ -128,10 +148,10 @@ CREATE TABLE [dbo].[EmployeeComponents](
 	[ComponentId] [uniqueidentifier] NULL,
 	[ProjectId] [uniqueidentifier] NULL,
 	[CostCenterId] [uniqueidentifier] NULL,
-	[Days] [nvarchar](255) NULL,
+	[PaymentDaysTypeId] [int] not NULL,
 	[StartDate] [datetime] NOT NULL,
 	[EndDate] [datetime] NOT NULL,
-	[Scheme] [nvarchar](255) NOT NULL,
+	[SchemeTypeId] [int] NOT NULL,
 	[Amount] [decimal](18, 0) NOT NULL,
 	[Currency] [nvarchar](255) NOT NULL,
 	[PaidByCash] [bit] NOT NULL,
@@ -163,4 +183,14 @@ ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([ProjectId])
 REFERENCES [dbo].[Project] ([Id])
 GO
 
+ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([SchemeTypeId])
+REFERENCES [dbo].[SchemeType] ([Id])
+GO
 
+ALTER TABLE [dbo].[EmployeeComponents]  WITH CHECK ADD FOREIGN KEY([PaymentDaysTypeId])
+REFERENCES [dbo].[PaymentDaysType] ([Id])
+GO
+
+
+
+select GETDATE()

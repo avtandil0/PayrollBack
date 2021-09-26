@@ -50,10 +50,8 @@ namespace Repository
             empCopm.ComponentId = employeeComponent.ComponentId;
             empCopm.ProjectId = employeeComponent.ProjectId;
             empCopm.CostCenterId = employeeComponent.CostCenterId;
-            empCopm.Days = employeeComponent.Days;
             empCopm.StartDate = employeeComponent.StartDate;
             empCopm.EndDate = employeeComponent.EndDate;
-            empCopm.Scheme = employeeComponent.Scheme;
             empCopm.Amount = employeeComponent.Amount;
             empCopm.Currency = employeeComponent.Currency;
             empCopm.PaidByCash = employeeComponent.PaidByCash;

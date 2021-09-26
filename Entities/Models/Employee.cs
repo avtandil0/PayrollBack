@@ -20,13 +20,14 @@ namespace Entities.Models
         public string PersonalNumber { get; set; }
         public string Address { get; set; }
         public string BankAccountNumber { get; set; }
-        public string Scheme { get; set; }
+        public int SchemeTypeId { get; set; }
         public Guid? DepartmentId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
 
         public virtual Department Department { get; set; }
+        public virtual SchemeType SchemeType { get; set; }
         public virtual ICollection<EmployeeComponent> EmployeeComponents { get; set; }
     }
 }

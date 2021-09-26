@@ -21,5 +21,15 @@ namespace Repository
         {
             return repository.AccountsReportChartTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
         }
+
+        public IEnumerable<SchemeType> GetSchemeTypes()
+        {
+            return repository.SchemeTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
+        }
+
+        public IEnumerable<PaymentDaysType> GetPaymentDaysTypes()
+        {
+            return repository.PaymentDaysTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
+        }
     }
 }

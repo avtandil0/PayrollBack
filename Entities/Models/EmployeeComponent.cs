@@ -12,10 +12,10 @@ namespace Entities.Models
         public Guid? ComponentId { get; set; }
         public Guid? ProjectId { get; set; }
         public Guid? CostCenterId { get; set; }
-        public string Days { get; set; }
+        public int PaymentDaysTypeId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string Scheme { get; set; }
+        public int SchemeTypeId { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; }
         public bool PaidByCash { get; set; }
@@ -28,6 +28,8 @@ namespace Entities.Models
         public virtual Component Component { get; set; }
         public virtual CostCenter CostCenter { get; set; }
         public virtual Employee Employee { get; set; }
+        public virtual PaymentDaysType PaymentDaysType { get; set; }
         public virtual Project Project { get; set; }
+        public virtual SchemeType SchemeType { get; set; }
     }
 }

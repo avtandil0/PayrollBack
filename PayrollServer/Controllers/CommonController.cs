@@ -44,6 +44,24 @@ namespace PayrollServer.Controllers
             return accountsReportChartTypeDTOs;
         }
 
+        [HttpGet]
+        [Route("schemeTypes")]
+        public IEnumerable<SchemeType> GetAllSchemeTypes()
+        {
+            var schemeTypes = _repository.Common.GetSchemeTypes();
+
+            return schemeTypes;
+        }
+
+        [HttpGet]
+        [Route("PaymentDaysTypes")]
+        public IEnumerable<PaymentDaysType> GetAllPaymentDaysType()
+        {
+            var paymentDaysTypes = _repository.Common.GetPaymentDaysTypes();
+
+            return paymentDaysTypes;
+        }
+
 
     }
 }
