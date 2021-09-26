@@ -11,12 +11,11 @@ namespace Repository
   
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
-        private IEmployeeComponentsRepository employeeComponentsRepository;
+        //private IEmployeeComponentsRepository employeeComponentsRepository;
 
-        public EmployeeRepository(RepositoryContext repositoryContext, IEmployeeComponentsRepository repository)
+        public EmployeeRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
-            employeeComponentsRepository = repository;
         }
 
         public void CreateEmployee(Employee employee)
@@ -27,7 +26,11 @@ namespace Repository
 
             foreach (var item in employee.EmployeeComponents)
             {
-                employeeComponentsRepository.CreateEmployeeComponent(item);
+                //employeeComponentsRepository.CreateEmployeeComponent(item);
+                item.Id = Guid.NewGuid();
+                item.DateCreated = DateTime.Now;
+                this.RepositoryContext.EmployeeComponents.Add(item);
+                //Save();
             }
 
             Save();
@@ -39,10 +42,10 @@ namespace Repository
 
             emp.DateDeleted = DateTime.Now;
 
-            foreach (var item in employee.EmployeeComponents)
-            {
-                employeeComponentsRepository.DeleteEmployeeComponent(item);
-            }
+            //foreach (var item in employee.EmployeeComponents)
+            //{
+            //    employeeComponentsRepository.DeleteEmployeeComponent(item);
+            //}
 
 
             Update(emp);
@@ -71,10 +74,10 @@ namespace Repository
             emp.Scheme = emp.Scheme;
             emp.DepartmentId = emp.DepartmentId;
 
-            foreach (var item in employee.EmployeeComponents)
-            {
-                employeeComponentsRepository.UpdateEmployeeComponent(item);
-            }
+            //foreach (var item in employee.EmployeeComponents)
+            //{
+            //    employeeComponentsRepository.UpdateEmployeeComponent(item);
+            //}
 
 
             Update(emp);

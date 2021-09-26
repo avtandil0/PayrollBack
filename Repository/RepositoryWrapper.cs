@@ -30,18 +30,18 @@ namespace Repository
             }
         }
 
-        public IEmployeeRepository Employee
-        {
-            get
-            {
-                if (_employee == null)
-                {
-                    _employee = new EmployeeRepository(_repoContext, _employeeComponents);
-                }
+        public IEmployeeRepository Employee => _employee ??= new EmployeeRepository(_repoContext);
+        //{
+        //    get
+        //    {
+        //        if (_employee == null)
+        //        {
+        //            _employee = new EmployeeRepository(_repoContext);
+        //        }
 
-                return _employee;
-            }
-        }
+        //        return _employee;
+        //    }
+        //}
 
         public IComponentRepository Component
         {
@@ -136,7 +136,7 @@ namespace Repository
             }
         }
 
-        
+
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
