@@ -26,6 +26,19 @@ namespace PayrollServer.Controllers
         }
 
         [HttpGet]
+        [Route("getEmployee/{id}")]
+        public EmployeeDTO GetAllEmployees(Guid id)
+        {
+            var employees = _repository.Employee.GetEmployeeById(id);
+
+            EmployeeDTO employeeDTOs = _mapper.Map<EmployeeDTO>(employees);
+
+            _logger.LogInfo($"Returned all Employees from database.");
+
+            return employeeDTOs;
+        }
+
+        [HttpGet]
         public IEnumerable<EmployeeDTO> GetAllEmployees()
         {
             var employees = _repository.Employee.GetAllEmployees();

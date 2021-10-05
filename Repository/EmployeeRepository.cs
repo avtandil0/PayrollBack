@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,6 @@ namespace Repository
         {
             employee.Id = Guid.NewGuid();
             employee.DateCreated = DateTime.Now;
-            Create(employee);
 
             foreach (var item in employee.EmployeeComponents)
             {
@@ -30,6 +30,9 @@ namespace Repository
                 item.DateCreated = DateTime.Now;
                 this.RepositoryContext.EmployeeComponents.Add(item);
             }
+
+
+            Create(employee);
 
             Save();
         }
@@ -42,7 +45,7 @@ namespace Repository
 
             foreach (var item in employee.EmployeeComponents)
             {
-                item.DateDeleted = DateTime.Now; ;
+                item.DateDeleted = DateTime.Now;
             }
 
 
@@ -57,9 +60,28 @@ namespace Repository
                 .OrderByDescending(r => r.DateCreated);
         }
 
+        public Employee GetEmployeeById(Guid id)
+        {
+            //ფილტრი ინქლუდში??
+             //var emps = GetAllIncluded(r => r.Department, r => r.SchemeType, r => r.EmployeeComponents)
+             //       .Where(r => r.DateDeleted == null && r.Id == id )
+             //   .OrderByDescending(r => r.DateCreated).FirstOrDefault();
+            
+            var emps = RepositoryContext.Employees
+                    .Include(o => o.Department)
+                    .Include(o => o.SchemeType)
+                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                    .Where(r => r.DateDeleted == null && r.Id == id)
+                    .OrderByDescending(r => r.DateCreated).FirstOrDefault();
+
+            return emps;
+        }
+
         public void UpdateEmployee(Employee employee)
         {
-            var emp = FindByCondition(r => r.Id == employee.Id).FirstOrDefault();
+            //var emp = FindByCondition(r => r.Id == employee.Id).FirstOrDefault();
+            var emp = GetAllIncluded(r => r.EmployeeComponents).Where(r => r.Id == employee.Id && r.DateDeleted == null)
+                    .FirstOrDefault();
 
             emp.DateChange = DateTime.Now;
             emp.FirstName = employee.FirstName;
@@ -67,28 +89,48 @@ namespace Repository
             emp.MobilePhone = employee.MobilePhone;
             emp.Email = employee.Email;
             emp.Address = employee.Address;
-            emp.PersonalNumber = emp.PersonalNumber;
-            emp.BankAccountNumber = emp.BankAccountNumber;
-            emp.DepartmentId = emp.DepartmentId;
+            emp.PersonalNumber = employee.PersonalNumber;
+            emp.BankAccountNumber = employee.BankAccountNumber;
+            emp.DepartmentId = employee.DepartmentId;
 
-            //foreach (var item in employee.EmployeeComponents)
-            //{
-            //    item.DateChange = DateTime.Now;
+            foreach (var item in employee.EmployeeComponents)
+            {
+                var empComp = RepositoryContext.EmployeeComponents.Where(r => r.Id == item.Id).FirstOrDefault();
 
-            //    item.EmployeeId = employee.EmployeeComponents.EmployeeId;
-            //    item.ComponentId = employeeComponent.ComponentId;
-            //    item.ProjectId = employeeComponent.ProjectId;
-            //    item.CostCenterId = employeeComponent.CostCenterId;
-            //    item.Days = employeeComponent.Days;
-            //    item.StartDate = employeeComponent.StartDate;
-            //    item.EndDate = employeeComponent.EndDate;
-            //    item.Scheme = employeeComponent.Scheme;
-            //    item.Amount = employeeComponent.Amount;
-            //    item.Currency = employeeComponent.Currency;
-            //    item.PaidByCash = employeeComponent.PaidByCash;
-            //    item.CashAmount = employeeComponent.CashAmount;
-            //    item.PaidMultiple = employeeComponent.PaidMultiple;
-            //}
+                if(empComp == null)
+                {
+                    item.Id = Guid.NewGuid();
+                    item.EmployeeId = employee.Id;
+                    item.DateCreated = DateTime.Now;
+                    this.RepositoryContext.EmployeeComponents.Add(item);
+
+                    continue;
+                }
+                
+                item.DateChange = DateTime.Now;
+
+                empComp.EmployeeId = item.EmployeeId;
+                empComp.ComponentId = item.ComponentId;
+                empComp.ProjectId = item.ProjectId;
+                empComp.CostCenterId = item.CostCenterId;
+                empComp.PaymentDaysTypeId = item.PaymentDaysTypeId;
+                empComp.StartDate = item.StartDate;
+                empComp.EndDate = item.EndDate;
+                empComp.SchemeTypeId = item.SchemeTypeId;
+                empComp.Amount = item.Amount;
+                empComp.Currency = item.Currency;
+                empComp.PaidByCash = item.PaidByCash;
+                empComp.CashAmount = item.CashAmount;
+                empComp.PaidMultiple = item.PaidMultiple;
+            }
+
+            var deletedList = emp.EmployeeComponents
+                    .Where(r => r.DateDeleted == null && !employee.EmployeeComponents.Any(e => e.Id == r.Id));
+
+            foreach (var item in deletedList)
+            {
+                item.DateDeleted = DateTime.Now;
+            }
 
 
             Update(emp);
