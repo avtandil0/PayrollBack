@@ -47,6 +47,10 @@ namespace PayrollServer.Profiles
                  .ForMember(dest => dest.ProjectCode, act => act.MapFrom(src => src.Project.Code))
                  .ForMember(dest => dest.CostCenterCode, act => act.MapFrom(src => src.CostCenter.Code));
             CreateMap<EmployeeComponentDTO, EmployeeComponent>();
+
+
+            CreateMap<Humre, HumreDTO>();
+            CreateMap<HumreDTO, Humre>();
         }
     }
 }

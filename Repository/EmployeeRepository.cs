@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Repository
 {
-  
+
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
         //private IEmployeeComponentsRepository employeeComponentsRepository;
@@ -21,8 +21,18 @@ namespace Repository
 
         public void CreateEmployee(Employee employee)
         {
+
+            var lastEmpoyee = this.RepositoryContext.Employees.OrderByDescending(r => r.ResId).FirstOrDefault();
+            int newResId = 1;
+            if (lastEmpoyee != null)
+            {
+                newResId = lastEmpoyee.ResId;
+            }
+            newResId++;
+
             employee.Id = Guid.NewGuid();
             employee.DateCreated = DateTime.Now;
+            employee.ResId = newResId;
 
             foreach (var item in employee.EmployeeComponents)
             {
@@ -63,10 +73,10 @@ namespace Repository
         public Employee GetEmployeeById(Guid id)
         {
             //ფილტრი ინქლუდში??
-             //var emps = GetAllIncluded(r => r.Department, r => r.SchemeType, r => r.EmployeeComponents)
-             //       .Where(r => r.DateDeleted == null && r.Id == id )
-             //   .OrderByDescending(r => r.DateCreated).FirstOrDefault();
-            
+            //var emps = GetAllIncluded(r => r.Department, r => r.SchemeType, r => r.EmployeeComponents)
+            //       .Where(r => r.DateDeleted == null && r.Id == id )
+            //   .OrderByDescending(r => r.DateCreated).FirstOrDefault();
+
             var emps = RepositoryContext.Employees
                     .Include(o => o.Department)
                     .Include(o => o.SchemeType)
@@ -75,6 +85,34 @@ namespace Repository
                     .OrderByDescending(r => r.DateCreated).FirstOrDefault();
 
             return emps;
+        }
+
+        public void ImportEmployee(List<Humre> humres)
+        {
+            foreach (var item in humres)
+            {
+                var exists = this.RepositoryContext.Employees.Where(r => r.ResId == item.ResId).FirstOrDefault();
+                if (exists == null)
+                {
+                    var employee = new Employee
+                    {
+                        Id = Guid.NewGuid(),
+                        ResId = item.ResId,
+                        FirstName = item.FirstName,
+                        LastName = item.SurName,
+                        Address = item.Adres1,
+                        SchemeTypeId = 1,
+                        BankAccountNumber = "BankN00000000000001",
+                        DateCreated = DateTime.Now
+                    };
+
+                    Create(employee);
+                }
+
+
+            }
+
+            Save();
         }
 
         public void UpdateEmployee(Employee employee)
@@ -92,12 +130,13 @@ namespace Repository
             emp.PersonalNumber = employee.PersonalNumber;
             emp.BankAccountNumber = employee.BankAccountNumber;
             emp.DepartmentId = employee.DepartmentId;
+            emp.Position = employee.Position;
 
             foreach (var item in employee.EmployeeComponents)
             {
                 var empComp = RepositoryContext.EmployeeComponents.Where(r => r.Id == item.Id).FirstOrDefault();
 
-                if(empComp == null)
+                if (empComp == null)
                 {
                     item.Id = Guid.NewGuid();
                     item.EmployeeId = employee.Id;
@@ -106,7 +145,7 @@ namespace Repository
 
                     continue;
                 }
-                
+
                 item.DateChange = DateTime.Now;
 
                 empComp.EmployeeId = item.EmployeeId;

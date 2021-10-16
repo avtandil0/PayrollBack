@@ -35,7 +35,7 @@ namespace Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-BMDJPME\\SQLEXPRESS;database=Payroll;Integrated Security=SSPI;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-BMDJPME\\SQLEXPRESS;database=Payroll;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
             }
         }
 
@@ -240,6 +240,10 @@ namespace Entities
                 entity.Property(e => e.MobilePhone).HasMaxLength(255);
 
                 entity.Property(e => e.PersonalNumber).HasMaxLength(255);
+
+                entity.Property(e => e.Position).HasMaxLength(100);
+
+                entity.Property(e => e.ResId).ValueGeneratedOnAdd();
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.Employees)

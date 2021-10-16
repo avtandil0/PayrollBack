@@ -18,10 +18,12 @@ namespace PayrollServer.Controllers
         private ILoggerManager _logger;
         private IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
-        public EmployeeController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+        private ISynergyRepository _sunergyRepository;
+        public EmployeeController(ILoggerManager logger, IRepositoryWrapper repository, ISynergyRepository synergyRepository, IMapper mapper)
         {
             _logger = logger;
             _repository = repository;
+            _sunergyRepository = synergyRepository;
             _mapper = mapper;
         }
 
@@ -58,6 +60,21 @@ namespace PayrollServer.Controllers
             _repository.Employee.CreateEmployee(employee);
 
             _logger.LogInfo($"Created new Employee.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpPost]
+        [Route("importFromSynergy")]
+        public Result ImportFromSynergy([FromBody] List<int> humreIds)
+        {
+            var humresFroSynergy = _sunergyRepository.GetHumresByIds(humreIds);
+
+
+            _repository.Employee.ImportEmployee(humresFroSynergy.ToList());
+
+            _logger.LogInfo($"Imported new Employee From Synergy");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 

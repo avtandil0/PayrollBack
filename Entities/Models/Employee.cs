@@ -13,6 +13,7 @@ namespace Entities.Models
         }
 
         public Guid Id { get; set; }
+        public int ResId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }
@@ -22,6 +23,7 @@ namespace Entities.Models
         public string BankAccountNumber { get; set; }
         public int SchemeTypeId { get; set; }
         public Guid? DepartmentId { get; set; }
+        public string Position { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }

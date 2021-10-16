@@ -32,7 +32,9 @@ namespace PayrollServer
 
             services.ConfigureMySqlContext(Configuration);
 
-            services.ConfigureRepositoryWrapper();
+            services.ConfigureRepositoryWrapper(); 
+
+            services.ConfigureSynergyContext(); 
 
             services.ConfigureSwagger();
 

@@ -10,6 +10,7 @@ namespace Contracts
         IEnumerable<Employee> GetAllEmployees();
         Employee GetEmployeeById(Guid id);
         void CreateEmployee(Employee employee);
+        void ImportEmployee(List<Humre> humres);
         void UpdateEmployee(Employee employee);
         void DeleteEmployee(Employee employee);
     }

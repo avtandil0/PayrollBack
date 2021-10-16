@@ -38,13 +38,21 @@ namespace PayrollServer.Extensions
 
         public static void ConfigureMySqlContext(this IServiceCollection services, IConfiguration config)
         {
-            var connectionString = config["mysqlconnection:connectionString"];
-            services.AddDbContext<RepositoryContext>(o => o.UseSqlServer(connectionString));
+            var payroll = config["mysqlconnection:Payroll"];
+            services.AddDbContext<RepositoryContext>(o => o.UseSqlServer(payroll));
+
+            var sunergy = config["mysqlconnection:Synergy"];
+            services.AddDbContext<SynergyContext>(o => o.UseSqlServer(sunergy));
         }
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+        }
+
+        public static void ConfigureSynergyContext(this IServiceCollection services)
+        {
+            services.AddScoped<ISynergyRepository, SynergyRepository>();
         }
 
         public static void ConfigureSwagger(this IServiceCollection services)

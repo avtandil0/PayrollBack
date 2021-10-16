@@ -193,4 +193,9 @@ GO
 
 
 
-select GETDATE()
+
+ALTER TABLE employee
+ADD ResId int;
+
+ALTER TABLE employee
+ADD Position nvarchar(100);
