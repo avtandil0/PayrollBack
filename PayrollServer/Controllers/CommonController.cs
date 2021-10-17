@@ -62,6 +62,15 @@ namespace PayrollServer.Controllers
             return paymentDaysTypes;
         }
 
+        [HttpGet]
+        [Route("EmployeeTypes")]
+        public IEnumerable<EmployeeType> GetEmployeeTypes()
+        {
+            var employeeTypes = _repository.Common.GetEmployeeTypes();
+
+            return employeeTypes;
+        }
+
 
     }
 }

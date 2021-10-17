@@ -22,17 +22,17 @@ namespace Repository
         public void CreateEmployee(Employee employee)
         {
 
-            var lastEmpoyee = this.RepositoryContext.Employees.OrderByDescending(r => r.ResId).FirstOrDefault();
-            int newResId = 1;
-            if (lastEmpoyee != null)
-            {
-                newResId = lastEmpoyee.ResId;
-            }
-            newResId++;
+            //var lastEmpoyee = this.RepositoryContext.Employees.OrderByDescending(r => r.ResId).FirstOrDefault();
+            //int newResId = 1;
+            //if (lastEmpoyee != null)
+            //{
+            //    newResId = lastEmpoyee.ResId;
+            //}
+            //newResId++;
 
             employee.Id = Guid.NewGuid();
             employee.DateCreated = DateTime.Now;
-            employee.ResId = newResId;
+            //employee.ResId = newResId;
 
             foreach (var item in employee.EmployeeComponents)
             {
@@ -103,7 +103,10 @@ namespace Repository
                         Address = item.Adres1,
                         SchemeTypeId = 1,
                         BankAccountNumber = "BankN00000000000001",
-                        DateCreated = DateTime.Now
+                        PersonalNumber = item.SocsecNr,
+                        MobilePhone = item.TelnrPrv,
+                        DateCreated = DateTime.Now,
+                        LandIso = item.LandIso
                     };
 
                     Create(employee);
@@ -131,6 +134,8 @@ namespace Repository
             emp.BankAccountNumber = employee.BankAccountNumber;
             emp.DepartmentId = employee.DepartmentId;
             emp.Position = employee.Position;
+            emp.LandIso = employee.LandIso;
+            emp.EmployeeTypeId = employee.EmployeeTypeId;
 
             foreach (var item in employee.EmployeeComponents)
             {

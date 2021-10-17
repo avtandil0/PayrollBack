@@ -199,3 +199,9 @@ ADD ResId int;
 
 ALTER TABLE employee
 ADD Position nvarchar(100);
+
+ALTER TABLE employee
+ADD land_iso nvarchar(10);
+
+ALTER TABLE employee
+ADD EmployeeTypeId int FOREIGN KEY  REFERENCES employeeType(ID)

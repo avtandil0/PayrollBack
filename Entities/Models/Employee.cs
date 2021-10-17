@@ -13,7 +13,7 @@ namespace Entities.Models
         }
 
         public Guid Id { get; set; }
-        public int ResId { get; set; }
+        public int? ResId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }
@@ -27,8 +27,11 @@ namespace Entities.Models
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
+        public string LandIso { get; set; }
+        public int? EmployeeTypeId { get; set; }
 
         public virtual Department Department { get; set; }
+        public virtual EmployeeType EmployeeType { get; set; }
         public virtual SchemeType SchemeType { get; set; }
         public virtual ICollection<EmployeeComponent> EmployeeComponents { get; set; }
     }

@@ -26,6 +26,7 @@ namespace Entities
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<EmployeeComponent> EmployeeComponents { get; set; }
+        public virtual DbSet<EmployeeType> EmployeeTypes { get; set; }
         public virtual DbSet<PaymentDaysType> PaymentDaysTypes { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<SchemeType> SchemeTypes { get; set; }
@@ -233,6 +234,10 @@ namespace Entities
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.LandIso)
+                    .HasMaxLength(10)
+                    .HasColumnName("land_iso");
+
                 entity.Property(e => e.LastName)
                     .IsRequired()
                     .HasMaxLength(255);
@@ -243,12 +248,15 @@ namespace Entities
 
                 entity.Property(e => e.Position).HasMaxLength(100);
 
-                entity.Property(e => e.ResId).ValueGeneratedOnAdd();
-
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.Employees)
                     .HasForeignKey(d => d.DepartmentId)
                     .HasConstraintName("FK__Employee__Depart__0E6E26BF");
+
+                entity.HasOne(d => d.EmployeeType)
+                    .WithMany(p => p.Employees)
+                    .HasForeignKey(d => d.EmployeeTypeId)
+                    .HasConstraintName("FK__Employee__Employ__40F9A68C");
 
                 entity.HasOne(d => d.SchemeType)
                     .WithMany(p => p.Employees)
@@ -310,6 +318,23 @@ namespace Entities
                     .HasForeignKey(d => d.SchemeTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__EmployeeC__Schem__1DB06A4F");
+            });
+
+            modelBuilder.Entity<EmployeeType>(entity =>
+            {
+                entity.ToTable("EmployeeType");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
             });
 
             modelBuilder.Entity<PaymentDaysType>(entity =>

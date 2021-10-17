@@ -8,7 +8,7 @@ namespace PayrollServer.Models.DTOs
     public class EmployeeDTO
     {
         public Guid Id { get; set; }
-        public int ResId { get; set; }
+        public int? ResId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }
@@ -21,6 +21,8 @@ namespace PayrollServer.Models.DTOs
         public Guid? DepartmentId { get; set; }
         public string DepartmentName { get; set; }
         public string Position { get; set; }
+        public string LandIso { get; set; }
+        public int? EmployeeTypeId { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
         public List<EmployeeComponentDTO> EmployeeComponents { get; set; }

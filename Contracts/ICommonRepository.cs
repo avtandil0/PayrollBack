@@ -10,5 +10,6 @@ namespace Contracts
         IEnumerable<AccountsReportChartType> GetAccountsReportChartTypes();
         IEnumerable<SchemeType> GetSchemeTypes();
         IEnumerable<PaymentDaysType> GetPaymentDaysTypes();
+        IEnumerable<EmployeeType> GetEmployeeTypes();
     }
 }

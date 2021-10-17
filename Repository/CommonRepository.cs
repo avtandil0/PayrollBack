@@ -31,5 +31,10 @@ namespace Repository
         {
             return repository.PaymentDaysTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
         }
+
+        public IEnumerable<EmployeeType> GetEmployeeTypes()
+        {
+            return repository.EmployeeTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
+        }
     }
 }
