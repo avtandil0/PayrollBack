@@ -203,5 +203,20 @@ ADD Position nvarchar(100);
 ALTER TABLE employee
 ADD land_iso nvarchar(10);
 
+CREATE TABLE [dbo].[EmployeeType](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[DateCreated] [datetime] NOT NULL,
+	[DateChange] [datetime] NULL,
+	[DateDeleted] [datetime] NULL,
+ CONSTRAINT [PK_EmployeeType] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
 ALTER TABLE employee
 ADD EmployeeTypeId int FOREIGN KEY  REFERENCES employeeType(ID)
