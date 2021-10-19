@@ -40,6 +40,8 @@ namespace PayrollServer.Controllers
             return departmentDTOs;
         }
 
+       
+
         [HttpPost]
         public Result CreateDepartment([FromBody] DepartmentDTO departmentDTO)
         {

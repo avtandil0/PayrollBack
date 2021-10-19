@@ -70,6 +70,11 @@ namespace Repository
                 .OrderByDescending(r => r.DateCreated);
         }
 
+        public IEnumerable<Employee> GetEmployeeByDepartment(Guid depId)
+        {
+            return RepositoryContext.Employees.Where(r => r.DepartmentId == depId);
+        }
+
         public Employee GetEmployeeById(Guid id)
         {
             //ფილტრი ინქლუდში??

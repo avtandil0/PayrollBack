@@ -17,8 +17,12 @@ namespace Repository
 
         public IEnumerable<Department> GetAllDepartments()
         {
-            return FindByCondition(r => r.DateDeleted == null)
-                .OrderByDescending(ow => ow.DateCreated);
+            //return FindByCondition(r => r.DateDeleted == null)
+            //    .OrderByDescending(ow => ow.DateCreated);
+
+            return GetAllIncluded(r => r.Employees)
+                   .Where(r => r.DateDeleted == null)
+               .OrderByDescending(r => r.DateCreated);
         }
 
         public void CreateDepartment(Department department)
@@ -48,5 +52,6 @@ namespace Repository
             Save();
         }
 
+       
     }
 }

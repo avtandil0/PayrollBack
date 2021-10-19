@@ -12,7 +12,8 @@ namespace PayrollServer.Profiles
     {
         public MappingProfile()
         {
-            CreateMap<Department, DepartmentDTO>();
+            CreateMap<Department, DepartmentDTO>()
+                 .ForMember(dest => dest.EmployeeCount, act => act.MapFrom(src => src.Employees.Count));
             CreateMap<DepartmentDTO, Department>();
 
 

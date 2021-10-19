@@ -9,6 +9,7 @@ namespace Contracts
     {
         IEnumerable<Employee> GetAllEmployees();
         Employee GetEmployeeById(Guid id);
+        IEnumerable<Employee> GetEmployeeByDepartment(Guid depId);
         void CreateEmployee(Employee employee);
         void ImportEmployee(List<Humre> humres);
         void UpdateEmployee(Employee employee);
