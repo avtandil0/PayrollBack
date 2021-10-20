@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Entities.HelperModels;
 using Entities.Models;
 using PayrollServer.Models.Filter;
 using System;
@@ -26,7 +27,7 @@ namespace Repository
         {
             var query = repository.Humres.Where(r => r.ResId > 0);
 
-            if(humre.ResId != null)
+            if (humre.ResId != null)
             {
                 query = query.Where(r => r.ResId == humre.ResId);
             }
@@ -44,9 +45,22 @@ namespace Repository
             return query;
         }
 
-        public IEnumerable<Humre> GetHumresByIds(List<int> ids)
+        public IEnumerable<HumreHelper> GetHumresByIds(List<int> ids)
         {
-            return repository.Humres.Where(r => ids.Contains(r.Id));
+            var res = from h in repository.Humres
+                      join j in repository.Hrjbtls on h.JobTitle equals j.JobTitle
+                      where ids.Contains(h.Id)
+                      select new HumreHelper
+                      {
+                          FirstName = h.FirstName,
+                          SurName = h.SurName,
+                          Adres1 = h.Adres1,
+                          LandIso = h.LandIso,
+                          Position = j.Descr50,
+                          TelnrPrv = h.TelnrPrv,
+                          ResId = h.ResId,
+                      };
+            return res;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using Entities.HelperModels;
+using Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Contracts
         Employee GetEmployeeById(Guid id);
         IEnumerable<Employee> GetEmployeeByDepartment(Guid depId);
         void CreateEmployee(Employee employee);
-        void ImportEmployee(List<Humre> humres);
+        void ImportEmployee(List<HumreHelper> humres);
         void UpdateEmployee(Employee employee);
         void DeleteEmployee(Employee employee);
     }

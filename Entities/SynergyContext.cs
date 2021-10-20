@@ -18,6 +18,7 @@ namespace Entities
         {
         }
 
+        public virtual DbSet<Hrjbtl> Hrjbtls { get; set; }
         public virtual DbSet<Humre> Humres { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,6 +33,118 @@ namespace Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<Hrjbtl>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .IsClustered(false);
+
+                entity.ToTable("hrjbtl");
+
+                entity.HasIndex(e => e.JobTitle, "hrjbtl")
+                    .IsUnique()
+                    .IsClustered();
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BeroepCd)
+                    .HasMaxLength(4)
+                    .HasColumnName("beroep_cd")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.CodeFnc)
+                    .HasMaxLength(12)
+                    .HasColumnName("code_fnc");
+
+                entity.Property(e => e.DelDocName)
+                    .HasMaxLength(128)
+                    .HasColumnName("del_doc_name");
+
+                entity.Property(e => e.DelDocPath)
+                    .HasMaxLength(128)
+                    .HasColumnName("del_doc_path");
+
+                entity.Property(e => e.Descr50)
+                    .HasMaxLength(50)
+                    .HasColumnName("descr50");
+
+                entity.Property(e => e.DocId).HasColumnName("DocID");
+
+                entity.Property(e => e.Exttar).HasColumnName("exttar");
+
+                entity.Property(e => e.Inttar).HasColumnName("inttar");
+
+                entity.Property(e => e.JobGrp)
+                    .HasMaxLength(10)
+                    .HasColumnName("job_grp")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.JobLevel).HasColumnName("job_level");
+
+                entity.Property(e => e.JobTitle)
+                    .IsRequired()
+                    .HasMaxLength(12)
+                    .HasColumnName("job_title");
+
+                entity.Property(e => e.Kmrateint).HasColumnName("kmrateint");
+
+                entity.Property(e => e.Notes).HasColumnName("notes");
+
+                entity.Property(e => e.Prodpct).HasColumnName("prodpct");
+
+                entity.Property(e => e.Productiv).HasColumnName("productiv");
+
+                entity.Property(e => e.RoleId).HasColumnName("RoleID");
+
+                entity.Property(e => e.Schaalcode)
+                    .HasMaxLength(2)
+                    .HasColumnName("schaalcode")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Schaalsrt)
+                    .HasMaxLength(2)
+                    .HasColumnName("schaalsrt")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Syscreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("syscreated")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Syscreator).HasColumnName("syscreator");
+
+                entity.Property(e => e.Sysguid)
+                    .HasColumnName("sysguid")
+                    .HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Sysmodified)
+                    .HasColumnType("datetime")
+                    .HasColumnName("sysmodified")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Sysmodifier).HasColumnName("sysmodifier");
+
+                entity.Property(e => e.Timestamp)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken()
+                    .HasColumnName("timestamp");
+
+                entity.Property(e => e.VertGrp)
+                    .HasMaxLength(10)
+                    .HasColumnName("vert_grp")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.WkcpRisk)
+                    .HasMaxLength(4)
+                    .HasColumnName("wkcp_risk")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Xdefratelv)
+                    .HasMaxLength(1)
+                    .HasColumnName("xdefratelv")
+                    .IsFixedLength(true);
+            });
 
             modelBuilder.Entity<Humre>(entity =>
             {

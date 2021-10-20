@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Entities.HelperModels;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -92,13 +93,14 @@ namespace Repository
             return emps;
         }
 
-        public void ImportEmployee(List<Humre> humres)
+        public void ImportEmployee(List<HumreHelper> humres)
         {
             foreach (var item in humres)
             {
                 var exists = this.RepositoryContext.Employees.Where(r => r.ResId == item.ResId).FirstOrDefault();
                 if (exists == null)
                 {
+
                     var employee = new Employee
                     {
                         Id = Guid.NewGuid(),
@@ -111,7 +113,8 @@ namespace Repository
                         PersonalNumber = item.SocsecNr,
                         MobilePhone = item.TelnrPrv,
                         DateCreated = DateTime.Now,
-                        LandIso = item.LandIso
+                        LandIso = item.LandIso,
+                        Position =item.Position
                     };
 
                     Create(employee);
