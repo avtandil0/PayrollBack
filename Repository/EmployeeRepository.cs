@@ -141,6 +141,9 @@ namespace Repository
             emp.Position = employee.Position;
             emp.LandIso = employee.LandIso;
             emp.EmployeeTypeId = employee.EmployeeTypeId;
+            emp.SchemeTypeId = employee.SchemeTypeId;
+            emp.EmployeeGraceTypeId = employee.EmployeeGraceTypeId;
+            emp.GraceAmount = employee.GraceAmount;
 
             foreach (var item in employee.EmployeeComponents)
             {
