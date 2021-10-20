@@ -220,3 +220,22 @@ GO
 
 ALTER TABLE employee
 ADD EmployeeTypeId int FOREIGN KEY  REFERENCES employeeType(ID)
+
+
+CREATE TABLE EmployeeGraceType (
+	Id int PRIMARY KEY ,
+	Name nvarchar(255) not null,
+	DateCreated datetime not null,
+    DateChange datetime,
+    DateDeleted datetime,
+);
+
+
+ALTER TABLE employee
+ADD EmployeeGraceTypeId int FOREIGN KEY  REFERENCES EmployeeGraceType(ID)
+
+ALTER TABLE EmployeeGraceType
+ADD Amount [decimal](18, 0) 
+
+ALTER TABLE employee
+ADD GraceAmount [decimal](18, 0) 

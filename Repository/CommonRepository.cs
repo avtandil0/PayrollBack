@@ -36,5 +36,10 @@ namespace Repository
         {
             return repository.EmployeeTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
         }
+
+        public IEnumerable<EmployeeGraceType> GetEmployeeGraceTypes()
+        {
+            return repository.EmployeeGraceTypes.Where(r => r.DateDeleted == null).OrderByDescending(r => r.DateCreated);
+        }
     }
 }

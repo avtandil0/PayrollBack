@@ -71,6 +71,14 @@ namespace PayrollServer.Controllers
             return employeeTypes;
         }
 
+        [HttpGet]
+        [Route("EmployeeGraceTypes")]
+        public IEnumerable<EmployeeGraceType> GetEmployeeGraceTypes()
+        {
+            var types = _repository.Common.GetEmployeeGraceTypes();
+
+            return types;
+        }
 
     }
 }
