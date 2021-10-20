@@ -20,7 +20,7 @@ namespace Repository
             //return FindByCondition(r => r.DateDeleted == null)
             //    .OrderByDescending(ow => ow.DateCreated);
 
-            return GetAllIncluded(r => r.Employees)
+            return GetAllIncluded(r => r.Employees.Where(r => r.DateDeleted == null))
                    .Where(r => r.DateDeleted == null)
                .OrderByDescending(r => r.DateCreated);
         }

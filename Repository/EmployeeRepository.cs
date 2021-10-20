@@ -72,7 +72,7 @@ namespace Repository
 
         public IEnumerable<Employee> GetEmployeeByDepartment(Guid depId)
         {
-            return RepositoryContext.Employees.Where(r => r.DepartmentId == depId);
+            return RepositoryContext.Employees.Where(r => r.DepartmentId == depId && r.DateDeleted == null);
         }
 
         public Employee GetEmployeeById(Guid id)
