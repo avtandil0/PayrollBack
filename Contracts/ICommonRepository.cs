@@ -11,5 +11,6 @@ namespace Contracts
         IEnumerable<SchemeType> GetSchemeTypes();
         IEnumerable<PaymentDaysType> GetPaymentDaysTypes();
         IEnumerable<EmployeeType> GetEmployeeTypes();
+        IEnumerable<EmployeeGraceType> GetEmployeeGraceTypes();
     }
 }

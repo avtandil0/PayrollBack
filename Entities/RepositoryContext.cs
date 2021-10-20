@@ -26,6 +26,7 @@ namespace Entities
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<EmployeeComponent> EmployeeComponents { get; set; }
+        public virtual DbSet<EmployeeGraceType> EmployeeGraceTypes { get; set; }
         public virtual DbSet<EmployeeType> EmployeeTypes { get; set; }
         public virtual DbSet<PaymentDaysType> PaymentDaysTypes { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
@@ -36,7 +37,7 @@ namespace Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-BMDJPME\\SQLEXPRESS;database=Payroll;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=Payroll;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
             }
         }
 
@@ -67,7 +68,7 @@ namespace Entities
                 entity.HasOne(d => d.AccountsReportChartType)
                     .WithMany(p => p.AccountsReportCharts)
                     .HasForeignKey(d => d.AccountsReportChartTypeId)
-                    .HasConstraintName("FK__AccountsR__Accou__4CA06362");
+                    .HasConstraintName("FK__AccountsR__Accou__32AB8735");
             });
 
             modelBuilder.Entity<AccountsReportChartType>(entity =>
@@ -159,17 +160,17 @@ namespace Entities
                 entity.HasOne(d => d.Coefficient)
                     .WithMany(p => p.Components)
                     .HasForeignKey(d => d.CoefficientId)
-                    .HasConstraintName("FK__Component__Coeff__5165187F");
+                    .HasConstraintName("FK__Component__Coeff__37703C52");
 
                 entity.HasOne(d => d.CreditAccount)
                     .WithMany(p => p.ComponentCreditAccounts)
                     .HasForeignKey(d => d.CreditAccountId)
-                    .HasConstraintName("FK__Component__Credi__4F7CD00D");
+                    .HasConstraintName("FK__Component__Credi__3587F3E0");
 
                 entity.HasOne(d => d.DebitAccount)
                     .WithMany(p => p.ComponentDebitAccounts)
                     .HasForeignKey(d => d.DebitAccountId)
-                    .HasConstraintName("FK__Component__Debit__5070F446");
+                    .HasConstraintName("FK__Component__Debit__367C1819");
             });
 
             modelBuilder.Entity<CostCenter>(entity =>
@@ -234,6 +235,8 @@ namespace Entities
                     .IsRequired()
                     .HasMaxLength(255);
 
+                entity.Property(e => e.GraceAmount).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.LandIso)
                     .HasMaxLength(10)
                     .HasColumnName("land_iso");
@@ -251,18 +254,23 @@ namespace Entities
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.Employees)
                     .HasForeignKey(d => d.DepartmentId)
-                    .HasConstraintName("FK__Employee__Depart__0E6E26BF");
+                    .HasConstraintName("FK__Employee__Depart__3E1D39E1");
+
+                entity.HasOne(d => d.EmployeeGraceType)
+                    .WithMany(p => p.Employees)
+                    .HasForeignKey(d => d.EmployeeGraceTypeId)
+                    .HasConstraintName("FK__Employee__Employ__4C6B5938");
 
                 entity.HasOne(d => d.EmployeeType)
                     .WithMany(p => p.Employees)
                     .HasForeignKey(d => d.EmployeeTypeId)
-                    .HasConstraintName("FK__Employee__Employ__40F9A68C");
+                    .HasConstraintName("FK__Employee__Employ__498EEC8D");
 
                 entity.HasOne(d => d.SchemeType)
                     .WithMany(p => p.Employees)
                     .HasForeignKey(d => d.SchemeTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Employee__Scheme__0F624AF8");
+                    .HasConstraintName("FK__Employee__Scheme__3F115E1A");
             });
 
             modelBuilder.Entity<EmployeeComponent>(entity =>
@@ -290,34 +298,53 @@ namespace Entities
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.ComponentId)
-                    .HasConstraintName("FK__EmployeeC__Compo__19DFD96B");
+                    .HasConstraintName("FK__EmployeeC__Compo__41EDCAC5");
 
                 entity.HasOne(d => d.CostCenter)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.CostCenterId)
-                    .HasConstraintName("FK__EmployeeC__CostC__1AD3FDA4");
+                    .HasConstraintName("FK__EmployeeC__CostC__42E1EEFE");
 
                 entity.HasOne(d => d.Employee)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.EmployeeId)
-                    .HasConstraintName("FK__EmployeeC__Emplo__1BC821DD");
+                    .HasConstraintName("FK__EmployeeC__Emplo__43D61337");
 
                 entity.HasOne(d => d.PaymentDaysType)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.PaymentDaysTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EmployeeC__Payme__1EA48E88");
+                    .HasConstraintName("FK__EmployeeC__Payme__46B27FE2");
 
                 entity.HasOne(d => d.Project)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.ProjectId)
-                    .HasConstraintName("FK__EmployeeC__Proje__1CBC4616");
+                    .HasConstraintName("FK__EmployeeC__Proje__44CA3770");
 
                 entity.HasOne(d => d.SchemeType)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.SchemeTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__EmployeeC__Schem__1DB06A4F");
+                    .HasConstraintName("FK__EmployeeC__Schem__45BE5BA9");
+            });
+
+            modelBuilder.Entity<EmployeeGraceType>(entity =>
+            {
+                entity.ToTable("EmployeeGraceType");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(255);
             });
 
             modelBuilder.Entity<EmployeeType>(entity =>

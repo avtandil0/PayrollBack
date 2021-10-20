@@ -23,6 +23,8 @@ namespace PayrollServer.Models.DTOs
         public string Position { get; set; }
         public string LandIso { get; set; }
         public int? EmployeeTypeId { get; set; }
+        public int? EmployeeGraceTypeId { get; set; }
+        public decimal? GraceAmount { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
         public List<EmployeeComponentDTO> EmployeeComponents { get; set; }
