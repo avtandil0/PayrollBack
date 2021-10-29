@@ -220,7 +220,6 @@ namespace Entities
                 entity.Property(e => e.Address).HasMaxLength(255);
 
                 entity.Property(e => e.BankAccountNumber)
-                    .IsRequired()
                     .HasMaxLength(255);
 
                 entity.Property(e => e.DateChange).HasColumnType("datetime");

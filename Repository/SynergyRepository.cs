@@ -49,7 +49,8 @@ namespace Repository
         {
             var res = from h in repository.Humres
                       join j in repository.Hrjbtls on h.JobTitle equals j.JobTitle
-                      join b in repository.Bnkkops on h.Crdnr equals b.Crdnr
+                      join b in repository.Bnkkops on h.Crdnr equals b.Crdnr into leftbh
+                      from x in leftbh.DefaultIfEmpty()
                       where ids.Contains(h.Id)
                       select new HumreHelper
                       {
@@ -60,7 +61,7 @@ namespace Repository
                           Position = j.Descr50,
                           TelnrPrv = h.TelnrPrv,
                           ResId = h.ResId,
-                          BankAccountNumber = b.BankRek
+                          BankAccountNumber = x.BankRek
                       };
             return res;
         }
