@@ -109,7 +109,7 @@ namespace Repository
                         LastName = item.SurName,
                         Address = item.Adres1,
                         SchemeTypeId = 1,
-                        BankAccountNumber = "BankN00000000000001",
+                        BankAccountNumber = item.BankAccountNumber,
                         PersonalNumber = item.SocsecNr,
                         MobilePhone = item.TelnrPrv,
                         DateCreated = DateTime.Now,

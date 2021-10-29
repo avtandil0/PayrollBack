@@ -22,5 +22,6 @@ namespace Entities.HelperModels
         public string SocsecNr { get; set; }
         public string TelnrPrv { get; set; }
         public string Position { get; set; }
+        public string BankAccountNumber { get; set; }
     }
 }

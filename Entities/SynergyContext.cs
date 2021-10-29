@@ -18,6 +18,7 @@ namespace Entities
         {
         }
 
+        public virtual DbSet<Bnkkop> Bnkkops { get; set; }
         public virtual DbSet<Hrjbtl> Hrjbtls { get; set; }
         public virtual DbSet<Humre> Humres { get; set; }
 
@@ -26,13 +27,81 @@ namespace Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-BMDJPME\\SQLEXPRESS;database=811;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=811;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<Bnkkop>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .IsClustered(false);
+
+                entity.ToTable("bnkkop");
+
+                entity.HasIndex(e => new { e.CodeDc, e.Crdnr, e.Debnr, e.BankRek }, "bnkkdc")
+                    .IsUnique();
+
+                entity.HasIndex(e => new { e.BankRek, e.CodeDc, e.Crdnr, e.Debnr }, "bnkkop")
+                    .IsUnique()
+                    .IsClustered();
+
+                entity.HasIndex(e => e.CntId, "ix_cnt_id");
+
+                entity.HasIndex(e => e.Crdnr, "ix_crdnr");
+
+                entity.HasIndex(e => e.Debnr, "ix_debnr");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.BankRek)
+                    .HasMaxLength(34)
+                    .HasColumnName("bank_rek");
+
+                entity.Property(e => e.CntId).HasColumnName("cnt_id");
+
+                entity.Property(e => e.CodeDc)
+                    .HasMaxLength(1)
+                    .HasColumnName("code_dc")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Crdnr)
+                    .HasMaxLength(6)
+                    .HasColumnName("crdnr")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Debnr)
+                    .HasMaxLength(6)
+                    .HasColumnName("debnr")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.Syscreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("syscreated")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Syscreator).HasColumnName("syscreator");
+
+                entity.Property(e => e.Sysguid)
+                    .HasColumnName("sysguid")
+                    .HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Sysmodified)
+                    .HasColumnType("datetime")
+                    .HasColumnName("sysmodified")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Sysmodifier).HasColumnName("sysmodifier");
+
+                entity.Property(e => e.Timestamp)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken()
+                    .HasColumnName("timestamp");
+            });
 
             modelBuilder.Entity<Hrjbtl>(entity =>
             {
