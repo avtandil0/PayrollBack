@@ -9,6 +9,7 @@ namespace Entities.Models
     {
         public SchemeType()
         {
+            Calculations = new HashSet<Calculation>();
             EmployeeComponents = new HashSet<EmployeeComponent>();
             Employees = new HashSet<Employee>();
         }
@@ -19,6 +20,7 @@ namespace Entities.Models
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
 
+        public virtual ICollection<Calculation> Calculations { get; set; }
         public virtual ICollection<EmployeeComponent> EmployeeComponents { get; set; }
         public virtual ICollection<Employee> Employees { get; set; }
     }

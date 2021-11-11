@@ -16,5 +16,6 @@ namespace Contracts
         IComponentRepository Component { get; }
         IEmployeeRepository Employee { get; }
         IEmployeeComponentsRepository EmployeeComponents { get; }
+        ICalculationRepository Calculation { get; }
     }
 }

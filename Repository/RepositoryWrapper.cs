@@ -15,7 +15,21 @@ namespace Repository
         private IComponentRepository _component;
         private IEmployeeRepository _employee;
         private IEmployeeComponentsRepository _employeeComponents;
+        private ICalculationRepository _calculationRepository;
 
+
+        public ICalculationRepository Calculation
+        {
+            get
+            {
+                if (_calculationRepository == null)
+                {
+                    _calculationRepository = new CalculationRepository(_repoContext);
+                }
+
+                return _calculationRepository;
+            }
+        }
 
         public IEmployeeComponentsRepository EmployeeComponents
         {

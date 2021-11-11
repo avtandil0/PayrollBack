@@ -239,3 +239,36 @@ ADD Amount [decimal](18, 0)
 
 ALTER TABLE employee
 ADD GraceAmount [decimal](18, 0) 
+
+ALTER TABLE employee
+ADD RemainingGraceAmount [decimal](18, 0) 
+
+ALTER TABLE employee
+ADD land_iso nvarchar(10);
+
+
+CREATE TABLE Calculation(
+	Id uniqueidentifier PRIMARY KEY ,
+	EmployeeId uniqueidentifier FOREIGN KEY  REFERENCES Employee(ID),
+	EmployeeComponentId uniqueidentifier FOREIGN KEY  REFERENCES EmployeeComponents(ID),
+	[Res_id] [int] ,
+	[PayrollYear] [int] ,
+	[PayrollMonth] [int],
+	[CalculationDate] [datetime] ,
+	SchemeTypeId int FOREIGN KEY  REFERENCES SchemeType(ID),
+	Gross [decimal](18, 0) NOT NULL,
+	Net [decimal](18, 0) NOT NULL,
+	Paid [float] NOT NULL,
+	IncomeTax [decimal](18, 0) NOT NULL,
+	PensionTax [float] NOT NULL,
+	Tax1 [float] NOT NULL,
+	Tax2 [float] NOT NULL,
+)
+
+
+
+select * from SchemeType
+
+
+
+select GETDATE()

@@ -52,6 +52,15 @@ namespace PayrollServer.Profiles
 
             CreateMap<Humre, HumreDTO>();
             CreateMap<HumreDTO, Humre>();
+
+            CreateMap<Calculation, CalculationDTO>()
+                .ForMember(dest => dest.FirstName, act => act.MapFrom(src => src.Employee.FirstName))
+                .ForMember(dest => dest.LastName, act => act.MapFrom(src => src.Employee.LastName))
+                .ForMember(dest => dest.Gross, act => act.MapFrom(src => src.Gross))
+                .ForMember(dest => dest.Income, act => act.MapFrom(src => src.IncomeTax))
+                .ForMember(dest => dest.Pension, act => act.MapFrom(src => src.PensionTax))
+                .ForMember(dest => dest.Paid, act => act.MapFrom(src => src.Paid));
+            CreateMap<CalculationDTO, Calculation>();
         }
     }
 }

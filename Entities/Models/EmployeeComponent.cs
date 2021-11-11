@@ -7,6 +7,11 @@ namespace Entities.Models
 {
     public partial class EmployeeComponent
     {
+        public EmployeeComponent()
+        {
+            Calculations = new HashSet<Calculation>();
+        }
+
         public Guid Id { get; set; }
         public Guid? EmployeeId { get; set; }
         public Guid? ComponentId { get; set; }
@@ -29,7 +34,14 @@ namespace Entities.Models
         public virtual CostCenter CostCenter { get; set; }
         public virtual Employee Employee { get; set; }
         public virtual PaymentDaysType PaymentDaysType { get; set; }
+
+        public object Where(Func<object, bool> p)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual Project Project { get; set; }
         public virtual SchemeType SchemeType { get; set; }
+        public virtual ICollection<Calculation> Calculations { get; set; }
     }
 }

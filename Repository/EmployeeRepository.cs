@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities;
+using Entities.FilterModels;
 using Entities.HelperModels;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,27 @@ namespace Repository
             return GetAllIncluded(r => r.Department)
                     .Where(r => r.DateDeleted == null)
                 .OrderByDescending(r => r.DateCreated);
+        }
+
+        public IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter)
+        {
+            var query = RepositoryContext.Employees
+                   .Include(o => o.Calculations.Where(r => r.PayrollYear == calculationFilter.CalculationPeriod.Value.Year
+                                                        && r.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month))
+                   .Where(r => r.DateDeleted == null);
+
+
+            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            {
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
+            }
+
+            if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            {
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+            }
+
+            return query.OrderByDescending(r => r.DateCreated);
         }
 
         public IEnumerable<Employee> GetEmployeeByDepartment(Guid depId)

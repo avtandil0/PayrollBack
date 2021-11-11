@@ -9,6 +9,7 @@ namespace Entities.Models
     {
         public Employee()
         {
+            Calculations = new HashSet<Calculation>();
             EmployeeComponents = new HashSet<EmployeeComponent>();
         }
 
@@ -30,12 +31,14 @@ namespace Entities.Models
         public string LandIso { get; set; }
         public int? EmployeeTypeId { get; set; }
         public int? EmployeeGraceTypeId { get; set; }
+        public decimal? RemainingGraceAmount { get; set; }
         public decimal? GraceAmount { get; set; }
 
         public virtual Department Department { get; set; }
         public virtual EmployeeGraceType EmployeeGraceType { get; set; }
         public virtual EmployeeType EmployeeType { get; set; }
         public virtual SchemeType SchemeType { get; set; }
+        public virtual ICollection<Calculation> Calculations { get; set; }
         public virtual ICollection<EmployeeComponent> EmployeeComponents { get; set; }
     }
 }

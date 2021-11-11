@@ -20,6 +20,7 @@ namespace Entities
 
         public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }
         public virtual DbSet<AccountsReportChartType> AccountsReportChartTypes { get; set; }
+        public virtual DbSet<Calculation> Calculations { get; set; }
         public virtual DbSet<Coefficient> Coefficients { get; set; }
         public virtual DbSet<Component> Components { get; set; }
         public virtual DbSet<CostCenter> CostCenters { get; set; }
@@ -86,6 +87,44 @@ namespace Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<Calculation>(entity =>
+            {
+                entity.ToTable("Calculation");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.CalculationDate).HasColumnType("datetime");
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.Gross).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.IncomeTax).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.Net).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.ResId).HasColumnName("Res_id");
+
+                entity.HasOne(d => d.EmployeeComponent)
+                    .WithMany(p => p.Calculations)
+                    .HasForeignKey(d => d.EmployeeComponentId)
+                    .HasConstraintName("FK__Calculati__Emplo__55009F39");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Calculations)
+                    .HasForeignKey(d => d.EmployeeId)
+                    .HasConstraintName("FK__Calculati__Emplo__540C7B00");
+
+                entity.HasOne(d => d.SchemeType)
+                    .WithMany(p => p.Calculations)
+                    .HasForeignKey(d => d.SchemeTypeId)
+                    .HasConstraintName("FK__Calculati__Schem__55F4C372");
             });
 
             modelBuilder.Entity<Coefficient>(entity =>
@@ -220,6 +259,7 @@ namespace Entities
                 entity.Property(e => e.Address).HasMaxLength(255);
 
                 entity.Property(e => e.BankAccountNumber)
+                    .IsRequired()
                     .HasMaxLength(255);
 
                 entity.Property(e => e.DateChange).HasColumnType("datetime");
@@ -249,6 +289,8 @@ namespace Entities
                 entity.Property(e => e.PersonalNumber).HasMaxLength(255);
 
                 entity.Property(e => e.Position).HasMaxLength(100);
+
+                entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.Employees)
