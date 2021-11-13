@@ -72,13 +72,65 @@ namespace Repository
                 .OrderByDescending(r => r.DateCreated);
         }
 
-        public IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter)
+        public IQueryable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter)
         {
-            var query = RepositoryContext.Employees
-                   .Include(o => o.Calculations.Where(r => r.PayrollYear == calculationFilter.CalculationPeriod.Value.Year
-                                                        && r.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month))
-                   .Where(r => r.DateDeleted == null);
+            //var query = RepositoryContext.Employees
+            //       .Include(o => o.Calculations.Where(r => r.PayrollYear == calculationFilter.CalculationPeriod.Value.Year
+            //                                            && r.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month))
+            //       .Where(r => r.DateDeleted == null)
+            //       .Select(emp => new EmployeeCalculationHelper
+            //       {
+            //          Id = emp.Id,
+            //          FirstName = emp.FirstName,
+            //          LastName = emp.LastName,
+            //          CalculationPeriod = emp.,
+            //       });
 
+            //var query = from emp in RepositoryContext.Employees
+            //            join empCalc in RepositoryContext.Calculations
+            //                on emp.Id equals empCalc.EmployeeId into grouping
+            //            from c in grouping.DefaultIfEmpty()
+            //             select new EmployeeCalculationHelper
+            //             {
+            //                 Id = emp.Id,
+            //                 FirstName = emp.FirstName,
+            //                 LastName = emp.LastName,
+            //                 PayrollMonth = c.PayrollMonth.Value,
+            //                 PayrollYear = c.PayrollYear.Value,
+            //                 CalculationDate = c.CalculationDate.Value,
+            //                 Gross = c.Gross,
+            //                 Income = c.IncomeTax,
+            //                 Pension = c.PensionTax,
+            //                 ToBePaid = c.Paid,
+            //                 Paid = c.Paid,
+            //                 DateChange = c.DateChange.Value,
+            //                 //DateCreated = empCalc.DateCreated,
+            //                 DateDeleted = c.DateDeleted.Value,
+            //             };
+
+
+            //var query = from emp in RepositoryContext.Employees
+            //            from empCalc in emp.Calculations.DefaultIfEmpty()
+            //           select new EmployeeCalculationHelper
+            //           {
+            //               Id = emp.Id,
+            //               FirstName = emp.FirstName,
+            //               LastName = emp.LastName,
+            //               PayrollMonth = empCalc.PayrollMonth.Value,
+            //               PayrollYear = empCalc.PayrollYear.Value,
+            //               CalculationDate = empCalc.CalculationDate.Value,
+            //               Gross = empCalc.Gross,
+            //               Income = empCalc.IncomeTax,
+            //               Pension = empCalc.PensionTax,
+            //               ToBePaid = empCalc.Paid,
+            //               Paid = empCalc.Paid,
+            //               DateChange = empCalc.DateChange.Value,
+            //               //DateCreated = empCalc.DateCreated,
+            //               DateDeleted = empCalc.DateDeleted.Value,
+            //           };
+
+
+            var query = RepositoryContext.Employees.Where(r => r.DateDeleted == null); 
 
             if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {
@@ -88,6 +140,13 @@ namespace Repository
             if (!string.IsNullOrEmpty(calculationFilter.LastName))
             {
                 query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+            }
+
+            if (calculationFilter.CalculationPeriod != null)
+            {
+                query = query.Where(r => r.Calculations
+                            .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                                && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
             }
 
             return query.OrderByDescending(r => r.DateCreated);

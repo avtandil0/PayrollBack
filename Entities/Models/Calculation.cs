@@ -17,9 +17,9 @@ namespace Entities.Models
         public int? SchemeTypeId { get; set; }
         public decimal Gross { get; set; }
         public decimal Net { get; set; }
-        public double Paid { get; set; }
+        public decimal Paid { get; set; }
         public decimal IncomeTax { get; set; }
-        public double PensionTax { get; set; }
+        public decimal PensionTax { get; set; }
         public double Tax1 { get; set; }
         public double Tax2 { get; set; }
         public DateTime DateCreated { get; set; }

@@ -3,6 +3,7 @@ using Entities.HelperModels;
 using Entities.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Contracts
@@ -12,7 +13,7 @@ namespace Contracts
         IEnumerable<Employee> GetAllEmployees();
         Employee GetEmployeeById(Guid id);
         IEnumerable<Employee> GetEmployeeByDepartment(Guid depId);
-        IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter);
+        IQueryable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter);
         void CreateEmployee(Employee employee);
         void ImportEmployee(List<HumreHelper> humres);
         void UpdateEmployee(Employee employee);

@@ -14,6 +14,7 @@ namespace Entities.Models
         }
 
         public Guid Id { get; set; }
+        public int? ResId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }
@@ -23,16 +24,15 @@ namespace Entities.Models
         public string BankAccountNumber { get; set; }
         public int SchemeTypeId { get; set; }
         public Guid? DepartmentId { get; set; }
+        public string Position { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
-        public int? ResId { get; set; }
-        public string Position { get; set; }
         public string LandIso { get; set; }
         public int? EmployeeTypeId { get; set; }
         public int? EmployeeGraceTypeId { get; set; }
-        public decimal? RemainingGraceAmount { get; set; }
         public decimal? GraceAmount { get; set; }
+        public decimal? RemainingGraceAmount { get; set; }
 
         public virtual Department Department { get; set; }
         public virtual EmployeeGraceType EmployeeGraceType { get; set; }

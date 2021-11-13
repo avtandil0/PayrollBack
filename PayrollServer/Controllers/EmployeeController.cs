@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.FilterModels;
+using Entities.HelperModels;
 using Entities.Models;
 using Microsoft.AspNetCore.Mvc;
 using PayrollServer.Models;
@@ -43,13 +44,13 @@ namespace PayrollServer.Controllers
 
         [HttpGet]
         [Route("GetEmployeeByCalculationFilter")]
-        public IEnumerable<CalculationDTO> GetEmployeeByCalculationFilter([FromQuery] CalculationFilter calculationFilter)
+        public IEnumerable<EmployeeCalculationHelper> GetEmployeeByCalculationFilter([FromQuery] CalculationFilter calculationFilter)
         {
             var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
 
-            IEnumerable<CalculationDTO> calculationDTOs = _mapper.Map<IEnumerable<CalculationDTO>>(employees);
+            IEnumerable<EmployeeCalculationHelper> calculationDTOs = _mapper.Map<IEnumerable<EmployeeCalculationHelper>>(employees);
 
-            return calculationDTOs;
+            return employees;
         }
 
         [HttpGet]

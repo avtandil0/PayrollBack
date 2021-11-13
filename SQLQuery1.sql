@@ -258,11 +258,15 @@ CREATE TABLE Calculation(
 	SchemeTypeId int FOREIGN KEY  REFERENCES SchemeType(ID),
 	Gross [decimal](18, 0) NOT NULL,
 	Net [decimal](18, 0) NOT NULL,
-	Paid [float] NOT NULL,
+	Paid [decimal](18, 0) NOT NULL,
 	IncomeTax [decimal](18, 0) NOT NULL,
-	PensionTax [float] NOT NULL,
+	PensionTax [decimal](18, 0) NOT NULL,
 	Tax1 [float] NOT NULL,
 	Tax2 [float] NOT NULL,
+
+	[DateCreated] [datetime] NOT NULL,
+	[DateChange] [datetime] NULL,
+	[DateDeleted] [datetime] NULL,
 )
 
 
