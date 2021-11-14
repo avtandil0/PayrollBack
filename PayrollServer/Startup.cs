@@ -32,15 +32,23 @@ namespace PayrollServer
 
             services.ConfigureMySqlContext(Configuration);
 
-            services.ConfigureRepositoryWrapper(); 
+            services.ConfigureRepositoryWrapper();
 
-            services.ConfigureSynergyContext(); 
+            services.ConfigureSynergyContext();
 
             services.ConfigureSwagger();
 
             services.ConfigureAutoMapper();
 
             services.AddMvc();
+
+            services.AddMvc().AddJsonOptions(
+              options =>
+              {
+                  options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+              });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

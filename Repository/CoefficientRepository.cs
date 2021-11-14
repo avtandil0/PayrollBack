@@ -54,8 +54,6 @@ namespace Repository
             coef.Ptax1 = coefficient.Ptax1;
             coef.Ptax2 = coefficient.Ptax2;
 
-            coef.Sgross = coefficient.Sgross;
-            coef.Sgross = coefficient.Sgross;
 
             Update(coef);
             Save();

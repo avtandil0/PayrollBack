@@ -14,6 +14,7 @@ namespace PayrollServer.Models.DTOs
         public int? PayrollYear { get; set; }
         public int? PayrollMonth { get; set; }
         public DateTime? CalculationDate { get; set; }
+        public DateTime? CalculationPeriod { get; set; }
         public decimal? Gross { get; set; }
         public decimal? Amount { get; set; }
         public decimal? Income { get; set; }

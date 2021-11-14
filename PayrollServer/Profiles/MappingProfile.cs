@@ -61,6 +61,11 @@ namespace PayrollServer.Profiles
                 .ForMember(dest => dest.Pension, act => act.MapFrom(src => src.PensionTax))
                 .ForMember(dest => dest.Paid, act => act.MapFrom(src => src.Paid));
             CreateMap<CalculationDTO, Calculation>();
+
+            //CreateMap<Employee, EmployeeCalculationDTO>()
+            //    .ForMember(dest => dest.PayrollYear, act => act.MapFrom(src => src.Calculations.Where(r => r.PayrollYear).FirstName))
+                
+            //CreateMap<CalculationDTO, Calculation>();
         }
     }
 }

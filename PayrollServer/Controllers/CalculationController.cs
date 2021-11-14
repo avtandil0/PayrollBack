@@ -3,6 +3,7 @@ using Contracts;
 using Entities.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PayrollServer.Models;
 using PayrollServer.Models.DTOs;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,19 @@ namespace PayrollServer.Controllers
             IEnumerable<CalculationDTO> calculationDTOs = _mapper.Map<IEnumerable<CalculationDTO>>(calculations);
 
             return calculationDTOs;
+        }
+
+        [HttpPost]
+        [Route("calculate/{calculationDate}")]
+        public Result CreateEmployee([FromBody] CalculationFilter calculationFilter, DateTime calculationDate)
+        {
+
+            _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
+
+            _logger.LogInfo($"Created new Employee.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
         }
 
     }

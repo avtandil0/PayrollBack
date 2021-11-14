@@ -34,6 +34,7 @@ namespace Repository
 
             employee.Id = Guid.NewGuid();
             employee.DateCreated = DateTime.Now;
+            employee.RemainingGraceAmount = employee.GraceAmount;
             //employee.ResId = newResId;
 
             foreach (var item in employee.EmployeeComponents)
@@ -130,7 +131,7 @@ namespace Repository
             //           };
 
 
-            var query = RepositoryContext.Employees.Where(r => r.DateDeleted == null); 
+            var query = RepositoryContext.Employees.Include(r => r.Calculations).Where(r => r.DateDeleted == null); 
 
             if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {

@@ -10,7 +10,7 @@ namespace Contracts
     {
         IEnumerable<Calculation> GetAllCalculation();
         IEnumerable<Calculation> GetCalculationByFilter(CalculationFilter calculationFilter);
-        void CreateCalculation(Calculation calculation);
+        void CreateCalculation(CalculationFilter calculation, DateTime calculationDate);
         void UpdateCalculation(Calculation calculation);
         void DeleteCalculation(Calculation calculation);
     }
