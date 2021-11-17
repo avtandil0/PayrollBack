@@ -13,7 +13,7 @@ namespace Contracts
         IEnumerable<Employee> GetAllEmployees();
         Employee GetEmployeeById(Guid id);
         IEnumerable<Employee> GetEmployeeByDepartment(Guid depId);
-        IQueryable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter);
+        IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter);
         void CreateEmployee(Employee employee);
         void ImportEmployee(List<HumreHelper> humres);
         void UpdateEmployee(Employee employee);

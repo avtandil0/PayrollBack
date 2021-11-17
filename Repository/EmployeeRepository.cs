@@ -73,7 +73,7 @@ namespace Repository
                 .OrderByDescending(r => r.DateCreated);
         }
 
-        public IQueryable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter)
+        public IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter)
         {
             //var query = RepositoryContext.Employees
             //       .Include(o => o.Calculations.Where(r => r.PayrollYear == calculationFilter.CalculationPeriod.Value.Year
@@ -131,23 +131,31 @@ namespace Repository
             //           };
 
 
-            var query = RepositoryContext.Employees.Include(r => r.Calculations).Where(r => r.DateDeleted == null); 
+            var query = RepositoryContext.Employees.Include(r => r.Calculations).Where(r => r.DateDeleted == null).ToList(); 
 
             if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName)).ToList() ;
             }
 
             if (!string.IsNullOrEmpty(calculationFilter.LastName))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName)).ToList();
             }
 
             if (calculationFilter.CalculationPeriod != null)
             {
-                query = query.Where(r => r.Calculations
-                            .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
-                                && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+                //query = query.Where(r => r.Calculations
+                //            .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                //                && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+
+                query = query.Select(r => new Employee
+                {
+                    FirstName = r.FirstName,
+                    LastName = r.LastName,
+                    Calculations = r.Calculations.Where(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                     && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year).ToList()
+                }).ToList();
             }
 
             return query.OrderByDescending(r => r.DateCreated);

@@ -42,11 +42,9 @@ namespace PayrollServer
 
             services.AddMvc();
 
-            services.AddMvc().AddJsonOptions(
-              options =>
-              {
-                  options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-              });
+            services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 
         }
