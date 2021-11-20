@@ -22,10 +22,7 @@ namespace Repository
 
         public void CreateCalculation(CalculationFilter calculationFilter, DateTime calculationDate)
         {
-            Calculation calculation = new Calculation();
-            calculation.Id = Guid.NewGuid();
-            calculation.CalculationDate = calculationDate;
-            calculation.DateCreated = DateTime.Now;
+            
 
             var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents).Where(r => r.DateDeleted == null);
 
@@ -45,6 +42,11 @@ namespace Repository
                 {
                     var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId).FirstOrDefault();
                     var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == component.CoefficientId).FirstOrDefault();
+
+                    Calculation calculation = new Calculation();
+                    calculation.Id = Guid.NewGuid();
+                    calculation.CalculationDate = calculationDate;
+                    calculation.DateCreated = DateTime.Now;
 
                     calculation.EmployeeId = emp.Id;
                     calculation.EmployeeComponentId = empComp.Id;
@@ -70,11 +72,13 @@ namespace Repository
                         calculation.IncomeTax = empComp.Amount * (decimal)coefficient.PincomeTax;
                         calculation.PensionTax = empComp.Amount * (decimal)coefficient.Ppension;
                     }
+
+                    Create(calculation);
                 }
             }
 
 
-            Create(calculation);
+            
             Save();
         }
 
