@@ -22,9 +22,9 @@ namespace Repository
 
         public void CreateCalculation(CalculationFilter calculationFilter, DateTime calculationDate)
         {
-            
 
-            var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents).Where(r => r.DateDeleted == null);
+
+            var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null)).Where(r => r.DateDeleted == null);
 
             if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {
@@ -40,8 +40,8 @@ namespace Repository
             {
                 foreach (var empComp in emp.EmployeeComponents)
                 {
-                    var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId).FirstOrDefault();
-                    var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == component.CoefficientId).FirstOrDefault();
+                    var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId && r.DateDeleted == null).FirstOrDefault();
+                    var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == component.CoefficientId && r.DateDeleted == null).FirstOrDefault();
 
                     Calculation calculation = new Calculation();
                     calculation.Id = Guid.NewGuid();
@@ -55,22 +55,40 @@ namespace Repository
                     calculation.SchemeTypeId = empComp.SchemeTypeId;
 
 
-                    if (empComp.SchemeTypeId == (int)SchemeTypeEnum.Standart)
+                    if (emp.SchemeTypeId == (int)SchemeTypeEnum.Standart)
                     {
                         calculation.Gross = empComp.Amount * (decimal)coefficient.Sgross;
                         calculation.Net = empComp.Amount * (decimal)coefficient.Snet;
                         calculation.Paid = empComp.Amount * (decimal)coefficient.Spaid;
-                        calculation.IncomeTax = empComp.Amount * (decimal)coefficient.SincomeTax;
                         calculation.PensionTax = empComp.Amount * (decimal)coefficient.Spension;
+                        calculation.IncomeTax = empComp.Amount * (decimal)coefficient.SincomeTax;
                     }
 
-                    if (empComp.SchemeTypeId == (int)SchemeTypeEnum.Pension)
+                    if (emp.SchemeTypeId == (int)SchemeTypeEnum.Pension)
                     {
                         calculation.Gross = empComp.Amount * (decimal)coefficient.Pgross;
                         calculation.Net = empComp.Amount * (decimal)coefficient.Pnet;
                         calculation.Paid = empComp.Amount * (decimal)coefficient.Ppaid;
-                        calculation.IncomeTax = empComp.Amount * (decimal)coefficient.PincomeTax;
                         calculation.PensionTax = empComp.Amount * (decimal)coefficient.Ppension;
+                        calculation.IncomeTax = empComp.Amount * (decimal)coefficient.PincomeTax;
+                    }
+
+                    if (emp.RemainingGraceAmount > 0)
+                    {
+                        var rem = emp.RemainingGraceAmount - (calculation.Gross - calculation.PensionTax);
+                        if (rem > 0)
+                        {
+                            emp.RemainingGraceAmount = rem;
+                            calculation.IncomeTax = 0;
+                            calculation.Net = calculation.Gross - calculation.PensionTax;
+                        }
+                        else
+                        {
+                            calculation.IncomeTax = (decimal)((calculation.Gross - calculation.PensionTax - emp.RemainingGraceAmount) / 5);
+                            calculation.Net = calculation.Gross - calculation.PensionTax - calculation.IncomeTax;
+                            emp.RemainingGraceAmount = 0;
+                        }
+
                     }
 
                     Create(calculation);
@@ -78,7 +96,7 @@ namespace Repository
             }
 
 
-            
+
             Save();
         }
 
