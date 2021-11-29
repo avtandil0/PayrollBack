@@ -53,7 +53,7 @@ namespace Repository
                     calculation.PayrollYear = calculationDate.Year;
                     calculation.PayrollMonth = calculationDate.Month;
                     calculation.SchemeTypeId = empComp.SchemeTypeId;
-
+                    calculation.RemainingGraceAmount = 0;
 
                     if (emp.SchemeTypeId == (int)SchemeTypeEnum.Standart)
                     {
@@ -79,6 +79,7 @@ namespace Repository
                         if (rem > 0)
                         {
                             emp.RemainingGraceAmount = rem;
+                            calculation.RemainingGraceAmount = rem;
                             calculation.IncomeTax = 0;
                             calculation.Net = calculation.Gross - calculation.PensionTax;
                         }
@@ -87,6 +88,7 @@ namespace Repository
                             calculation.IncomeTax = (decimal)((calculation.Gross - calculation.PensionTax - emp.RemainingGraceAmount) / 5);
                             calculation.Net = calculation.Gross - calculation.PensionTax - calculation.IncomeTax;
                             emp.RemainingGraceAmount = 0;
+                            calculation.RemainingGraceAmount = 0;
                         }
 
                     }

@@ -113,6 +113,8 @@ namespace Entities
 
                 entity.Property(e => e.PensionTax).HasColumnType("decimal(18, 0)");
 
+                entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 0)");
+
                 entity.Property(e => e.ResId).HasColumnName("Res_id");
 
                 entity.HasOne(d => d.EmployeeComponent)
