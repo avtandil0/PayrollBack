@@ -243,8 +243,6 @@ ADD GraceAmount [decimal](18, 0)
 ALTER TABLE employee
 ADD RemainingGraceAmount [decimal](18, 0) 
 
-ALTER TABLE employee
-ADD land_iso nvarchar(10);
 
 
 CREATE TABLE Calculation(
@@ -269,6 +267,8 @@ CREATE TABLE Calculation(
 	[DateDeleted] [datetime] NULL,
 )
 
+ALTER TABLE Calculation
+ADD RemainingGraceAmount [decimal](18, 0) 
 
 
 select * from SchemeType
