@@ -179,6 +179,11 @@ namespace Repository
                     .Include(o => o.Department)
                     .Include(o => o.SchemeType)
                     .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                        .ThenInclude(x => x.Component)
+                     .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                        .ThenInclude(x => x.CostCenter)
+                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                        .ThenInclude(x => x.Project)
                     .Where(r => r.DateDeleted == null && r.Id == id)
                     .OrderByDescending(r => r.DateCreated).FirstOrDefault();
 

@@ -28,16 +28,16 @@ namespace PayrollServer.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        [Route("GetCalculationByFilter")]
-        public IEnumerable<CalculationDTO> GetCalculationByFilter([FromQuery]CalculationFilter calculationFilter)
-        {
-            var calculations = _repository.Calculation.GetCalculationByFilter(calculationFilter);
+        //[HttpGet]
+        //[Route("GetCalculationByFilter")]
+        //public IEnumerable<CalculationDTO> GetCalculationByFilter([FromQuery]CalculationFilter calculationFilter)
+        //{
+        //    var calculations = _repository.Calculation.GetCalculationByFilter(calculationFilter);
 
-            IEnumerable<CalculationDTO> calculationDTOs = _mapper.Map<IEnumerable<CalculationDTO>>(calculations);
+        //    IEnumerable<CalculationDTO> calculationDTOs = _mapper.Map<IEnumerable<CalculationDTO>>(calculations);
 
-            return calculationDTOs;
-        }
+        //    return calculationDTOs;
+        //}
 
         [HttpPost]
         [Route("calculate/{calculationDate}")]

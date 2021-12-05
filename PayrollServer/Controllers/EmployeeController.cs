@@ -44,13 +44,13 @@ namespace PayrollServer.Controllers
 
         [HttpGet]
         [Route("GetEmployeeByCalculationFilter")]
-        public IEnumerable<Employee> GetEmployeeByCalculationFilter([FromQuery] CalculationFilter calculationFilter)
+        public IEnumerable<EmployeeDTO> GetEmployeeByCalculationFilter([FromQuery] CalculationFilter calculationFilter)
         {
             var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
 
-            //IEnumerable<EmployeeCalculationDTO> calculationDTOs = _mapper.Map<IEnumerable<EmployeeCalculationDTO>>(employees);
+            IEnumerable<EmployeeDTO> calculationDTOs = _mapper.Map<IEnumerable<EmployeeDTO>>(employees);
 
-            return employees;
+            return calculationDTOs;
         }
 
         [HttpGet]

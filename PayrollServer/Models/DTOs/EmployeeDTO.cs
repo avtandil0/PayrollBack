@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace PayrollServer.Models.DTOs
         public decimal? RemainingGraceAmount { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
-        public List<EmployeeComponentDTO> EmployeeComponents { get; set; }
+        public virtual ICollection<CalculationDTO> Calculations { get; set; }
+        public virtual ICollection<EmployeeComponentDTO> EmployeeComponents { get; set; }
     }
 }
