@@ -36,11 +36,30 @@ namespace Repository
                 employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
             }
 
+            var currentTime = DateTime.Now;
             foreach (var emp in employees)
             {
                 foreach (var empComp in emp.EmployeeComponents)
                 {
                     var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId && r.DateDeleted == null).FirstOrDefault();
+
+                    if(empComp.StartDate > currentTime || empComp.EndDate < currentTime)
+                    {
+                        continue;
+                    }
+
+                    if(empComp.PaidMultiple == false)
+                    {
+                        var currentMonthCalculations = RepositoryContext.Calculations
+                                        .Where(r => r.EmployeeId == emp.Id && r.PayrollYear == calculationDate.Year
+                                                    && r.PayrollMonth == calculationDate.Month);
+
+                        if(currentMonthCalculations.Count() > 0)
+                        {
+                            continue;
+                        }
+                    }
+
                     var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == component.CoefficientId && r.DateDeleted == null).FirstOrDefault();
 
                     Calculation calculation = new Calculation();

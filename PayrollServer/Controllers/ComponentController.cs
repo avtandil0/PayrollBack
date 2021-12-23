@@ -40,6 +40,20 @@ namespace PayrollServer.Controllers
             return departmentDTOs;
         }
 
+
+        [HttpGet]
+        [Route("getAllActive")]
+        public IEnumerable<ComponentDTO> GetAllActiveComponents()
+        {
+            var departmenrts = _repository.Component.GetAllActiveComponents();
+
+            IEnumerable<ComponentDTO> departmentDTOs = _mapper.Map<IEnumerable<ComponentDTO>>(departmenrts);
+
+            _logger.LogInfo($"Returned all departmenrts from database.");
+
+            return departmentDTOs;
+        }
+
         [HttpPost]
         public Result CreateDepartment([FromBody] ComponentDTO componentDTO)
         {
