@@ -22,6 +22,15 @@ namespace Repository
                 .OrderByDescending(r => r.DateCreated);
         }
 
+        public IEnumerable<Component> GetAllActiveComponents()
+        {
+            var current = DateTime.Now;
+
+            return GetAllIncluded(r => r.CreditAccount, r => r.DebitAccount, r => r.Coefficient)
+                    .Where(r => r.DateDeleted == null && r.StartDate < current && r.EndDate > current)
+                .OrderByDescending(r => r.DateCreated);
+        }
+
         public void CreateComponent(Component component)
         {
             component.Id = Guid.NewGuid();
