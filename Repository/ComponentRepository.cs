@@ -27,7 +27,8 @@ namespace Repository
             var current = DateTime.Now;
 
             return GetAllIncluded(r => r.CreditAccount, r => r.DebitAccount, r => r.Coefficient)
-                    .Where(r => r.DateDeleted == null && r.StartDate < current && r.EndDate > current)
+                    .Where(r => r.DateDeleted == null && r.StartDate.Date <= current.Date
+                                                      && r.EndDate.Date >= current.Date)
                 .OrderByDescending(r => r.DateCreated);
         }
 

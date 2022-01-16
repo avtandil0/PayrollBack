@@ -15,10 +15,17 @@ namespace PayrollServer.Models.DTOs
         public string DebitAccountName { get; set; }
         public Guid? CoefficientId { get; set; }
         public string CoefficientName { get; set; }
+        public Status Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
+    }
+    
+    public class Status
+    {
+        public List<string> FieldNames { get; set; }
+        public int Value { get; set; } // Active = 1; Passive = 0
     }
 }

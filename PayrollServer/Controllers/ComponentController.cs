@@ -31,13 +31,36 @@ namespace PayrollServer.Controllers
         [HttpGet]
         public IEnumerable<ComponentDTO> GetAllComponents()
         {
-            var departmenrts = _repository.Component.GetAllComponents();
+            var components = _repository.Component.GetAllComponents();
 
-            IEnumerable<ComponentDTO> departmentDTOs = _mapper.Map<IEnumerable<ComponentDTO>>(departmenrts);
-
+            IEnumerable<ComponentDTO> componentDTOs = _mapper.Map<IEnumerable<ComponentDTO>>(components);
+            
+            var current = DateTime.Now;
+            foreach (var comp in componentDTOs)
+            {
+                comp.Status = new Status();
+                if (comp.StartDate.Date <= current.Date && comp.EndDate.Date >= current.Date)
+                {
+                    comp.Status.Value = 1;
+                }
+                else
+                {
+                    comp.Status.Value = 0;
+                    comp.Status.FieldNames = new List<string>();
+                    if (comp.StartDate.Date > current.Date)
+                    {
+                        comp.Status.FieldNames.Add("StartDate");
+                    }
+                    if (comp.EndDate.Date < current.Date)
+                    {
+                        comp.Status.FieldNames.Add("EndDate");
+                    }
+                }
+            }
+            
             _logger.LogInfo($"Returned all departmenrts from database.");
 
-            return departmentDTOs;
+            return componentDTOs;
         }
 
 
@@ -45,13 +68,13 @@ namespace PayrollServer.Controllers
         [Route("getAllActive")]
         public IEnumerable<ComponentDTO> GetAllActiveComponents()
         {
-            var departmenrts = _repository.Component.GetAllActiveComponents();
+            var components = _repository.Component.GetAllActiveComponents();
 
-            IEnumerable<ComponentDTO> departmentDTOs = _mapper.Map<IEnumerable<ComponentDTO>>(departmenrts);
-
+            IEnumerable<ComponentDTO> componentDTOs = _mapper.Map<IEnumerable<ComponentDTO>>(components);
+            
             _logger.LogInfo($"Returned all departmenrts from database.");
 
-            return departmentDTOs;
+            return componentDTOs;
         }
 
         [HttpPost]
