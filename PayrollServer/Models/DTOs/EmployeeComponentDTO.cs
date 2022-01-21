@@ -29,6 +29,7 @@ namespace PayrollServer.Models.DTOs
         public bool? PaidMultiple { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
+        public ObjectStatus Status { get; set; }
         public  ComponentDTO Component { get; set; }
     }
 }

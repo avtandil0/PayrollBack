@@ -35,11 +35,34 @@ namespace PayrollServer.Controllers
         {
             var employees = _repository.Employee.GetEmployeeById(id);
 
-            EmployeeDTO employeeDTOs = _mapper.Map<EmployeeDTO>(employees);
+            EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employees);
+            
+            var current = DateTime.Now;
+            foreach (var comp in employeeDTO.EmployeeComponents)
+            {
+                comp.Status = new ObjectStatus();
+                if (comp.StartDate.Date <= current.Date && comp.EndDate.Date >= current.Date)
+                {
+                    comp.Status.Value = 1;
+                }
+                else
+                {
+                    comp.Status.Value = 0;
+                    comp.Status.FieldNames = new List<string>();
+                    if (comp.StartDate.Date > current.Date)
+                    {
+                        comp.Status.FieldNames.Add("StartDate");
+                    }
+                    if (comp.EndDate.Date < current.Date)
+                    {
+                        comp.Status.FieldNames.Add("EndDate");
+                    }
+                }
+            }
 
             _logger.LogInfo($"Returned all Employees from database.");
 
-            return employeeDTOs;
+            return employeeDTO;
         }
 
         [HttpGet]

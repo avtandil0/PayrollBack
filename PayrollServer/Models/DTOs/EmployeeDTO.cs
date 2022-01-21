@@ -29,6 +29,7 @@ namespace PayrollServer.Models.DTOs
         public decimal? RemainingGraceAmount { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
+       
         public virtual ICollection<CalculationDTO> Calculations { get; set; }
         public virtual ICollection<EmployeeComponentDTO> EmployeeComponents { get; set; }
     }

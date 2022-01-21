@@ -38,7 +38,7 @@ namespace PayrollServer.Controllers
             var current = DateTime.Now;
             foreach (var comp in componentDTOs)
             {
-                comp.Status = new Status();
+                comp.Status = new ObjectStatus();
                 if (comp.StartDate.Date <= current.Date && comp.EndDate.Date >= current.Date)
                 {
                     comp.Status.Value = 1;
