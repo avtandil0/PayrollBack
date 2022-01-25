@@ -7012,3 +7012,219 @@
 2022-01-24 21:07:11.9642 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-24_logfile.txt with allowFileSharedWriting=False
 2022-01-24 21:07:43.3406 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-24_logfile.txt with allowFileSharedWriting=False
 2022-01-24 21:07:43.3485 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-24_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:42:23.6140 Debug ScanAssembly('NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c')
+2022-01-25 23:42:23.9023 Debug Found assembly location directory: '/Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1' (NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c)
+2022-01-25 23:42:23.9028 Debug Auto loading based on NLog-Assembly found location: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1
+2022-01-25 23:42:23.9036 Debug Search for auto loading files in location: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1
+2022-01-25 23:42:23.9073 Debug Start auto loading, location: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1
+2022-01-25 23:42:23.9083 Info Auto loading assembly file: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/NLog.Extensions.Logging.dll
+2022-01-25 23:42:23.9086 Info Loading assembly file: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/NLog.Extensions.Logging.dll
+2022-01-25 23:42:23.9855 Info NLog.Extensions.Logging, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 1.7.3.1580. Product version: 1.7.3+5b992558f6b1c15def05efe3168eb20d7965b82a. GlobalAssemblyCache: False
+2022-01-25 23:42:23.9855 Debug ScanAssembly('NLog.Extensions.Logging, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c')
+2022-01-25 23:42:23.9873 Info Auto loading assembly file: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/NLog.Extensions.Logging.dll succeeded!
+2022-01-25 23:42:23.9884 Trace Assembly 'Microsoft.Extensions.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' will be hidden in callsite stacktrace
+2022-01-25 23:42:23.9887 Trace Assembly 'Microsoft.Extensions.Logging.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60' will be hidden in callsite stacktrace
+2022-01-25 23:42:23.9887 Trace Assembly 'NLog.Extensions.Logging, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c' will be hidden in callsite stacktrace
+2022-01-25 23:42:23.9887 Debug Auto loading done
+2022-01-25 23:42:23.9897 Info Message Template Auto Format enabled
+2022-01-25 23:42:24.0006 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0024 Trace Scanning LongDateLayoutRenderer 'Layout Renderer: ${longdate}'
+2022-01-25 23:42:24.0064 Debug Setting 'NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper.uppercase' to 'true'
+2022-01-25 23:42:24.0071 Trace Wrapping NLog.LayoutRenderers.LevelLayoutRenderer with NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper
+2022-01-25 23:42:24.0071 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0076 Trace Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.0085 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0085 Trace Scanning UppercaseLayoutRendererWrapper 'Layout Renderer: ${uppercase}'
+2022-01-25 23:42:24.0105 Trace  Scanning Property Inner 'SimpleLayout=Layout Renderer: ${level}' NLog.Layouts
+2022-01-25 23:42:24.0107 Trace  Scanning SimpleLayout 'SimpleLayout=Layout Renderer: ${level}'
+2022-01-25 23:42:24.0107 Trace   Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.0121 Trace   Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.0121 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0125 Trace Scanning LoggerNameLayoutRenderer 'Layout Renderer: ${logger}'
+2022-01-25 23:42:24.0125 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0125 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2022-01-25 23:42:24.0175 Debug Setting 'NLog.Targets.FileTarget.name' to 'logfile'
+2022-01-25 23:42:24.0179 Debug Setting 'NLog.Targets.FileTarget.fileName' to 'd:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt'
+2022-01-25 23:42:24.0179 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0186 Trace Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2022-01-25 23:42:24.0197 Debug Setting 'NLog.Targets.FileTarget.layout' to '${longdate} ${level:uppercase=true} ${message}'
+2022-01-25 23:42:24.0197 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0197 Trace Scanning LongDateLayoutRenderer 'Layout Renderer: ${longdate}'
+2022-01-25 23:42:24.0197 Debug Setting 'NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper.uppercase' to 'true'
+2022-01-25 23:42:24.0206 Trace Wrapping NLog.LayoutRenderers.LevelLayoutRenderer with NLog.LayoutRenderers.Wrappers.UppercaseLayoutRendererWrapper
+2022-01-25 23:42:24.0206 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0206 Trace Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.0206 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0206 Trace Scanning UppercaseLayoutRendererWrapper 'Layout Renderer: ${uppercase}'
+2022-01-25 23:42:24.0215 Trace  Scanning Property Inner 'SimpleLayout=Layout Renderer: ${level}' NLog.Layouts
+2022-01-25 23:42:24.0215 Trace  Scanning SimpleLayout 'SimpleLayout=Layout Renderer: ${level}'
+2022-01-25 23:42:24.0215 Trace   Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.0225 Trace   Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.0225 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.0225 Trace Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2022-01-25 23:42:24.0236 Info Adding target FileTarget(Name=logfile)
+2022-01-25 23:42:24.0236 Debug Registered target logfile: NLog.Targets.FileTarget
+2022-01-25 23:42:24.0246 Trace ParseRulesElement
+2022-01-25 23:42:24.1382 Debug Watching path '/Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer' filter 'nlog.config' for changes.
+2022-01-25 23:42:24.1389 Debug --- NLog configuration dump ---
+2022-01-25 23:42:24.1389 Debug Targets:
+2022-01-25 23:42:24.1405 Debug File Target[logfile]
+2022-01-25 23:42:24.1406 Debug Rules:
+2022-01-25 23:42:24.1422 Debug logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] appendTo: [ logfile ]
+2022-01-25 23:42:24.1422 Debug --- End of NLog configuration dump ---
+2022-01-25 23:42:24.1438 Trace FindReachableObject<System.Object>:
+2022-01-25 23:42:24.1438 Trace Scanning LoggingRule 'logNamePattern: (:All) levels: [ Debug Info Warn Error Fatal ] appendTo: [ logfile ]'
+2022-01-25 23:42:24.1438 Trace  Scanning Property Targets 'System.Collections.Generic.List`1[NLog.Targets.Target]' System.Collections.Generic
+2022-01-25 23:42:24.1447 Trace  Scanning FileTarget 'File Target[logfile]'
+2022-01-25 23:42:24.1447 Trace   Scanning Property FileName ''d:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt'' NLog.Layouts
+2022-01-25 23:42:24.1447 Trace   Scanning SimpleLayout ''d:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt''
+2022-01-25 23:42:24.1447 Trace    Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1456 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1456 Trace    Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2022-01-25 23:42:24.1456 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1456 Trace   Scanning Property Layout ''${longdate} ${level:uppercase=true} ${message}'' NLog.Layouts
+2022-01-25 23:42:24.1466 Trace   Scanning SimpleLayout ''${longdate} ${level:uppercase=true} ${message}''
+2022-01-25 23:42:24.1466 Trace    Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1466 Trace    Scanning LongDateLayoutRenderer 'Layout Renderer: ${longdate}'
+2022-01-25 23:42:24.1466 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1466 Trace    Scanning UppercaseLayoutRendererWrapper 'Layout Renderer: ${uppercase}'
+2022-01-25 23:42:24.1466 Trace     Scanning Property Inner 'SimpleLayout=Layout Renderer: ${level}' NLog.Layouts
+2022-01-25 23:42:24.1476 Trace     Scanning SimpleLayout 'SimpleLayout=Layout Renderer: ${level}'
+2022-01-25 23:42:24.1476 Trace      Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1476 Trace      Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.1476 Trace    Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1476 Trace    Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2022-01-25 23:42:24.1488 Trace   Scanning Property LineEnding 'Default' NLog.Targets
+2022-01-25 23:42:24.1488 Trace  Scanning Property ChildRules 'System.Collections.Generic.List`1[NLog.Config.LoggingRule]' System.Collections.Generic
+2022-01-25 23:42:24.1496 Trace  Scanning Property Filters 'System.Collections.Generic.List`1[NLog.Filters.Filter]' System.Collections.Generic
+2022-01-25 23:42:24.1508 Info Validating config: TargetNames=logfile, ConfigItems=14, FilePath=/Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/nlog.config
+2022-01-25 23:42:24.1521 Debug Unused target checking is started... Rule Count: 1, Target Count: 1
+2022-01-25 23:42:24.1558 Debug Unused target checking is completed. Total Rule Count: 1, Total Target Count: 1, Unused Target Count: 0
+2022-01-25 23:42:24.1558 Trace Initializing Layout Renderer: ${message}
+2022-01-25 23:42:24.1568 Trace Initializing Layout Renderer: ${literal}
+2022-01-25 23:42:24.1568 Trace Initializing Layout Renderer: ${level}
+2022-01-25 23:42:24.1568 Trace Initializing SimpleLayout=Layout Renderer: ${level}
+2022-01-25 23:42:24.1586 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.1586 Trace Scanning SimpleLayout 'SimpleLayout=Layout Renderer: ${level}'
+2022-01-25 23:42:24.1586 Trace  Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1586 Trace  Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.1622 Trace Initializing Layout Renderer: ${uppercase}
+2022-01-25 23:42:24.1622 Trace Initializing Layout Renderer: ${literal}
+2022-01-25 23:42:24.1627 Trace Initializing Layout Renderer: ${longdate}
+2022-01-25 23:42:24.1627 Trace Initializing '${longdate} ${level:uppercase=true} ${message}'
+2022-01-25 23:42:24.1627 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.1627 Trace Scanning SimpleLayout ''${longdate} ${level:uppercase=true} ${message}''
+2022-01-25 23:42:24.1627 Trace  Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1635 Trace  Scanning LongDateLayoutRenderer 'Layout Renderer: ${longdate}'
+2022-01-25 23:42:24.1635 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1635 Trace  Scanning UppercaseLayoutRendererWrapper 'Layout Renderer: ${uppercase}'
+2022-01-25 23:42:24.1635 Trace   Scanning Property Inner 'SimpleLayout=Layout Renderer: ${level}' NLog.Layouts
+2022-01-25 23:42:24.1635 Trace   Scanning SimpleLayout 'SimpleLayout=Layout Renderer: ${level}'
+2022-01-25 23:42:24.1635 Trace    Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1635 Trace    Scanning LevelLayoutRenderer 'Layout Renderer: ${level}'
+2022-01-25 23:42:24.1646 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1646 Trace  Scanning MessageLayoutRenderer 'Layout Renderer: ${message}'
+2022-01-25 23:42:24.1646 Trace Initializing Layout Renderer: ${literal}
+2022-01-25 23:42:24.1656 Trace Initializing Layout Renderer: ${shortdate}
+2022-01-25 23:42:24.1656 Trace Initializing Layout Renderer: ${literal}
+2022-01-25 23:42:24.1656 Trace Initializing 'd:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt'
+2022-01-25 23:42:24.1656 Trace FindReachableObject<NLog.Internal.IRenderable>:
+2022-01-25 23:42:24.1656 Trace Scanning SimpleLayout ''d:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt''
+2022-01-25 23:42:24.1665 Trace  Scanning Property Renderers 'System.Collections.ObjectModel.ReadOnlyCollection`1[NLog.LayoutRenderers.LayoutRenderer]' System.Collections.ObjectModel
+2022-01-25 23:42:24.1665 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1665 Trace  Scanning ShortDateLayoutRenderer 'Layout Renderer: ${shortdate}'
+2022-01-25 23:42:24.1665 Trace  Scanning LiteralLayoutRenderer 'Layout Renderer: ${literal}'
+2022-01-25 23:42:24.1665 Trace Initializing File Target[logfile]
+2022-01-25 23:42:24.1686 Trace FindReachableObject<NLog.Layouts.Layout>:
+2022-01-25 23:42:24.1686 Trace Scanning FileTarget 'File Target[logfile]'
+2022-01-25 23:42:24.1686 Trace  Scanning Property FileName ''d:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt'' NLog.Layouts
+2022-01-25 23:42:24.1686 Trace  Scanning SimpleLayout ''d:/Projects/Blog-AccountOwner/Project/logs/${shortdate}_logfile.txt''
+2022-01-25 23:42:24.1686 Trace  Scanning Property Layout ''${longdate} ${level:uppercase=true} ${message}'' NLog.Layouts
+2022-01-25 23:42:24.1695 Trace  Scanning SimpleLayout ''${longdate} ${level:uppercase=true} ${message}''
+2022-01-25 23:42:24.1695 Trace  Scanning Property LineEnding 'Default' NLog.Targets
+2022-01-25 23:42:24.1710 Trace File Target[logfile] has 2 layouts
+2022-01-25 23:42:24.1724 Trace FileTarget(Name=logfile): Using appenderFactory: NLog.Internal.FileAppenders.RetryingMultiProcessFileAppender+Factory
+2022-01-25 23:43:21.3796 Debug Targets for LoggerService.LoggerManager by level:
+2022-01-25 23:43:21.3796 Debug Trace =>
+2022-01-25 23:43:21.3796 Debug Debug => logfile
+2022-01-25 23:43:21.3796 Debug Info => logfile
+2022-01-25 23:43:21.3807 Debug Warn => logfile
+2022-01-25 23:43:21.3807 Debug Error => logfile
+2022-01-25 23:43:21.3807 Debug Fatal => logfile
+2022-01-25 23:43:21.3988 Debug FileTarget(Name=logfile): Preparing for new file '/Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt'
+2022-01-25 23:43:21.4041 Debug Creating file appender: /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt
+2022-01-25 23:43:21.4063 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:23.3770 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:23.4106 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:25.1269 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:31.5542 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:31.5638 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:31.7087 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:32.2021 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:32.7617 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:32.8288 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:43.4709 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:46.3693 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:47.8866 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:48.1185 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:48.3355 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:48.7773 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:49.2812 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:43:49.5115 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:01.4477 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:01.5091 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:47.4383 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:50.2816 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:50.5038 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:50.5582 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:50.8037 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:57.9160 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:44:57.9511 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:00.2638 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:17.8444 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:26.5345 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:26.6361 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:26.6508 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:26.6827 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:47.6310 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:47.6399 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:47.8819 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:53.6579 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:54.9875 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:57.2912 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:57.3501 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:57.6225 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:57.6572 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:58.2041 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:45:58.3886 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:08.5035 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:10.5412 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:12.8207 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:13.0499 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:13.1717 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:14.1172 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:14.2794 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:15.2646 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:35.5689 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:36.9803 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:39.0302 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:39.2675 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:39.3223 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:39.4673 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:40.2335 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:40.2992 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:42.4034 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:44.0524 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:44.1730 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:44.2493 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:44.3020 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:44.8262 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:44.9799 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:47.0427 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:48.4903 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:48.5560 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:48.7867 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:48.8268 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:49.6754 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:49.8178 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False
+2022-01-25 23:46:52.1240 Trace Opening /Users/macbook/Desktop/Payroll/PayrollBack/PayrollServer/bin/Debug/netcoreapp3.1/d:/Projects/Blog-AccountOwner/Project/logs/2022-01-25_logfile.txt with allowFileSharedWriting=False

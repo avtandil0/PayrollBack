@@ -11,7 +11,7 @@ namespace PayrollServer.Models.DTOs
     {
         public Guid Id { get; set; }
         public int? ResId { get; set; }
-        public IFormFile Avatar { get; set; }
+        public byte[] Avatar { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }
@@ -38,7 +38,7 @@ namespace PayrollServer.Models.DTOs
     
     public class Avatar
     {
-        public string userId { get; set; }
+        public Guid userId { get; set; }
         public IFormFile File { get; set; }
     }
 }

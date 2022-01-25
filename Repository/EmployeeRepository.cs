@@ -169,6 +169,23 @@ namespace Repository
         {
             return RepositoryContext.Employees.Where(r => r.DepartmentId == depId && r.DateDeleted == null);
         }
+        
+        public void UpdateEmployeeAvatar(EmployeeAvatar avatar)
+        {
+            var emp = RepositoryContext.Employees.Where(r => r.Id == avatar.UserId).FirstOrDefault();
+
+            if(emp != null)
+            {
+                emp.Avatar = avatar.File;
+                emp.DateChange = DateTime.Now;
+            }
+
+            Save();
+
+            //return GetAllIncluded(r => r.Department)
+            //        .Where(r => r.DateDeleted == null)
+            //    .OrderByDescending(r => r.DateCreated);
+        }
 
         public Employee GetEmployeeById(Guid id)
         {

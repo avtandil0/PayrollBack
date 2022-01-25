@@ -17,6 +17,7 @@ namespace Contracts
         Guid CreateEmployee(Employee employee);
         void ImportEmployee(List<HumreHelper> humres);
         void UpdateEmployee(Employee employee);
+        void UpdateEmployeeAvatar(EmployeeAvatar employee);
         void DeleteEmployee(Employee employee);
     }
 }

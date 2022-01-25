@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PayrollServer.Extensions;
 
 namespace PayrollServer.Controllers
 {
@@ -104,14 +105,18 @@ namespace PayrollServer.Controllers
         
         [HttpPost]
         [Route("uploadAvatar")]
-        public Result UploadAvatar([FromForm] Avatar avatar)
+        public async Task<Result> UploadAvatarAsync([FromForm] Avatar avatar)
         {
-            // Employee employee = _mapper.Map<Employee>(employeeDTO);
-            //
-            // _repository.Employee.CreateEmployee(employee);
+            var bytes = await avatar.File.GetBytes();
+            var empAvatar = new EmployeeAvatar
+            {
+                File = bytes,
+                UserId = avatar.userId
+            };
+            _repository.Employee.UpdateEmployeeAvatar(empAvatar);
             //
             // _logger.LogInfo($"Created new Employee.");
-        
+
             return new Result(true, 1, "წარმატებით დასრულდა");
         
         }
