@@ -31,7 +31,7 @@ namespace PayrollServer.Controllers
 
         [HttpGet]
         [Route("getEmployee/{id}")]
-        public EmployeeDTO GetAllEmployees(Guid id)
+        public EmployeeDTO GetEmployeeById(Guid id)
         {
             var employees = _repository.Employee.GetEmployeeById(id);
 
@@ -101,16 +101,33 @@ namespace PayrollServer.Controllers
             return employeeDTOs;
         }
 
+        
         [HttpPost]
-        public Result CreateEmployee([FromBody] EmployeeDTO employeeDTO)
+        [Route("uploadAvatar")]
+        public Result UploadAvatar([FromForm] Avatar avatar)
+        {
+            // Employee employee = _mapper.Map<Employee>(employeeDTO);
+            //
+            // _repository.Employee.CreateEmployee(employee);
+            //
+            // _logger.LogInfo($"Created new Employee.");
+        
+            return new Result(true, 1, "წარმატებით დასრულდა");
+        
+        }
+        
+        [HttpPost]
+        public EmployeeDTO CreateEmployee([FromBody] EmployeeDTO employeeDTO)
         {
             Employee employee = _mapper.Map<Employee>(employeeDTO);
 
-            _repository.Employee.CreateEmployee(employee);
+            var id = _repository.Employee.CreateEmployee(employee);
 
             _logger.LogInfo($"Created new Employee.");
 
-            return new Result(true, 1, "წარმატებით დასრულდა");
+            return GetEmployeeById(id);
+
+            // return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
 

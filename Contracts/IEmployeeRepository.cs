@@ -14,7 +14,7 @@ namespace Contracts
         Employee GetEmployeeById(Guid id);
         IEnumerable<Employee> GetEmployeeByDepartment(Guid depId);
         IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter);
-        void CreateEmployee(Employee employee);
+        Guid CreateEmployee(Employee employee);
         void ImportEmployee(List<HumreHelper> humres);
         void UpdateEmployee(Employee employee);
         void DeleteEmployee(Employee employee);

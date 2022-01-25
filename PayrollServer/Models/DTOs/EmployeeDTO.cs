@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace PayrollServer.Models.DTOs
 {
@@ -10,6 +11,7 @@ namespace PayrollServer.Models.DTOs
     {
         public Guid Id { get; set; }
         public int? ResId { get; set; }
+        public IFormFile Avatar { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MobilePhone { get; set; }
@@ -32,5 +34,11 @@ namespace PayrollServer.Models.DTOs
        
         public virtual ICollection<CalculationDTO> Calculations { get; set; }
         public virtual ICollection<EmployeeComponentDTO> EmployeeComponents { get; set; }
+    }
+    
+    public class Avatar
+    {
+        public string userId { get; set; }
+        public IFormFile File { get; set; }
     }
 }

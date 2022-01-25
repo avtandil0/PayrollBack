@@ -21,7 +21,7 @@ namespace Repository
         {
         }
 
-        public void CreateEmployee(Employee employee)
+        public Guid CreateEmployee(Employee employee)
         {
 
             //var lastEmpoyee = this.RepositoryContext.Employees.OrderByDescending(r => r.ResId).FirstOrDefault();
@@ -48,6 +48,8 @@ namespace Repository
             Create(employee);
 
             Save();
+
+            return employee.Id;
         }
 
         public void DeleteEmployee(Employee employee)
