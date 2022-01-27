@@ -271,6 +271,10 @@ ALTER TABLE Calculation
 ADD RemainingGraceAmount [decimal](18, 0) 
 
 
+ALTER TABLE employee
+ADD Avatar varbinary(max) 
+
+
 select * from SchemeType
 
 
