@@ -137,9 +137,9 @@ namespace PayrollServer.Controllers
             // set to auto fit for the content
             // of the range, so we are using
             // AutoFit() method here. 
-            workSheet.Column(1).AutoFit();
-            workSheet.Column(2).AutoFit();
-            workSheet.Column(3).AutoFit();
+            // workSheet.Column(1).AutoFit();
+            // workSheet.Column(2).AutoFit();
+            // workSheet.Column(3).AutoFit();
 
 
             var stream = new MemoryStream(excel.GetAsByteArray());
