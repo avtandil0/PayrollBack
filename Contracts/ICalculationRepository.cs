@@ -1,4 +1,5 @@
 ﻿using Entities.FilterModels;
+using Entities.HelperModels;
 using Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Contracts
         IEnumerable<Calculation> GetAllCalculation();
         IEnumerable<Calculation> GetCalculationByFilter(CalculationFilter calculationFilter);
         void CreateCalculation(CalculationFilter calculation, DateTime calculationDate);
+        void Paid(PaidHelper paidHelper);
         void UpdateCalculation(Calculation calculation);
         void DeleteCalculation(Calculation calculation);
     }

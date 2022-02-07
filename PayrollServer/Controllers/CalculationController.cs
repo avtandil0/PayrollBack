@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.FilterModels;
+using Entities.HelperModels;
 using ExcelLibrary.SpreadSheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,19 @@ namespace PayrollServer.Controllers
         {
 
             _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
+
+            _logger.LogInfo($"Created new Employee.");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        [HttpPost]
+        [Route("paid")]
+        public Result CreateEmployee([FromBody] PaidHelper paidDTO)
+        {
+
+            _repository.Calculation.CreateCalculation(paidDTO);
 
             _logger.LogInfo($"Created new Employee.");
 

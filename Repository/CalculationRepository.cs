@@ -2,6 +2,7 @@
 using Entities;
 using Entities.Enumerations;
 using Entities.FilterModels;
+using Entities.HelperModels;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -152,7 +153,26 @@ namespace Repository
             return query.OrderByDescending(r => r.DateCreated);
         }
 
+        public void Paid(PaidHelper paidHelper)
+        {
+            var employees = RepositoryContext.Employees.Where(r => r.DateDeleted != null);
+            var component = RepositoryContext.Components.Where(r => r.DateDeleted != null);
+
+            foreach (var item in employees)
+            {
+
+            }
+
+
+            throw new NotImplementedException();
+        }
+
         public void UpdateCalculation(Calculation calculation)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Calculation GetCalculationObject(Coefficient coefficient)
         {
             throw new NotImplementedException();
         }
