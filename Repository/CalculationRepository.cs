@@ -158,8 +158,14 @@ namespace Repository
             var employees = RepositoryContext.Employees.Where(r => r.DateDeleted != null);
             var component = RepositoryContext.Components.Where(r => r.DateDeleted != null);
 
+            var employeeComponent = new EmployeeComponent();
+            var currentTime = DateTime.Now;
+
             foreach (var item in employees)
             {
+                employeeComponent.Id = Guid.NewGuid();
+                employeeComponent.DateCreated = currentTime;
+                employeeComponent.ComponentId = paidHelper.ComponentID;
 
             }
 

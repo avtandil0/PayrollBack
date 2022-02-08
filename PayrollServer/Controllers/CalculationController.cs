@@ -62,7 +62,7 @@ namespace PayrollServer.Controllers
         public Result CreateEmployee([FromBody] PaidHelper paidDTO)
         {
 
-            _repository.Calculation.CreateCalculation(paidDTO);
+            _repository.Calculation.Paid(paidDTO);
 
             _logger.LogInfo($"Created new Employee.");
 

@@ -9,5 +9,7 @@ namespace Entities.HelperModels
         public DateTime PaidDate { get; set; }
         public DateTime PaidPeriod { get; set; }
         public Guid ComponentID { get; set; }
+        public List<ImportPerson> Persons { get; set; }
+
     }
 }
