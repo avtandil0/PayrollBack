@@ -44,18 +44,18 @@ namespace Repository
                 {
                     var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId && r.DateDeleted == null).FirstOrDefault();
 
-                    if(empComp.StartDate > currentTime || empComp.EndDate < currentTime)
+                    if (empComp.StartDate > currentTime || empComp.EndDate < currentTime)
                     {
                         continue;
                     }
 
-                    if(empComp.PaidMultiple == false)
+                    if (empComp.PaidMultiple == false)
                     {
                         var currentMonthCalculations = RepositoryContext.Calculations
                                         .Where(r => r.EmployeeId == emp.Id && r.PayrollYear == calculationDate.Year
                                                     && r.PayrollMonth == calculationDate.Month);
 
-                        if(currentMonthCalculations.Count() > 0)
+                        if (currentMonthCalculations.Count() > 0)
                         {
                             continue;
                         }
@@ -155,8 +155,23 @@ namespace Repository
 
         public void Paid(PaidHelper paidHelper)
         {
-            var employees = RepositoryContext.Employees.Where(r => r.DateDeleted != null);
+            var bankAccounts = paidHelper.Persons.Select(a => a.BankAccountNumber);
+
+            var employees = RepositoryContext.Employees.Where(r => r.DateDeleted == null &&
+                                    bankAccounts.Contains(r.BankAccountNumber));
+
+            //var test1 = from emp in RepositoryContext.Employees
+            //            join per in paidHelper.Persons on emp.BankAccountNumber equals per.BankAccountNumber
+            //            select new { OwnerName = per.BankAccountNumber, PetName = per.Amount }; 
+
+            //var test2 = test1.ToList();
+            var test = employees.ToList();
             var component = RepositoryContext.Components.Where(r => r.DateDeleted != null);
+
+            //var employees = RepositoryContext.Employees.Where(r => paidHelper.Persons.Any(a => a.BankAccountNumber == r.BankAccountNumber));
+
+
+
 
             var employeeComponent = new EmployeeComponent();
             var currentTime = DateTime.Now;
