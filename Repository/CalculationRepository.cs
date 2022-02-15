@@ -160,32 +160,46 @@ namespace Repository
             var employees = RepositoryContext.Employees.Where(r => r.DateDeleted == null &&
                                     bankAccounts.Contains(r.BankAccountNumber));
 
-            //var test1 = from emp in RepositoryContext.Employees
-            //            join per in paidHelper.Persons on emp.BankAccountNumber equals per.BankAccountNumber
-            //            select new { OwnerName = per.BankAccountNumber, PetName = per.Amount }; 
-
-            //var test2 = test1.ToList();
-            var test = employees.ToList();
-            var component = RepositoryContext.Components.Where(r => r.DateDeleted != null);
-
-            //var employees = RepositoryContext.Employees.Where(r => paidHelper.Persons.Any(a => a.BankAccountNumber == r.BankAccountNumber));
 
 
 
-
-            var employeeComponent = new EmployeeComponent();
             var currentTime = DateTime.Now;
 
             foreach (var item in employees)
             {
-                employeeComponent.Id = Guid.NewGuid();
-                employeeComponent.DateCreated = currentTime;
-                employeeComponent.ComponentId = paidHelper.ComponentID;
+                var person = paidHelper.Persons.Where(r => r.BankAccountNumber.Contains(item.BankAccountNumber)).FirstOrDefault();
 
+                if(person != null)
+                {
+                    var employeeComponent = new EmployeeComponent();
+                    var calculation = new Calculation();
+
+                    employeeComponent.Id = Guid.NewGuid();
+                    employeeComponent.DateCreated = currentTime;
+                    employeeComponent.StartDate = currentTime;
+                    employeeComponent.EndDate = currentTime;
+                    employeeComponent.EmployeeId = item.Id;
+                    employeeComponent.ComponentId = paidHelper.ComponentID;
+                    employeeComponent.Amount = Convert.ToDecimal(person.Amount);
+                    employeeComponent.Currency = "GEL";
+
+
+                  
+
+                    calculation.Id = Guid.NewGuid();
+                    calculation.DateCreated = currentTime;
+                    calculation.EmployeeId = item.Id;
+
+
+                    RepositoryContext.EmployeeComponents.Add(employeeComponent);
+                }
+
+               
             }
 
 
-            throw new NotImplementedException();
+            Save();
+
         }
 
         public void UpdateCalculation(Calculation calculation)

@@ -31,8 +31,8 @@ namespace Entities.Models
         public string LandIso { get; set; }
         public int? EmployeeTypeId { get; set; }
         public int? EmployeeGraceTypeId { get; set; }
-        public decimal? GraceAmount { get; set; }
         public decimal? RemainingGraceAmount { get; set; }
+        public decimal? GraceAmount { get; set; }
         public byte[] Avatar { get; set; }
 
         public virtual Department Department { get; set; }
