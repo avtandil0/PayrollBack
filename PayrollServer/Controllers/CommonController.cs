@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Enumerations;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +77,33 @@ namespace PayrollServer.Controllers
         public IEnumerable<EmployeeGraceType> GetEmployeeGraceTypes()
         {
             var types = _repository.Common.GetEmployeeGraceTypes();
+
+            return types;
+        }
+
+        [HttpGet]
+        [Route("UserClaimTypes")]
+        public List<UserClaimDTO> GetUserClaimTypes()
+        {
+            List< UserClaimDTO> types =
+                    new List<UserClaimDTO>();
+
+           
+            types.Add(new UserClaimDTO
+            {
+                ID = UserClaimTypeEnum.Admin,
+                Name = "Admin"
+            });
+            types.Add(new UserClaimDTO
+            {
+                ID = UserClaimTypeEnum.Analyst,
+                Name = "Analyst"
+            });
+            types.Add(new UserClaimDTO
+            {
+                ID = UserClaimTypeEnum.Operator,
+                Name = "Operator"
+            });
 
             return types;
         }

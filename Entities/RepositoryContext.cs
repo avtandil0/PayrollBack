@@ -2,12 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 #nullable disable
 
 namespace Entities
 {
-    public partial class RepositoryContext : DbContext
+    public partial class RepositoryContext :  IdentityDbContext<ApplicationUser>
     {
         public RepositoryContext()
         {
@@ -17,6 +19,9 @@ namespace Entities
             : base(options)
         {
         }
+
+        public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
+
 
         public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }
         public virtual DbSet<AccountsReportChartType> AccountsReportChartTypes { get; set; }
@@ -44,6 +49,47 @@ namespace Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+
+            //admiadmiadnamiadnadmaidnaadmiadadminadminadmin
+            string ADMIN_ID = "772848a0-3b20-46bd-8fd3-d83d110aecf0";
+            string ROLE_ID = "036f0246-b844-4471-b450-4c4eef779302";
+
+            //seed admin role
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+            {
+                Name = "Admin",
+                NormalizedName ="Admin",
+                Id = ROLE_ID,
+                ConcurrencyStamp = ROLE_ID
+            });
+
+            //create user
+            var appUser = new ApplicationUser
+            {
+                Id = ADMIN_ID,
+                Email = "aa@aa.ge",
+                EmailConfirmed = true,
+                FirstName = "avtandil",
+                LastName = "zenai",
+                UserName ="26001037",
+            };
+
+            //set user password
+            //PasswordHasher<ApplicationUser> ph = new PasswordHasher<ApplicationUser>();
+            //appUser.PasswordHash = ph.HashPassword(appUser, "NewPass8*");
+
+            //seed user
+            modelBuilder.Entity<ApplicationUser>().HasData(appUser);
+
+            //set user role to admin
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                RoleId = ROLE_ID,
+                UserId = ADMIN_ID
+            });
+            ///////////////////////////////////////////////////
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<AccountsReportChart>(entity =>

@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PayrollServer.Models;
+using Entities.HelperModels;
 
 namespace PayrollServer.Profiles
 {
@@ -66,8 +68,13 @@ namespace PayrollServer.Profiles
 
             //CreateMap<Employee, EmployeeCalculationDTO>()
             //    .ForMember(dest => dest.PayrollYear, act => act.MapFrom(src => src.Calculations.Where(r => r.PayrollYear).FirstName))
-                
+
             //CreateMap<CalculationDTO, Calculation>();
+
+            CreateMap<ApplicationUser, UserModel>();
+            CreateMap<UserDTO, ApplicationUser>()
+                   .ForMember(dest => dest.Id, act => act.MapFrom(src => src.userId));
+            CreateMap<ApplicationUser, UserDTO>();
         }
     }
 }

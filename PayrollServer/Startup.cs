@@ -8,6 +8,21 @@ using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using System;
 using System.IO;
+using Entities.Enumerations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Entities.Models;
+using Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Contracts;
+using Repository;
 
 namespace PayrollServer
 {
@@ -33,6 +48,7 @@ namespace PayrollServer
             services.ConfigureMySqlContext(Configuration);
 
             services.ConfigureRepositoryWrapper();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.ConfigureSynergyContext();
 
@@ -46,6 +62,82 @@ namespace PayrollServer
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
+
+            
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<RepositoryContext>();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+
+            });
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "UserSession";
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddCookie()
+            .AddJwtBearer(jwtBearerOptions =>
+            {
+                jwtBearerOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        // Put a breakpoint here
+                        return Task.CompletedTask;
+                    },
+                };
+
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateActor = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Token:Issuer"],
+                    ValidAudience = Configuration["Token:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
+                                                       (Configuration["Token:Key"]))
+                };
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+        options => Configuration.Bind("CookieSettings", options)); ;
+
+
+
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("ViewPersonsList", policy => policy.RequireAssertion(con => con.User.HasClaim(c =>
+                c.Type == UserClaimTypeEnum.Admin || c.Type == UserClaimTypeEnum.Operator )));
+
+                opt.AddPolicy("AddEditPerson", policy => policy.RequireAssertion(con => con.User.HasClaim(c =>
+                c.Type == UserClaimTypeEnum.Admin || c.Type == UserClaimTypeEnum.Operator)));
+               
+                opt.AddPolicy("AddEditViewUsers", policy => policy.RequireAssertion(con =>
+                con.User.HasClaim(c => c.Type == UserClaimTypeEnum.Admin)));
+
+                
+            });
+
+           
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromHours(6);
+            });
 
         }
 
@@ -71,6 +163,8 @@ namespace PayrollServer
                 app.UseHsts();
             }
 
+            
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -91,6 +185,23 @@ namespace PayrollServer
             });
 
             app.UseStaticFiles();
+
+            //app.Use(async (context, next) =>
+            //{
+            //    var JWToken = context.Session.GetString("UserSession");
+            //    if (!string.IsNullOrEmpty(JWToken))
+            //    {
+            //        context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+            //    }
+            //    await next();
+            //});
+
+            app.UseSession();
+
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
 
             //app.UseMvc();
             app.UseEndpoints(endpoints =>
