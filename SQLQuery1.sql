@@ -286,10 +286,9 @@ CREATE TABLE TimePeriods (
     DateDeleted datetime,
 );
 
-
 CREATE TABLE TimeSheets (
 	Id uniqueidentifier PRIMARY KEY ,
-	SheetId uniqueidentifier not null,
+	SheetId int not null, 
 	Name nvarchar(200) not null,
 	WeekDay nvarchar(20) not null,
 	WorkingStartTime nvarchar(20) not null,
