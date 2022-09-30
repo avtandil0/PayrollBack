@@ -8,7 +8,7 @@ namespace Entities.Models
     public partial class TimeSheet
     {
         public Guid Id { get; set; }
-        public Guid SheetId { get; set; }
+        public int SheetId { get; set; }
         public string Name { get; set; }
         public string WeekDay { get; set; }
         public string WorkingStartTime { get; set; }
