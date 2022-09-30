@@ -37,6 +37,7 @@ namespace Entities
         public virtual DbSet<PaymentDaysType> PaymentDaysTypes { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<SchemeType> SchemeTypes { get; set; }
+        public virtual DbSet<TimePeriod> TimePeriods { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -508,6 +509,31 @@ namespace Entities
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(255);
+            });
+
+
+            modelBuilder.Entity<TimePeriod>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.EndTime)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IsBreakTime).HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.StartTime)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnName("startTime");
             });
 
             OnModelCreatingPartial(modelBuilder);

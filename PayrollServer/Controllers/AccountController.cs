@@ -58,7 +58,7 @@ namespace PayrollServer.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         [Route("seedAdmin")]
         public async Task<Result> SeedAdmin()
         {
@@ -69,12 +69,12 @@ namespace PayrollServer.Controllers
                 Id = ADMIN_ID,
                 Email = "aa@aa.ge",
                 EmailConfirmed = true,
-                FirstName = "avtandil",
-                LastName = "zenai",
-                UserName = "26001037",
+                FirstName = "Admin",
+                LastName = "Admin",
+                UserName = "admin",
             };
 
-            var result = await userManager.CreateAsync(admin, "NewPass8*");
+            var result = await userManager.CreateAsync(admin, "Admin123#");
 
             return new Result(true, 1, "warmatebit sheiqmna");
         }
@@ -213,7 +213,7 @@ namespace PayrollServer.Controllers
 
             var newUser = _mapper.Map<UserDTO, ApplicationUser>(model);
 
-            const string ressetPass = "Resetpass1";
+            const string ressetPass = "Resetpass1!";
 
             newUser.Id = Guid.NewGuid().ToString();
             var result = await userManager.CreateAsync(newUser, ressetPass);

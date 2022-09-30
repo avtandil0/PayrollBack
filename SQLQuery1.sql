@@ -275,8 +275,30 @@ ALTER TABLE employee
 ADD Avatar varbinary(max) 
 
 
-select * from SchemeType
+CREATE TABLE TimePeriods (
+	Id uniqueidentifier PRIMARY KEY ,
+	Date datetime not null,
+	startTime nvarchar(20) not null,
+	EndTime nvarchar(20) not null,
+	IsBreakTime bit default 0 ,
+	DateCreated datetime not null,
+    DateChange datetime,
+    DateDeleted datetime,
+);
 
 
+CREATE TABLE TimeSheets (
+	Id uniqueidentifier PRIMARY KEY ,
+	Name nvarchar(200) not null,
+	WeekDay nvarchar(20) not null,
+	WorkingStartTime nvarchar(20) not null,
+	WorkingEndTime nvarchar(20) not null,
+	BreakingStartTime nvarchar(20) not null,
+	BreakingEndTime nvarchar(20) not null,
 
-select GETDATE()
+	DateCreated datetime not null,
+    DateChange datetime,
+    DateDeleted datetime,
+);
+
+
