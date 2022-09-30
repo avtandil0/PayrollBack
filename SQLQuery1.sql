@@ -289,6 +289,7 @@ CREATE TABLE TimePeriods (
 
 CREATE TABLE TimeSheets (
 	Id uniqueidentifier PRIMARY KEY ,
+	SheetId uniqueidentifier not null,
 	Name nvarchar(200) not null,
 	WeekDay nvarchar(20) not null,
 	WorkingStartTime nvarchar(20) not null,

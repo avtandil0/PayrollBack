@@ -38,6 +38,7 @@ namespace Entities
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<SchemeType> SchemeTypes { get; set; }
         public virtual DbSet<TimePeriod> TimePeriods { get; set; }
+        public virtual DbSet<TimeSheet> TimeSheets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -535,7 +536,40 @@ namespace Entities
                     .HasMaxLength(20)
                     .HasColumnName("startTime");
             });
+            modelBuilder.Entity<TimeSheet>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.BreakingEndTime)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.BreakingStartTime)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.WeekDay)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.WorkingEndTime)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.WorkingStartTime)
+                    .IsRequired()
+                    .HasMaxLength(20);
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

@@ -21,7 +21,7 @@ namespace PayrollServer.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<TimePeriod> GetAllDepartments()
+        public IEnumerable<TimePeriod> GetAllTimePeriods()
         {
             var result = _repository.TimePeriods.ToList();
             return result;
