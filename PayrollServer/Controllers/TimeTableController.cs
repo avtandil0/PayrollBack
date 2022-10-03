@@ -23,19 +23,41 @@ namespace PayrollServer.Controllers
         [HttpGet]
         public IEnumerable<TimePeriod> GetAllTimePeriods()
         {
-            var result = _repository.TimePeriods.ToList();
+            var result = _repository.TimePeriods.Where(r => r.DateDeleted == null).ToList();
             return result;
         }
 
         [HttpPost]
         public void Insert(List<TimePeriod> timePeriods)
         {
+            var currentTime = DateTime.Now;
+            var newPeriods = new List<TimePeriod>();
             foreach (var item in timePeriods)
             {
-                item.Id = Guid.NewGuid();
-                item.DateCreated = DateTime.Now;
+                var exist = _repository.TimePeriods.FirstOrDefault(r => r.Id == item.Id);
+                if(exist != null)
+                {
+                    exist.StartTime = item.StartTime;
+                    exist.EndTime = item.EndTime;
+                    exist.DateChange = currentTime;
+                }
+                else
+                {
+                    var newTimePeriod = new TimePeriod();
+                    newTimePeriod.Id = Guid.NewGuid();
+                    newTimePeriod.DateCreated = currentTime;
+                    newTimePeriod.Date = item.Date;
+                    newTimePeriod.StartTime = item.StartTime;
+                    newTimePeriod.EndTime = item.EndTime;
+                    newPeriods.Add(newTimePeriod);
+                }
+                
             }
-            _repository.TimePeriods.AddRange(timePeriods);
+
+            if(newPeriods.Count > 0)
+            {
+                _repository.TimePeriods.AddRange(newPeriods);
+            }
             _repository.SaveChanges();
         }
 
