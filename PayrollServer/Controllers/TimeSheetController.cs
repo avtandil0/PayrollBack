@@ -29,7 +29,23 @@ namespace PayrollServer.Controllers
         [HttpPost]
         public void Insert(List<TimeSheet> timeSheets)
         {
-            
+            var last = _repository.TimeSheets.Where(r => r.DateDeleted == null)
+                                            .OrderByDescending(r => r.SheetId).FirstOrDefault();
+            int lastId = 1;
+            if(last != null)
+            {
+                lastId = last.SheetId;
+            }
+
+            lastId++;
+            foreach (var item in timeSheets)
+            {
+                item.Id = Guid.NewGuid();
+                item.SheetId = lastId;
+                item.DateCreated = DateTime.Now;
+            }
+
+            _repository.TimeSheets.AddRange(timeSheets);
             _repository.SaveChanges();
         }
     }
