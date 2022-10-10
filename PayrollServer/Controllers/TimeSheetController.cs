@@ -20,9 +20,12 @@ namespace PayrollServer.Controllers
         }
 
         [HttpGet]
+        //public IEnumerable<IGrouping<int,TimeSheet>> GetAllTimePeriods()
         public IEnumerable<TimeSheet> GetAllTimePeriods()
         {
+            //var result = _repository.TimeSheets.AsEnumerable().GroupBy(r => r.SheetId).ToList();
             var result = _repository.TimeSheets.ToList();
+            
             return result;
         }
 
