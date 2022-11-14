@@ -11,6 +11,7 @@ namespace Entities.Models
         {
             Calculations = new HashSet<Calculation>();
             EmployeeComponents = new HashSet<EmployeeComponent>();
+            TimePeriods = new HashSet<TimePeriod>();
         }
 
         public Guid Id { get; set; }
@@ -41,5 +42,6 @@ namespace Entities.Models
         public virtual SchemeType SchemeType { get; set; }
         public virtual ICollection<Calculation> Calculations { get; set; }
         public virtual ICollection<EmployeeComponent> EmployeeComponents { get; set; }
+        public virtual ICollection<TimePeriod> TimePeriods { get; set; }
     }
 }

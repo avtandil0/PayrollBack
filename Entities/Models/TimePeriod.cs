@@ -15,5 +15,8 @@ namespace Entities.Models
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
+        public Guid? EmployeeId { get; set; }
+
+        public virtual Employee Employee { get; set; }
     }
 }

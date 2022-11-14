@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-
 #nullable disable
 
 namespace Entities
 {
-    public partial class RepositoryContext :  IdentityDbContext<ApplicationUser>
+    public partial class RepositoryContext : IdentityDbContext<ApplicationUser>
     {
         public RepositoryContext()
         {
@@ -19,9 +18,7 @@ namespace Entities
             : base(options)
         {
         }
-
         public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
-
 
         public virtual DbSet<AccountsReportChart> AccountsReportCharts { get; set; }
         public virtual DbSet<AccountsReportChartType> AccountsReportChartTypes { get; set; }
@@ -45,7 +42,7 @@ namespace Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=Payroll;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=PayrollNew;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
             }
         }
 
@@ -53,50 +50,13 @@ namespace Entities
         {
             base.OnModelCreating(modelBuilder);
 
-
-            //admiadmiadnamiadnadmaidnaadmiadadminadminadmin
-            string ADMIN_ID = "772848a0-3b20-46bd-8fd3-d83d110aecf0";
-            string ROLE_ID = "036f0246-b844-4471-b450-4c4eef779302";
-
-            //seed admin role
-            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
-            {
-                Name = "Admin",
-                NormalizedName ="Admin",
-                Id = ROLE_ID,
-                ConcurrencyStamp = ROLE_ID
-            });
-
-            //create user
-            var appUser = new ApplicationUser
-            {
-                Id = ADMIN_ID,
-                Email = "aa@aa.ge",
-                EmailConfirmed = true,
-                FirstName = "avtandil",
-                LastName = "zenai",
-                UserName ="26001037",
-            };
-
-            //set user password
-            //PasswordHasher<ApplicationUser> ph = new PasswordHasher<ApplicationUser>();
-            //appUser.PasswordHash = ph.HashPassword(appUser, "NewPass8*");
-
-            //seed user
-            modelBuilder.Entity<ApplicationUser>().HasData(appUser);
-
-            //set user role to admin
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = ROLE_ID,
-                UserId = ADMIN_ID
-            });
-            ///////////////////////////////////////////////////
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<AccountsReportChart>(entity =>
             {
                 entity.ToTable("AccountsReportChart");
+
+                entity.HasIndex(e => e.AccountsReportChartTypeId, "IX_AccountsReportChart_AccountsReportChartTypeId");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -137,9 +97,17 @@ namespace Entities
                     .HasMaxLength(255);
             });
 
+         
+
             modelBuilder.Entity<Calculation>(entity =>
             {
                 entity.ToTable("Calculation");
+
+                entity.HasIndex(e => e.EmployeeComponentId, "IX_Calculation_EmployeeComponentId");
+
+                entity.HasIndex(e => e.EmployeeId, "IX_Calculation_EmployeeId");
+
+                entity.HasIndex(e => e.SchemeTypeId, "IX_Calculation_SchemeTypeId");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
@@ -234,6 +202,12 @@ namespace Entities
             {
                 entity.ToTable("Component");
 
+                entity.HasIndex(e => e.CoefficientId, "IX_Component_CoefficientId");
+
+                entity.HasIndex(e => e.CreditAccountId, "IX_Component_CreditAccountId");
+
+                entity.HasIndex(e => e.DebitAccountId, "IX_Component_DebitAccountId");
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.DateChange).HasColumnType("datetime");
@@ -308,6 +282,14 @@ namespace Entities
             {
                 entity.ToTable("Employee");
 
+                entity.HasIndex(e => e.DepartmentId, "IX_Employee_DepartmentId");
+
+                entity.HasIndex(e => e.EmployeeGraceTypeId, "IX_Employee_EmployeeGraceTypeId");
+
+                entity.HasIndex(e => e.EmployeeTypeId, "IX_Employee_EmployeeTypeId");
+
+                entity.HasIndex(e => e.SchemeTypeId, "IX_Employee_SchemeTypeId");
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Address).HasMaxLength(255);
@@ -370,6 +352,18 @@ namespace Entities
 
             modelBuilder.Entity<EmployeeComponent>(entity =>
             {
+                entity.HasIndex(e => e.ComponentId, "IX_EmployeeComponents_ComponentId");
+
+                entity.HasIndex(e => e.CostCenterId, "IX_EmployeeComponents_CostCenterId");
+
+                entity.HasIndex(e => e.EmployeeId, "IX_EmployeeComponents_EmployeeId");
+
+                entity.HasIndex(e => e.PaymentDaysTypeId, "IX_EmployeeComponents_PaymentDaysTypeId");
+
+                entity.HasIndex(e => e.ProjectId, "IX_EmployeeComponents_ProjectId");
+
+                entity.HasIndex(e => e.SchemeTypeId, "IX_EmployeeComponents_SchemeTypeId");
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
@@ -512,7 +506,6 @@ namespace Entities
                     .HasMaxLength(255);
             });
 
-
             modelBuilder.Entity<TimePeriod>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -535,7 +528,13 @@ namespace Entities
                     .IsRequired()
                     .HasMaxLength(20)
                     .HasColumnName("startTime");
+
+                entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.TimePeriods)
+                    .HasForeignKey(d => d.EmployeeId)
+                    .HasConstraintName("FK__TimePerio__Emplo__14270015");
             });
+
             modelBuilder.Entity<TimeSheet>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -570,6 +569,7 @@ namespace Entities
                     .IsRequired()
                     .HasMaxLength(20);
             });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

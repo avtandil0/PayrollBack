@@ -21,9 +21,21 @@ namespace PayrollServer.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<TimePeriod> GetAllTimePeriods()
+        [Route("GetAllTimePeriods")]
+        public IEnumerable<TimePeriod> GetAllTimePeriods(Guid employeeId)
         {
-            var result = _repository.TimePeriods.Where(r => r.DateDeleted == null).ToList();
+            if (employeeId == null)
+            {
+                return _repository.TimePeriods.Where(r => r.DateDeleted == null).ToList();
+            }
+
+            return _repository.TimePeriods.Where(r => r.DateDeleted == null && r.EmployeeId == employeeId).ToList();
+        }
+        [HttpGet]
+        [Route("GetAllTimePeriodsById")]
+        public IEnumerable<TimePeriod> GetAllTimePeriodsById(Guid employeeId)
+        {
+            var result = _repository.TimePeriods.Where(r => r.DateDeleted == null && r.EmployeeId == employeeId).ToList();
             return result;
         }
 
@@ -31,12 +43,14 @@ namespace PayrollServer.Controllers
         {
             public List<TimePeriod> timePeriods { get; set; }
             public List<string> range { get; set; }
+            public Guid EmployeeId { get; set; }
         }
         [HttpPost]
         public void Insert([FromBody] InsertParams insertParams)
         {
             var timePeriods = insertParams.timePeriods;
             var range = insertParams.range;
+            var employeeId = insertParams.EmployeeId;
 
 
             var currentTime = DateTime.Now;
@@ -59,6 +73,7 @@ namespace PayrollServer.Controllers
                         newTimePeriod.Date = rangeStartDate;
                         newTimePeriod.StartTime = item.StartTime;
                         newTimePeriod.EndTime = item.EndTime;
+                        newTimePeriod.EmployeeId = employeeId;
                         newPeriods.Add(newTimePeriod);
 
                     }
@@ -87,6 +102,7 @@ namespace PayrollServer.Controllers
                         newTimePeriod.Date = item.Date;
                         newTimePeriod.StartTime = item.StartTime;
                         newTimePeriod.EndTime = item.EndTime;
+                        newTimePeriod.EmployeeId = employeeId;
                         newPeriods.Add(newTimePeriod);
                     }
 
