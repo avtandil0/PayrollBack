@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace PayrollServer.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     public class TimeTableController : ControllerBase
     {
         private RepositoryContext _repository;
@@ -27,34 +27,75 @@ namespace PayrollServer.Controllers
             return result;
         }
 
-        [HttpPost]
-        public void Insert(List<TimePeriod> timePeriods)
+        public class InsertParams
         {
+            public List<TimePeriod> timePeriods { get; set; }
+            public List<string> range { get; set; }
+        }
+        [HttpPost]
+        public void Insert([FromBody] InsertParams insertParams)
+        {
+            var timePeriods = insertParams.timePeriods;
+            var range = insertParams.range;
+
+
             var currentTime = DateTime.Now;
             var newPeriods = new List<TimePeriod>();
-            foreach (var item in timePeriods)
+
+            if (range.Count > 0)
             {
-                var exist = _repository.TimePeriods.FirstOrDefault(r => r.Id == item.Id);
-                if(exist != null)
+                DateTime rangeStartDate = DateTime.Parse(range[0]);
+                DateTime rangeEndDate = DateTime.Parse(range[1]);
+                DateTime rangeItemDate = rangeStartDate;
+
+                while (rangeStartDate.AddDays(1) < rangeEndDate)
                 {
-                    exist.StartTime = item.StartTime;
-                    exist.EndTime = item.EndTime;
-                    exist.DateChange = currentTime;
+                    foreach (var item in timePeriods)
+                    {
+
+                        var newTimePeriod = new TimePeriod();
+                        newTimePeriod.Id = Guid.NewGuid();
+                        newTimePeriod.DateCreated = currentTime;
+                        newTimePeriod.Date = rangeStartDate;
+                        newTimePeriod.StartTime = item.StartTime;
+                        newTimePeriod.EndTime = item.EndTime;
+                        newPeriods.Add(newTimePeriod);
+
+                    }
+
+                    rangeStartDate = rangeStartDate.AddDays(1);
                 }
-                else
+
+
+            }
+            else
+            {
+                foreach (var item in timePeriods)
                 {
-                    var newTimePeriod = new TimePeriod();
-                    newTimePeriod.Id = Guid.NewGuid();
-                    newTimePeriod.DateCreated = currentTime;
-                    newTimePeriod.Date = item.Date;
-                    newTimePeriod.StartTime = item.StartTime;
-                    newTimePeriod.EndTime = item.EndTime;
-                    newPeriods.Add(newTimePeriod);
+                    var exist = _repository.TimePeriods.FirstOrDefault(r => r.Id == item.Id);
+                    if (exist != null)
+                    {
+                        exist.StartTime = item.StartTime;
+                        exist.EndTime = item.EndTime;
+                        exist.DateChange = currentTime;
+                    }
+                    else
+                    {
+                        var newTimePeriod = new TimePeriod();
+                        newTimePeriod.Id = Guid.NewGuid();
+                        newTimePeriod.DateCreated = currentTime;
+                        newTimePeriod.Date = item.Date;
+                        newTimePeriod.StartTime = item.StartTime;
+                        newTimePeriod.EndTime = item.EndTime;
+                        newPeriods.Add(newTimePeriod);
+                    }
+
                 }
-                
+
             }
 
-            if(newPeriods.Count > 0)
+
+            if (newPeriods.Count > 0)
             {
                 _repository.TimePeriods.AddRange(newPeriods);
             }
