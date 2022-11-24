@@ -44,6 +44,7 @@ namespace PayrollServer.Controllers
             public List<TimePeriod> timePeriods { get; set; }
             public List<string> range { get; set; }
             public Guid EmployeeId { get; set; }
+            public List<Guid> TreeValues { get; set; }
         }
         [HttpPost]
         public void Insert([FromBody] InsertParams insertParams)
@@ -51,7 +52,26 @@ namespace PayrollServer.Controllers
             var timePeriods = insertParams.timePeriods;
             var range = insertParams.range;
             var employeeId = insertParams.EmployeeId;
+            var treeValues = insertParams.TreeValues;
+            var employees = new List<Guid>();
+            if (treeValues.Count > 0)
+            {
+                foreach (var emp in treeValues)
+                {
+                    var exist = _repository.Employees.FirstOrDefault(r => r.Id == emp);
+                    if( exist != null)
+                    {
+                        employees.Add(emp);
+                    }
+                    else
+                    {
+                        var emps = _repository.Employees.Where(r => r.DepartmentId == emp && r.DateDeleted == null)
+                                            .Select(k => k.Id);
+                        employees.AddRange(emps);
 
+                    }
+                }
+            }
 
             var currentTime = DateTime.Now;
             var newPeriods = new List<TimePeriod>();
@@ -62,19 +82,36 @@ namespace PayrollServer.Controllers
                 DateTime rangeEndDate = DateTime.Parse(range[1]);
                 DateTime rangeItemDate = rangeStartDate;
 
-                while (rangeStartDate.AddDays(1) < rangeEndDate)
+                while (rangeStartDate.AddDays(1) <= rangeEndDate)
                 {
                     foreach (var item in timePeriods)
                     {
-
-                        var newTimePeriod = new TimePeriod();
-                        newTimePeriod.Id = Guid.NewGuid();
-                        newTimePeriod.DateCreated = currentTime;
-                        newTimePeriod.Date = rangeStartDate;
-                        newTimePeriod.StartTime = item.StartTime;
-                        newTimePeriod.EndTime = item.EndTime;
-                        newTimePeriod.EmployeeId = employeeId;
-                        newPeriods.Add(newTimePeriod);
+                        if(employees.Count > 0)
+                        {
+                            foreach (var emp in employees)
+                            {
+                                var newTimePeriod = new TimePeriod();
+                                newTimePeriod.Id = Guid.NewGuid();
+                                newTimePeriod.DateCreated = currentTime;
+                                newTimePeriod.Date = rangeStartDate;
+                                newTimePeriod.StartTime = item.StartTime;
+                                newTimePeriod.EndTime = item.EndTime;
+                                newTimePeriod.EmployeeId = emp;
+                                newPeriods.Add(newTimePeriod);
+                            }
+                        }
+                        else
+                        {
+                            var newTimePeriod = new TimePeriod();
+                            newTimePeriod.Id = Guid.NewGuid();
+                            newTimePeriod.DateCreated = currentTime;
+                            newTimePeriod.Date = rangeStartDate;
+                            newTimePeriod.StartTime = item.StartTime;
+                            newTimePeriod.EndTime = item.EndTime;
+                            newTimePeriod.EmployeeId = employeeId;
+                            newPeriods.Add(newTimePeriod);
+                        }
+                        
 
                     }
 

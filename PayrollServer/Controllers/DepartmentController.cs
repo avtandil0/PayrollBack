@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace PayrollServer.Controllers
 {
@@ -20,12 +22,49 @@ namespace PayrollServer.Controllers
         private IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
 
+        private RepositoryContext _repositoryContext;
 
-        public DepartmentController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+
+
+        public DepartmentController(ILoggerManager logger, IRepositoryWrapper repository, 
+            IMapper mapper, RepositoryContext repositoryContext)
         {
             _logger = logger;
             _repository = repository;
             _mapper = mapper;
+            _repositoryContext = repositoryContext;
+        }
+
+        public class DepChildren
+        {
+            public Guid Id { get; set; }
+            public string  FullName { get; set; }
+        }
+        public class DepResult
+        {
+            public Guid DepId { get; set; }
+            public string DepName { get; set; }
+            public List<DepChildren> Children { get; set; }
+        }
+
+        [HttpGet]
+        [Route("GetAllDepartmentAndEmployees")]
+        public IEnumerable<DepResult> GetAllDepartmentAndEmployees()
+        {
+            var result = _repositoryContext.Departments.Where(r => r.DateDeleted == null)
+                                    .Include(u => u.Employees.Where(e => e.DateDeleted == null)
+                                     );
+            var result1 = result.Select(r => new DepResult
+            {
+                DepId = r.Id,
+                DepName = r.Name,
+                Children = r.Employees.Where(e => e.DateDeleted == null).Select(e => new DepChildren
+                {
+                    Id = e.Id,
+                    FullName = e.FirstName + " " + e.LastName
+                }).ToList()
+            }).ToList();
+            return result1;
         }
 
         [HttpGet]
