@@ -54,7 +54,7 @@ namespace PayrollServer.Controllers
             var employeeId = insertParams.EmployeeId;
             var treeValues = insertParams.TreeValues;
             var employees = new List<Guid>();
-            if (treeValues.Count > 0)
+            if (treeValues != null && treeValues.Count > 0)
             {
                 foreach (var emp in treeValues)
                 {
