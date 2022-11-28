@@ -24,8 +24,8 @@ namespace PayrollServer.Controllers
         public IEnumerable<TimeSheet> GetAllTimePeriods()
         {
             //var result = _repository.TimeSheets.AsEnumerable().GroupBy(r => r.SheetId).ToList();
-            var result = _repository.TimeSheets.ToList();
-            
+            var result = _repository.TimeSheets.Where(r => r.DateDeleted == null).ToList();
+
             return result;
         }
 
@@ -35,7 +35,7 @@ namespace PayrollServer.Controllers
             var last = _repository.TimeSheets.Where(r => r.DateDeleted == null)
                                             .OrderByDescending(r => r.SheetId).FirstOrDefault();
             int lastId = 1;
-            if(last != null)
+            if (last != null)
             {
                 lastId = last.SheetId;
             }
@@ -49,6 +49,45 @@ namespace PayrollServer.Controllers
             }
 
             _repository.TimeSheets.AddRange(timeSheets);
+            _repository.SaveChanges();
+        }
+
+
+        public class InsertParams
+        {
+            public string Name { get; set; }
+            public int SheetId { get; set; }
+            public List<TimeSheet> timeSheets { get; set; }
+        }
+        [HttpPut]
+        public void Update([FromBody]InsertParams InsertParams)
+        {
+            var timeSheets = InsertParams.timeSheets;
+            var SheetId = InsertParams.SheetId;
+            var Name = InsertParams.Name;
+
+            var currentTime = DateTime.Now;
+            var data = _repository.TimeSheets.Where(r => r.SheetId == SheetId);
+            if (data != null)
+            {
+                foreach (var item in data.ToList())
+                {
+                    item.DateDeleted = currentTime;
+                }
+            }
+
+
+            foreach (var item in timeSheets)
+            {
+                item.Name = Name;
+                item.SheetId = SheetId;
+                item.DateCreated = DateTime.Now;
+                item.Id = Guid.NewGuid();
+            }
+
+            _repository.TimeSheets.AddRange(timeSheets);
+
+
             _repository.SaveChanges();
         }
     }
