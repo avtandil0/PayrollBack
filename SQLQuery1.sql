@@ -301,4 +301,7 @@ CREATE TABLE TimeSheets (
     DateDeleted datetime,
 );
 
+ALTER TABLE TimePeriods
+ADD EmployeeId uniqueidentifier FOREIGN KEY  REFERENCES Employee(ID)
+
 

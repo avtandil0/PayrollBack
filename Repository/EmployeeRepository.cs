@@ -133,7 +133,7 @@ namespace Repository
             //           };
 
 
-            var query = RepositoryContext.Employees.Include(r => r.Calculations.OrderByDescending(r => r.CalculationDate))
+            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
                                                     .ThenInclude(r => r.EmployeeComponent)
                                                     .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList(); 
 

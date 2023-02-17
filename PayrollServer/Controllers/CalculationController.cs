@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities;
 using Entities.FilterModels;
 using Entities.HelperModels;
 using ExcelLibrary.SpreadSheet;
@@ -21,12 +22,14 @@ namespace PayrollServer.Controllers
     [ApiController]
     public class CalculationController : ControllerBase
     {
+        private RepositoryContext _repositoryContext;
         private ILoggerManager _logger;
         private IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
         private ISynergyRepository _sunergyRepository;
-        public CalculationController(ILoggerManager logger, IRepositoryWrapper repository, ISynergyRepository synergyRepository, IMapper mapper)
+        public CalculationController(RepositoryContext repositoryContext, ILoggerManager logger, IRepositoryWrapper repository, ISynergyRepository synergyRepository, IMapper mapper)
         {
+            _repositoryContext = repositoryContext;
             _logger = logger;
             _repository = repository;
             _sunergyRepository = synergyRepository;
@@ -56,6 +59,23 @@ namespace PayrollServer.Controllers
             return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
+
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public Result DeleteCalculation(Guid id)
+        {
+
+            var item = _repositoryContext.Calculations.Where(r => r.Id == id).FirstOrDefault();
+            item.DateDeleted = DateTime.Now;
+
+            _repositoryContext.SaveChanges();
+            _logger.LogInfo($"Calculation deleted");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
 
         [HttpPost]
         [Route("paid")]

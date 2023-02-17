@@ -173,7 +173,7 @@ namespace Repository
             {
                 var person = paidHelper.Persons.Where(r => r.BankAccountNumber.Contains(employee.BankAccountNumber)).FirstOrDefault();
 
-                if(person != null)
+                if (person != null)
                 {
                     var employeeComponent = new EmployeeComponent();
 
@@ -197,7 +197,7 @@ namespace Repository
                     RepositoryContext.EmployeeComponents.Add(employeeComponent);
                 }
 
-               
+
             }
 
 
@@ -216,6 +216,28 @@ namespace Repository
             var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == coefficientId && r.DateDeleted == null).FirstOrDefault();
 
             Calculation calculation = new Calculation();
+            var empCompAmount = empComp.Amount;
+            if (empComp.PaymentDaysTypeId == (int)Entities.Enumerations.PaymentDaysType.CalendarDay)
+            {
+                var currentDate = DateTime.Now;
+                if ((empComp.StartDate.Month == currentDate.Month && empComp.StartDate.Year == currentDate.Year))
+                {
+                    var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
+                    var workingDays = daysInMonth - empComp.StartDate.Day;
+
+                    empCompAmount = empComp.Amount / daysInMonth * workingDays;
+                }
+                if ((empComp.EndDate.Month == currentDate.Month && empComp.EndDate.Year == currentDate.Year))
+                {
+                    var daysInMonth = DateTime.DaysInMonth(empComp.EndDate.Year, empComp.EndDate.Month);
+                    var workingDays = daysInMonth - empComp.EndDate.Day;
+
+                    empCompAmount = empComp.Amount / daysInMonth * workingDays;
+                }
+            }
+
+            empCompAmount = Math.Round(empCompAmount, 2);
+
             calculation.Id = Guid.NewGuid();
             calculation.CalculationDate = calculationDate;
             calculation.DateCreated = DateTime.Now;
@@ -229,20 +251,20 @@ namespace Repository
 
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
             {
-                calculation.Gross = empComp.Amount * (decimal)coefficient.Sgross;
-                calculation.Net = empComp.Amount * (decimal)coefficient.Snet;
-                calculation.Paid = empComp.Amount * (decimal)coefficient.Spaid;
-                calculation.PensionTax = empComp.Amount * (decimal)coefficient.Spension;
-                calculation.IncomeTax = empComp.Amount * (decimal)coefficient.SincomeTax;
+                calculation.Gross = empCompAmount * (decimal)coefficient.Sgross;
+                calculation.Net = empCompAmount * (decimal)coefficient.Snet;
+                calculation.Paid = empCompAmount * (decimal)coefficient.Spaid;
+                calculation.PensionTax = empCompAmount * (decimal)coefficient.Spension;
+                calculation.IncomeTax = empCompAmount * (decimal)coefficient.SincomeTax;
             }
 
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Pension)
             {
-                calculation.Gross = empComp.Amount * (decimal)coefficient.Pgross;
-                calculation.Net = empComp.Amount * (decimal)coefficient.Pnet;
-                calculation.Paid = empComp.Amount * (decimal)coefficient.Ppaid;
-                calculation.PensionTax = empComp.Amount * (decimal)coefficient.Ppension;
-                calculation.IncomeTax = empComp.Amount * (decimal)coefficient.PincomeTax;
+                calculation.Gross = empCompAmount * (decimal)coefficient.Pgross;
+                calculation.Net = empCompAmount * (decimal)coefficient.Pnet;
+                calculation.Paid = empCompAmount * (decimal)coefficient.Ppaid;
+                calculation.PensionTax = empCompAmount * (decimal)coefficient.Ppension;
+                calculation.IncomeTax = empCompAmount * (decimal)coefficient.PincomeTax;
             }
 
             if (employee.RemainingGraceAmount > 0)

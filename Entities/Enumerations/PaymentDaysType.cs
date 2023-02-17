@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Entities.Enumerations
 {
-    public enum PaymentDaysType
+    public enum AccountType
     {
-        WorkingDay = 1,
-        CalendarDay = 2
+        Domestic,
+        Savings,
+        Foreign
     }
 }
