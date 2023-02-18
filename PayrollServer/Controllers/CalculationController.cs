@@ -6,12 +6,14 @@ using Entities.HelperModels;
 using ExcelLibrary.SpreadSheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using PayrollServer.Models;
 using PayrollServer.Models.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,6 +48,46 @@ namespace PayrollServer.Controllers
 
         //    return calculationDTOs;
         //}
+
+        [HttpPost]
+        [Route("calculateForDeclaration")]
+        public Result CreateEmployee()
+        {
+            string query = @"produce_payroll_report_data";
+            string connectionString = "Server=AZENAISHVILI1;database=PayrollNew;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;";
+            try
+            {
+                SqlConnection con = new SqlConnection(connectionString);
+
+                SqlCommand cmd = new SqlCommand(query, con);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+
+                // Execute the command.
+
+                con.Open();
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+
+                con.Close();
+
+
+
+                // Display the result of the operation.
+
+
+                return new Result(true, 1, rowsAffected.ToString() + " row(s) affected"); 
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(e.Message);
+
+            }
+
+            return new Result(false, 0, "Errorr ! ! !");
+
+        }
 
         [HttpPost]
         [Route("calculate/{calculationDate}")]
