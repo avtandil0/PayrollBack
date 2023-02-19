@@ -3,10 +3,12 @@ using Contracts;
 using Entities;
 using Entities.FilterModels;
 using Entities.HelperModels;
+using Entities.Models;
 using ExcelLibrary.SpreadSheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using PayrollServer.Models;
@@ -49,9 +51,41 @@ namespace PayrollServer.Controllers
         //    return calculationDTOs;
         //}
 
+        [HttpGet]
+        [Route("GetDeclaration")]
+        public IEnumerable<PayrollReportDatum> GetDeclaration()
+        {
+            var declarations = _repositoryContext.PayrollReportDatum.ToList();
+
+            return declarations;
+        }
+
         [HttpPost]
         [Route("calculateForDeclaration")]
-        public Result CreateEmployee()
+        public Result calculateForDeclaration()
+        {
+            string query = @"produce_payroll_report_data";
+            string connectionString = "Server=AZENAISHVILI1;database=PayrollNew;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;";
+            try
+            {
+                var rowsAffected = _repositoryContext.Database.ExecuteSqlRaw(query);
+
+
+                return new Result(true, 1, rowsAffected.ToString() + " row(s) affected");
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(e.Message);
+
+            }
+
+            return new Result(false, 0, "Errorr ! ! !");
+
+        }
+
+        [HttpPost]
+        [Route("calculateForDeclaration1")]
+        public Result calculateForDeclaration1()
         {
             string query = @"produce_payroll_report_data";
             string connectionString = "Server=AZENAISHVILI1;database=PayrollNew;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;";

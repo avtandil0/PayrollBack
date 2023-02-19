@@ -244,6 +244,12 @@ namespace Repository
 
             calculation.EmployeeId = employee.Id;
             calculation.EmployeeComponentId = empComp.Id;
+
+            var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId).FirstOrDefault();
+
+            calculation.ResId = employee.ResId;
+            calculation.CompCode = component.Name;
+
             calculation.PayrollYear = calculationDate.Year;
             calculation.PayrollMonth = calculationDate.Month;
             calculation.SchemeTypeId = empComp.SchemeTypeId;

@@ -36,6 +36,7 @@ namespace Entities
         public virtual DbSet<SchemeType> SchemeTypes { get; set; }
         public virtual DbSet<TimePeriod> TimePeriods { get; set; }
         public virtual DbSet<TimeSheet> TimeSheets { get; set; }
+        public virtual DbSet<PayrollReportDatum> PayrollReportDatum { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -450,6 +451,38 @@ namespace Entities
                     .IsRequired()
                     .HasMaxLength(100);
             });
+
+            modelBuilder.Entity<PayrollReportDatum>(entity =>
+            {
+                entity.ToTable("payroll_report_data");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.IncomeTax).HasColumnName("Income_tax");
+                entity.Property(e => e.FirstName).HasColumnName("FirstName");
+                entity.Property(e => e.LastName).HasColumnName("LastName");
+                entity.Property(e => e.PersonalNumber).HasColumnName("PersonalNumber");
+                entity.Property(e => e.Period).HasColumnName("Period");
+                entity.Property(e => e.PayrollYear).HasColumnName("PayrollYear");
+                entity.Property(e => e.CalculationDate).HasColumnName("CalculationDate");
+                entity.Property(e => e.ResId).HasColumnName("Res_Id");
+                entity.Property(e => e.CompCode).HasColumnName("comp_code");
+                entity.Property(e => e.BaseValue).HasColumnName("base_value");
+                entity.Property(e => e.IssuedAmount).HasColumnName("Issued_Amount");
+                entity.Property(e => e.GraceValue).HasColumnName("grace_value");
+                entity.Property(e => e.HrcompTransId).HasColumnName("Hrcomp_Trans_Id");
+                entity.Property(e => e.Address1).HasColumnName("Address1");
+                entity.Property(e => e.PensionSchema).HasColumnName("Pension_Schema");
+                entity.Property(e => e.InitialGrace).HasColumnName("Initial_Grace");
+                entity.Property(e => e.RemainingGrace).HasColumnName("Remaining_Grace");
+                entity.Property(e => e.LandIso).HasColumnName("Land_Iso");
+                entity.Property(e => e.LandIsonr).HasColumnName("Land_Isonr");
+                entity.Property(e => e.Oms600).HasColumnName("Oms60_0");
+                entity.Property(e => e.DepartmentId).HasColumnName("DepartmentId");
+                entity.Property(e => e.DepartmentName).HasColumnName("DepartmentName");
+
+
+            });
+
 
             modelBuilder.Entity<PaymentDaysType>(entity =>
             {
