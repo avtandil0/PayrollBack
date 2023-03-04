@@ -63,7 +63,8 @@ namespace PayrollServer.Profiles
                 .ForMember(dest => dest.Gross, act => act.MapFrom(src => src.Gross))
                 .ForMember(dest => dest.IncomeTax, act => act.MapFrom(src => src.IncomeTax))
                 .ForMember(dest => dest.PensionTax, act => act.MapFrom(src => src.PensionTax))
-                .ForMember(dest => dest.Paid, act => act.MapFrom(src => src.Paid));
+                .ForMember(dest => dest.Paid, act => act.MapFrom(src => src.Paid))
+                .ForMember(dest => dest.TotalBalance, act => act.MapFrom(src => src.TotalBalance));
             CreateMap<CalculationDTO, Calculation>();
 
             //CreateMap<Employee, EmployeeCalculationDTO>()

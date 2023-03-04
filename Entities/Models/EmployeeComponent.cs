@@ -29,6 +29,7 @@ namespace Entities.Models
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
+        public bool? IsPermanent { get; set; }
 
         public virtual Component Component { get; set; }
         public virtual CostCenter CostCenter { get; set; }

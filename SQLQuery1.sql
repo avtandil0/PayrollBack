@@ -305,3 +305,37 @@ ALTER TABLE TimePeriods
 ADD EmployeeId uniqueidentifier FOREIGN KEY  REFERENCES Employee(ID)
 
 
+ALTER TABLE Calculation
+ADD Res_id int;
+
+
+ALTER TABLE Calculation
+ADD CompCode nvarchar(30);
+
+
+ALTER TABLE EmployeeComponents
+ADD isPermanent bit;
+
+ALTER TABLE calculation
+ADD TotalBalance [decimal](18, 0);
+
+CREATE TABLE [dbo].[Currency](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[currency] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Currency] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+CREATE TABLE Rates (
+	Id uniqueidentifier PRIMARY KEY ,
+	CurrencyId int FOREIGN KEY  REFERENCES currency(ID),
+	Date datetime ,
+	ExchangeRate decimal(18,2),
+	DateCreated datetime,
+    DateChange datetime,
+    DateDeleted datetime,
+);

@@ -36,7 +36,9 @@ namespace Entities
         public virtual DbSet<SchemeType> SchemeTypes { get; set; }
         public virtual DbSet<TimePeriod> TimePeriods { get; set; }
         public virtual DbSet<TimeSheet> TimeSheets { get; set; }
-        public virtual DbSet<PayrollReportDatum> PayrollReportDatum { get; set; }
+        public virtual DbSet<PayrollReportDatum> PayrollReportData { get; set; }
+        public virtual DbSet<Rate> Rates { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -52,6 +54,28 @@ namespace Entities
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<Rate>(entity =>
+            {
+                //entity.HasNoKey();
+
+                entity.ToTable("rates");
+
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("currency");
+
+                entity.Property(e => e.ExchangeRate).HasPrecision(19, 4)
+                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnName("exchangeRate");
+
+                entity.Property(e => e.Date)
+                   .HasColumnType("datetime")
+                   .HasColumnName("date");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+            });
 
             modelBuilder.Entity<AccountsReportChart>(entity =>
             {
@@ -133,6 +157,7 @@ namespace Entities
                 entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.ResId).HasColumnName("Res_id");
+                entity.Property(e => e.TotalBalance).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.EmployeeComponent)
                     .WithMany(p => p.Calculations)
@@ -385,6 +410,8 @@ namespace Entities
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
+                entity.Property(e => e.IsPermanent).HasColumnName("isPermanent");
+
                 entity.HasOne(d => d.Component)
                     .WithMany(p => p.EmployeeComponents)
                     .HasForeignKey(d => d.ComponentId)
@@ -454,33 +481,81 @@ namespace Entities
 
             modelBuilder.Entity<PayrollReportDatum>(entity =>
             {
+                entity.HasNoKey();
+
                 entity.ToTable("payroll_report_data");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.IncomeTax).HasColumnName("Income_tax");
-                entity.Property(e => e.FirstName).HasColumnName("FirstName");
-                entity.Property(e => e.LastName).HasColumnName("LastName");
-                entity.Property(e => e.PersonalNumber).HasColumnName("PersonalNumber");
-                entity.Property(e => e.Period).HasColumnName("Period");
-                entity.Property(e => e.PayrollYear).HasColumnName("PayrollYear");
-                entity.Property(e => e.CalculationDate).HasColumnName("CalculationDate");
-                entity.Property(e => e.ResId).HasColumnName("Res_Id");
-                entity.Property(e => e.CompCode).HasColumnName("comp_code");
+                entity.Property(e => e.Address1)
+                    .HasMaxLength(90)
+                    .HasColumnName("address1");
+
                 entity.Property(e => e.BaseValue).HasColumnName("base_value");
-                entity.Property(e => e.IssuedAmount).HasColumnName("Issued_Amount");
+
+                entity.Property(e => e.CalculationDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("calculationDate");
+
+                entity.Property(e => e.CompCode)
+                    .IsRequired()
+                    .HasMaxLength(90)
+                    .HasColumnName("comp_code");
+
+                entity.Property(e => e.DepartmentId).HasColumnName("departmentID");
+
+                entity.Property(e => e.DepartmentName)
+                    .HasMaxLength(40)
+                    .HasColumnName("departmentName");
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .HasColumnName("firstName");
+
                 entity.Property(e => e.GraceValue).HasColumnName("grace_value");
-                entity.Property(e => e.HrcompTransId).HasColumnName("Hrcomp_Trans_Id");
-                entity.Property(e => e.Address1).HasColumnName("Address1");
-                entity.Property(e => e.PensionSchema).HasColumnName("Pension_Schema");
-                entity.Property(e => e.InitialGrace).HasColumnName("Initial_Grace");
-                entity.Property(e => e.RemainingGrace).HasColumnName("Remaining_Grace");
-                entity.Property(e => e.LandIso).HasColumnName("Land_Iso");
-                entity.Property(e => e.LandIsonr).HasColumnName("Land_Isonr");
-                entity.Property(e => e.Oms600).HasColumnName("Oms60_0");
-                entity.Property(e => e.DepartmentId).HasColumnName("DepartmentId");
-                entity.Property(e => e.DepartmentName).HasColumnName("DepartmentName");
 
+                entity.Property(e => e.HrcompTransId).HasColumnName("hrcomp_trans_id");
 
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.IncomeTax).HasColumnName("income_tax");
+
+                entity.Property(e => e.InitialGrace).HasColumnName("initial_grace");
+
+                entity.Property(e => e.IssuedAmount).HasColumnName("issued_amount");
+
+                entity.Property(e => e.LandIso)
+                    .HasMaxLength(10)
+                    .HasColumnName("land_iso")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.LandIsonr)
+                    .HasMaxLength(10)
+                    .HasColumnName("land_isonr")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(30)
+                    .HasColumnName("lastName");
+
+                entity.Property(e => e.Oms600)
+                    .HasMaxLength(90)
+                    .HasColumnName("oms60_0");
+
+                entity.Property(e => e.PayrollYear).HasColumnName("payrollYear");
+
+                entity.Property(e => e.PensionSchema).HasColumnName("pension_schema");
+
+                entity.Property(e => e.Period).HasColumnName("period");
+
+                entity.Property(e => e.PersonalNumber)
+                    .HasMaxLength(11)
+                    .HasColumnName("personalNumber")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.RemainingGrace).HasColumnName("remaining_grace");
+
+                entity.Property(e => e.ResId).HasColumnName("res_id");
             });
 
 

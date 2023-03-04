@@ -41,6 +41,7 @@ namespace Repository
             {
                 item.Id = Guid.NewGuid();
                 item.DateCreated = DateTime.Now;
+                item.IsPermanent = true;
                 this.RepositoryContext.EmployeeComponents.Add(item);
             }
 
@@ -197,11 +198,11 @@ namespace Repository
             var emps = RepositoryContext.Employees
                     .Include(o => o.Department)
                     .Include(o => o.SchemeType)
-                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null && e.IsPermanent == true))
                         .ThenInclude(x => x.Component)
-                     .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                     .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null && e.IsPermanent == true))
                         .ThenInclude(x => x.CostCenter)
-                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null))
+                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null && e.IsPermanent == true))
                         .ThenInclude(x => x.Project)
                     .Where(r => r.DateDeleted == null && r.Id == id)
                     .OrderByDescending(r => r.DateCreated).FirstOrDefault();
@@ -273,6 +274,7 @@ namespace Repository
                     item.Id = Guid.NewGuid();
                     item.EmployeeId = employee.Id;
                     item.DateCreated = DateTime.Now;
+                    item.IsPermanent = true;
                     this.RepositoryContext.EmployeeComponents.Add(item);
 
                     continue;

@@ -27,6 +27,7 @@ namespace Entities.Models
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
         public decimal? RemainingGraceAmount { get; set; }
+        public decimal? TotalBalance { get; set; }
 
         public virtual Employee Employee { get; set; }
         public virtual EmployeeComponent EmployeeComponent { get; set; }

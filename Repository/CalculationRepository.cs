@@ -185,12 +185,38 @@ namespace Repository
                     employeeComponent.ComponentId = paidHelper.ComponentID;
                     employeeComponent.Amount = Convert.ToDecimal(person.Amount);
                     employeeComponent.Currency = "GEL";
+                    employeeComponent.IsPermanent = false;
 
 
 
                     var component = RepositoryContext.Components.Where(r => r.Id == paidHelper.ComponentID).FirstOrDefault();
 
                     var calculation = GetCalculationObject(paidHelper.PaidDate, component.CoefficientId, employee, employeeComponent);
+
+                    var lastPaid = RepositoryContext.Calculations
+                        .Where(r => r.DateDeleted == null && r.EmployeeId == employee.Id && r.EmployeeComponentId == paidHelper.ComponentID)
+                        .OrderByDescending(r => r.DateCreated).FirstOrDefault();
+
+                    decimal previousBalance = 0;
+                    if(lastPaid != null)
+                    {
+                        previousBalance = (decimal)lastPaid.TotalBalance;
+                    }
+
+                    var currentMonthsCalculations = RepositoryContext.Calculations
+                        .Where(r => r.DateDeleted == null && r.CalculationDate.Value.Year == currentTime.Year
+                        && r.CalculationDate.Value.Month == currentTime.Month
+                        && r.EmployeeComponentId != paidHelper.ComponentID);
+
+                    decimal currentMonthsCalculationsSum = 0;
+                    if (currentMonthsCalculations.Count() > 0)
+                    {
+                        currentMonthsCalculationsSum = currentMonthsCalculations.Sum(r => r.Net);
+                    }
+
+
+                    calculation.TotalBalance = previousBalance +
+                        (Convert.ToDecimal(person.Amount) - currentMonthsCalculationsSum);
 
                     Create(calculation);
 

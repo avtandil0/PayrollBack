@@ -29,6 +29,7 @@ namespace PayrollServer.Models.DTOs
         public int? EmployeeGraceTypeId { get; set; }
         public decimal? GraceAmount { get; set; }
         public decimal? RemainingGraceAmount { get; set; }
+        public decimal? TotalBalance { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateDeleted { get; set; }
        

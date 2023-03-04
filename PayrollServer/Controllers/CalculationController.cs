@@ -55,7 +55,7 @@ namespace PayrollServer.Controllers
         [Route("GetDeclaration")]
         public IEnumerable<PayrollReportDatum> GetDeclaration()
         {
-            var declarations = _repositoryContext.PayrollReportDatum.ToList();
+            var declarations = _repositoryContext.PayrollReportData.ToList();
 
             return declarations;
         }

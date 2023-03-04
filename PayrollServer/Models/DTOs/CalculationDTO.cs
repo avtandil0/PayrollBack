@@ -24,6 +24,7 @@ namespace PayrollServer.Models.DTOs
         public double Tax1 { get; set; }
         public double Tax2 { get; set; }
         public decimal? RemainingGraceAmount { get; set; }
+        public decimal? TotalBalance { get; set; }
         public virtual EmployeeComponentDTO EmployeeComponent { get; set; }
     }
 }
