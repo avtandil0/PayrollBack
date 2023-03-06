@@ -4,14 +4,16 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Entities.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230306081123_removeField")]
+    partial class removeField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,9 +171,6 @@ namespace Entities.Migrations
                     b.Property<string>("CompCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("DateChange")
                         .HasColumnType("datetime");
 
@@ -187,14 +186,8 @@ namespace Entities.Migrations
                     b.Property<Guid?>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("ExchangeRate")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("Gross")
                         .HasColumnType("decimal(18,0)");
-
-                    b.Property<decimal?>("GrossForeign")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("IncomeTax")
                         .HasColumnType("decimal(18,0)");

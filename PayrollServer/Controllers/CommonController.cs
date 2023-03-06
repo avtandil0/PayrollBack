@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities;
 using Entities.Enumerations;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +18,7 @@ namespace PayrollServer.Controllers
     [ApiController]
     public class CommonController : ControllerBase
     {
+        private RepositoryContext _repositoryContext;
         private ILoggerManager _logger;
         private IRepositoryWrapper _repository;
         //private ICommonRepository _commonRepository;
@@ -24,8 +26,9 @@ namespace PayrollServer.Controllers
         private readonly IMapper _mapper;
 
 
-        public CommonController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+        public CommonController(RepositoryContext repositoryContext, ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
         {
+             _repositoryContext = repositoryContext;
             _logger = logger;
             _repository = repository;
             _mapper = mapper;
@@ -54,6 +57,14 @@ namespace PayrollServer.Controllers
             return schemeTypes;
         }
 
+        [HttpGet]
+        [Route("currencies")]
+        public IEnumerable<Currency> GetAllCurrencies()
+        {
+            var currencies = _repositoryContext.Currencies.ToList();
+
+            return currencies;
+        }
         //[HttpGet]
         //[Route("PaymentDaysTypes")]
         //public IEnumerable<PaymentDaysType> GetAllPaymentDaysType()

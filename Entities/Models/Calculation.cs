@@ -28,6 +28,9 @@ namespace Entities.Models
         public DateTime? DateDeleted { get; set; }
         public decimal? RemainingGraceAmount { get; set; }
         public decimal? TotalBalance { get; set; }
+        public decimal? ExchangeRate { get; set; }
+        public decimal? GrossForeign { get; set; }
+        public string Currency { get; set; }
 
         public virtual Employee Employee { get; set; }
         public virtual EmployeeComponent EmployeeComponent { get; set; }

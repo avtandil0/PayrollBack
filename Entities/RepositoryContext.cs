@@ -38,16 +38,17 @@ namespace Entities
         public virtual DbSet<TimeSheet> TimeSheets { get; set; }
         public virtual DbSet<PayrollReportDatum> PayrollReportData { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
+        public virtual DbSet<Currency> Currencies { get; set; }
 
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=PayrollNew;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
-            }
-        }
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=PayrollNew100;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+//            }
+//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,26 +56,35 @@ namespace Entities
 
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.Entity<Rate>(entity =>
+            modelBuilder.Entity<Currency>(entity =>
             {
-                //entity.HasNoKey();
-
-                entity.ToTable("rates");
-
-                entity.Property(e => e.Currency)
-                    .HasMaxLength(50)
-                    .IsUnicode(false)
-                    .HasColumnName("currency");
-
-                entity.Property(e => e.ExchangeRate).HasPrecision(19, 4)
-                    .HasColumnType("decimal(18, 0)")
-                    .HasColumnName("exchangeRate");
-
-                entity.Property(e => e.Date)
-                   .HasColumnType("datetime")
-                   .HasColumnName("date");
+                entity.ToTable("Currency");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Currency1)
+                    .HasMaxLength(50)
+                    .HasColumnName("currency");
+            });
+
+            modelBuilder.Entity<Rate>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.DateChange).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateDeleted).HasColumnType("datetime");
+
+                entity.Property(e => e.ExchangeRate).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.Currency)
+                    .WithMany(p => p.Rates)
+                    .HasForeignKey(d => d.CurrencyId)
+                    .HasConstraintName("FK__Rates__CurrencyI__43D61337");
             });
 
             modelBuilder.Entity<AccountsReportChart>(entity =>

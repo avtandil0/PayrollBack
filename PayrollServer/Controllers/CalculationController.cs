@@ -127,10 +127,18 @@ namespace PayrollServer.Controllers
         [Route("calculate/{calculationDate}")]
         public Result CreateEmployee([FromBody] CalculationFilter calculationFilter, DateTime calculationDate)
         {
+            var rate = _repositoryContext.Rates.FirstOrDefault(r => r.Date == calculationDate);
+          
+            try
+            {
+                _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
 
-            _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
+            }
+            catch(Exception e)
+            {
+                return new Result(false, 0, e.Message);
+            }
 
-            _logger.LogInfo($"Created new Employee.");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 

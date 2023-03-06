@@ -55,11 +55,12 @@ namespace Repository
                                         .Where(r => r.EmployeeId == emp.Id && r.PayrollYear == calculationDate.Year
                                                     && r.PayrollMonth == calculationDate.Month);
 
-                        if (currentMonthCalculations.Count() > 0)
+                        if (currentMonthCalculations.Any())
                         {
                             continue;
                         }
                     }
+
 
                     var calculation = GetCalculationObject(calculationDate, component.CoefficientId, emp, empComp);
 
@@ -184,7 +185,7 @@ namespace Repository
                     employeeComponent.EmployeeId = employee.Id;
                     employeeComponent.ComponentId = paidHelper.ComponentID;
                     employeeComponent.Amount = Convert.ToDecimal(person.Amount);
-                    employeeComponent.Currency = "GEL";
+                    employeeComponent.Currency = 1;
                     employeeComponent.IsPermanent = false;
 
 
@@ -198,7 +199,7 @@ namespace Repository
                         .OrderByDescending(r => r.DateCreated).FirstOrDefault();
 
                     decimal previousBalance = 0;
-                    if(lastPaid != null)
+                    if (lastPaid != null)
                     {
                         previousBalance = (decimal)lastPaid.TotalBalance;
                     }
@@ -242,7 +243,11 @@ namespace Repository
             var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == coefficientId && r.DateDeleted == null).FirstOrDefault();
 
             Calculation calculation = new Calculation();
-            var empCompAmount = empComp.Amount;
+
+            var amount = empComp.Amount;
+
+
+            var empCompAmount = amount;
             if (empComp.PaymentDaysTypeId == (int)Entities.Enumerations.PaymentDaysType.CalendarDay)
             {
                 var currentDate = DateTime.Now;
@@ -280,6 +285,25 @@ namespace Repository
             calculation.PayrollMonth = calculationDate.Month;
             calculation.SchemeTypeId = empComp.SchemeTypeId;
             calculation.RemainingGraceAmount = 0;
+
+            Rate rate = new Rate(); ;
+            if (empComp.Currency > 1)
+            {
+                rate = RepositoryContext.Rates.Include(r => r.Currency).FirstOrDefault(r => r.CurrencyId == empComp.Currency
+                                                       && calculationDate == r.Date);
+                if (rate == null)
+                {
+                    throw new Exception("გადმოცემული თარიღისთვის კურსი ვერ მოიძებნა");
+
+                }
+
+            }
+
+            calculation.Currency = rate.Currency.Currency1;
+            calculation.GrossForeign = empComp.Amount;
+            calculation.ExchangeRate = rate.ExchangeRate;
+
+            empComp.Amount = (decimal)(empComp.Amount * rate.ExchangeRate);
 
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
             {
