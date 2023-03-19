@@ -16,6 +16,9 @@ namespace PayrollServer.Models.DTOs
         public Guid? CoefficientId { get; set; }
         public string CoefficientName { get; set; }
         public ObjectStatus Status { get; set; }
+        public int Type { get; set; } // 1 - დარიცხვა, 2 დაკავება
+        public bool IgnoreIncome { get; set; } 
+        public string TypeName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime DateCreated { get; set; }

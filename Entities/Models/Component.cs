@@ -14,6 +14,8 @@ namespace Entities.Models
 
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int?  Type { get; set; }
+        public bool? IgnoreIncome { get; set; }
         public Guid? CreditAccountId { get; set; }
         public Guid? DebitAccountId { get; set; }
         public Guid? CoefficientId { get; set; }

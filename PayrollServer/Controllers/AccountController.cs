@@ -117,6 +117,7 @@ namespace PayrollServer.Controllers
         [Route("currentUser")]
         public UserModel GetCurrentUser()
         {
+
             var us = User;
             var usr = us.FindFirst(ClaimTypes.NameIdentifier);
             var username = usr.Value;

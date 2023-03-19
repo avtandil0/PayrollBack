@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities;
+using Entities.Enumerations;
 using Entities.FilterModels;
 using Entities.HelperModels;
 using Entities.Models;
@@ -111,7 +112,7 @@ namespace PayrollServer.Controllers
                 // Display the result of the operation.
 
 
-                return new Result(true, 1, rowsAffected.ToString() + " row(s) affected"); 
+                return new Result(true, 1, rowsAffected.ToString() + " row(s) affected");
             }
             catch (Exception e)
             {
@@ -127,18 +128,211 @@ namespace PayrollServer.Controllers
         [Route("calculate/{calculationDate}")]
         public Result CreateEmployee([FromBody] CalculationFilter calculationFilter, DateTime calculationDate)
         {
-            var rate = _repositoryContext.Rates.FirstOrDefault(r => r.Date == calculationDate);
-          
+
             try
             {
                 _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new Result(false, 0, e.Message);
             }
 
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        class FileEmployee
+        {
+            public string PersonalNumber { get; set; }
+            public Decimal Amount { get; set; }
+        }
+
+        [HttpPost]
+        [Route("CreateEmployeeFromFile")]
+        public async Task<Result> CreateEmployeeFromFileAsync([FromForm] IFormFile file)
+        {
+
+            //var rootFolder = @"E:\Files";//@"D:\Files";
+
+            //var fileName = file.FileName;
+            //var filePath = Path.Combine(rootFolder, fileName);
+            //var fileLocation = new FileInfo(filePath);
+
+            //using (var fileStream = new FileStream(filePath, FileMode.Create))
+            //{
+            //    await file.CopyToAsync(fileStream);
+            //}
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
+            {
+                ExcelWorksheet workSheet = package.Workbook.Worksheets["Summary"];
+                //var rootFolder = appConfig.Value.FileLocationConfig.Location;//@"D:\Files";
+
+                int totalRows = workSheet.Dimension.Rows;
+                var rowLength = workSheet.Dimension.End.Row;
+
+
+                List<FileEmployee> employees = new List<FileEmployee>();
+
+                var componentName = workSheet.Cells[3, 9].Value.ToString();
+
+                for (int i = 2; i <= rowLength; i++)
+                {
+                    FileEmployee fileEmployee = new FileEmployee
+                    {
+                        Amount = Decimal.Parse(workSheet.Cells[i, 8].Value.ToString()),
+                        PersonalNumber = workSheet.Cells[i, 7].Value.ToString()
+                    };
+
+                    employees.Add(fileEmployee);
+                }
+
+
+                var personalNumbers = employees.Select(x => x.PersonalNumber.Trim()).Distinct().ToList();
+                var empFromDb = _repositoryContext.Employees
+                            .Where(r => personalNumbers.Contains(r.PersonalNumber))
+                            .ToList();
+
+                var grossComponent = _repositoryContext.Components.First(r => r.Name.Trim() == componentName.Trim());
+
+                //var empComp = _repositoryContext.EmployeeComponents.
+                var currentDate = DateTime.Now;
+
+                List<Calculation> calculations = new List<Calculation>();
+
+                foreach (var item in employees)
+                {
+                    var emp = empFromDb.FirstOrDefault(r => r.PersonalNumber == item.PersonalNumber);
+                    if (emp != null)
+                    {
+                        var calculation = GetCalculationObjectForFile(currentDate, grossComponent, emp, item.Amount);
+                        calculations.Add(calculation);
+                    }
+
+                }
+                _repositoryContext.AddRange(calculations);
+                _repositoryContext.SaveChanges();
+
+
+            }
+
+            //var rate = _repositoryContext.Rates.FirstOrDefault(r => r.Date == calculationDate);
+
+            //try
+            //{
+            //    _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    return new Result(false, 0, e.Message);
+            //}
+
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
+        private Calculation GetCalculationObjectForFile(DateTime calculationDate, Component component, Employee employee, decimal amount)
+        {
+            var coefficient = _repositoryContext.Coefficients.Where(r => r.Id == component.CoefficientId && r.DateDeleted == null).FirstOrDefault();
+
+            Calculation calculation = new Calculation();
+
+
+
+            var empCompAmount = amount;
+
+            empCompAmount = Math.Round(empCompAmount, 2);
+
+            calculation.Id = Guid.NewGuid();
+            calculation.CalculationDate = calculationDate;
+            calculation.DateCreated = DateTime.Now;
+
+            calculation.EmployeeId = employee.Id;
+            //calculation.EmployeeComponentId = empComp.Id;
+
+
+            calculation.ResId = employee.ResId;
+            calculation.CompCode = component.Name;
+
+            calculation.PayrollYear = calculationDate.Year;
+            calculation.PayrollMonth = calculationDate.Month;
+            //calculation.SchemeTypeId = empComp.SchemeTypeId;
+            calculation.RemainingGraceAmount = 0;
+
+
+
+            calculation.Currency = "GEL";
+
+            //empComp.Amount = (decimal)(empComp.Amount * rate.ExchangeRate);
+
+            if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
+            {
+                calculation.Gross = empCompAmount * (decimal)coefficient.Sgross;
+                calculation.Net = empCompAmount * (decimal)coefficient.Snet;
+                calculation.Paid = empCompAmount * (decimal)coefficient.Spaid;
+                calculation.PensionTax = empCompAmount * (decimal)coefficient.Spension;
+                calculation.IncomeTax = empCompAmount * (decimal)coefficient.SincomeTax;
+            }
+
+            if (employee.SchemeTypeId == (int)SchemeTypeEnum.Pension)
+            {
+                calculation.Gross = empCompAmount * (decimal)coefficient.Pgross;
+                calculation.Net = empCompAmount * (decimal)coefficient.Pnet;
+                calculation.Paid = empCompAmount * (decimal)coefficient.Ppaid;
+                calculation.PensionTax = empCompAmount * (decimal)coefficient.Ppension;
+                calculation.IncomeTax = empCompAmount * (decimal)coefficient.PincomeTax;
+            }
+
+            if (employee.RemainingGraceAmount > 0)
+            {
+                var rem = employee.RemainingGraceAmount - (calculation.Gross - calculation.PensionTax);
+                if (rem > 0)
+                {
+                    employee.RemainingGraceAmount = rem;
+                    calculation.RemainingGraceAmount = rem;
+                    calculation.IncomeTax = 0;
+                    calculation.Net = calculation.Gross - calculation.PensionTax;
+                }
+                else
+                {
+                    calculation.IncomeTax = (decimal)((calculation.Gross - calculation.PensionTax - employee.RemainingGraceAmount) / 5);
+                    calculation.Net = calculation.Gross - calculation.PensionTax - calculation.IncomeTax;
+                    employee.RemainingGraceAmount = 0;
+                    calculation.RemainingGraceAmount = 0;
+                }
+
+            }
+
+            return calculation;
+        }
+
+        //public DateTime? CalculationPeriod { get; set; }
+        public class DeleteParams
+        {
+            public Guid Id { get; set; }
+            public DateTime? CalculationPeriod { get; set; }
+        }
+        [HttpDelete]
+        [Route("deleteCalculations")]
+        public Result DeleteCalculations([FromQuery] DeleteParams deleteParams)
+        {
+            var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
+            if(deleteParams.CalculationPeriod != null)
+            {
+                items = items.Where(r => r.PayrollYear == deleteParams.CalculationPeriod.Value.Year &&
+                                r.PayrollMonth == deleteParams.CalculationPeriod.Value.Month);
+            }
+
+
+            _repositoryContext.Calculations.RemoveRange(items);
+            _repositoryContext.SaveChanges();
+            _logger.LogInfo($"Calculation deleted");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
 
@@ -272,6 +466,9 @@ namespace PayrollServer.Controllers
             return fileStreamResult;
 
         }
+
+
+
 
     }
 }

@@ -49,7 +49,8 @@ namespace PayrollServer.Profiles
 
 
             CreateMap<Employee, EmployeeDTO>()
-                .ForMember(dest => dest.DepartmentName, act => act.MapFrom(src => src.Department.Name));
+                .ForMember(dest => dest.DepartmentName, act => act.MapFrom(src => src.Department.Name))
+                .ForMember(dest => dest.SchemeTypeName, act => act.MapFrom(src => src.SchemeType.Name));
             CreateMap<EmployeeDTO, Employee>();
 
          

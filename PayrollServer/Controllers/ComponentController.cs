@@ -38,6 +38,7 @@ namespace PayrollServer.Controllers
             var current = DateTime.Now;
             foreach (var comp in componentDTOs)
             {
+                comp.TypeName = comp.Type == 1 ? "დარიცხვა" : "დაკავება";
                 comp.Status = new ObjectStatus();
                 if (comp.StartDate.Date <= current.Date && comp.EndDate.Date >= current.Date)
                 {

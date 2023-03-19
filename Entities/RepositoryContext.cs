@@ -154,20 +154,22 @@ namespace Entities
 
                 entity.Property(e => e.DateDeleted).HasColumnType("datetime");
 
-                entity.Property(e => e.Gross).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Gross).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.IncomeTax).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.IncomeTax).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.Net).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Net).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.Paid).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Paid).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.ExchangeRate).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.GrossForeign).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.PensionTax).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.PensionTax).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.ResId).HasColumnName("Res_id");
-                entity.Property(e => e.TotalBalance).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.TotalBalance).HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.EmployeeComponent)
                     .WithMany(p => p.Calculations)
@@ -346,7 +348,7 @@ namespace Entities
                     .IsRequired()
                     .HasMaxLength(255);
 
-                entity.Property(e => e.GraceAmount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.GraceAmount).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.LandIso)
                     .HasMaxLength(10)
@@ -362,7 +364,7 @@ namespace Entities
 
                 entity.Property(e => e.Position).HasMaxLength(100);
 
-                entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.RemainingGraceAmount).HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(d => d.Department)
                     .WithMany(p => p.Employees)
@@ -402,9 +404,9 @@ namespace Entities
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.CashAmount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.CashAmount).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.Currency)
                     .IsRequired()
@@ -459,7 +461,7 @@ namespace Entities
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.DateChange).HasColumnType("datetime");
 

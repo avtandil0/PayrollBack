@@ -24,18 +24,18 @@ namespace Repository
         public Guid CreateEmployee(Employee employee)
         {
 
-            //var lastEmpoyee = this.RepositoryContext.Employees.OrderByDescending(r => r.ResId).FirstOrDefault();
-            //int newResId = 1;
-            //if (lastEmpoyee != null)
-            //{
-            //    newResId = lastEmpoyee.ResId;
-            //}
-            //newResId++;
+            var lastEmpoyee = this.RepositoryContext.Employees.OrderByDescending(r => r.ResId).FirstOrDefault();
+            int newResId = 1;
+            if (lastEmpoyee != null)
+            {
+                newResId = (int)lastEmpoyee.ResId;
+            }
+            newResId++;
 
             employee.Id = Guid.NewGuid();
             employee.DateCreated = DateTime.Now;
             employee.RemainingGraceAmount = employee.GraceAmount;
-            //employee.ResId = newResId;
+            employee.ResId = newResId;
 
             foreach (var item in employee.EmployeeComponents)
             {
@@ -71,7 +71,7 @@ namespace Repository
 
         public IEnumerable<Employee> GetAllEmployees()
         {
-            return GetAllIncluded(r => r.Department)
+            return GetAllIncluded(r => r.Department, r => r.SchemeType)
                     .Where(r => r.DateDeleted == null)
                 .OrderByDescending(r => r.DateCreated);
         }
@@ -148,6 +148,11 @@ namespace Repository
                 query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName)).ToList();
             }
 
+            if (calculationFilter.DepartmentId != null)
+            {
+                query = query.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId)).ToList();
+            }
+
             if (calculationFilter.CalculationPeriod != null)
             {
                 //query = query.Where(r => r.Calculations
@@ -158,6 +163,7 @@ namespace Repository
                 {
                     FirstName = r.FirstName,
                     LastName = r.LastName,
+                    Id = r.Id,
                     Calculations = r.Calculations.Where(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
                      && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year).ToList()
                 }).ToList();
@@ -204,6 +210,8 @@ namespace Repository
                         .ThenInclude(x => x.CostCenter)
                     .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null && e.IsPermanent == true))
                         .ThenInclude(x => x.Project)
+                    .Include(o => o.EmployeeComponents.Where(e => e.DateDeleted == null && e.IsPermanent == true))
+                        .ThenInclude(x => x.SchemeType)
                     .Where(r => r.DateDeleted == null && r.Id == id)
                     .OrderByDescending(r => r.DateCreated).FirstOrDefault();
 

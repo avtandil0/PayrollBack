@@ -237,6 +237,80 @@ namespace Repository
             throw new NotImplementedException();
         }
 
+        public Calculation GetCalculationObjectForFile(DateTime calculationDate, Component component, Employee employee, decimal amount)
+        {
+            var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == component.CoefficientId && r.DateDeleted == null).FirstOrDefault();
+
+            Calculation calculation = new Calculation();
+
+
+
+            var empCompAmount = amount;
+
+            empCompAmount = Math.Round(empCompAmount, 2);
+
+            calculation.Id = Guid.NewGuid();
+            calculation.CalculationDate = calculationDate;
+            calculation.DateCreated = DateTime.Now;
+
+            calculation.EmployeeId = employee.Id;
+            //calculation.EmployeeComponentId = empComp.Id;
+
+
+            calculation.ResId = employee.ResId;
+            calculation.CompCode = component.Name;
+
+            calculation.PayrollYear = calculationDate.Year;
+            calculation.PayrollMonth = calculationDate.Month;
+            //calculation.SchemeTypeId = empComp.SchemeTypeId;
+            calculation.RemainingGraceAmount = 0;
+
+
+
+            calculation.Currency = "GEL";
+
+            //empComp.Amount = (decimal)(empComp.Amount * rate.ExchangeRate);
+
+            if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
+            {
+                calculation.Gross = empCompAmount * (decimal)coefficient.Sgross;
+                calculation.Net = empCompAmount * (decimal)coefficient.Snet;
+                calculation.Paid = empCompAmount * (decimal)coefficient.Spaid;
+                calculation.PensionTax = empCompAmount * (decimal)coefficient.Spension;
+                calculation.IncomeTax = empCompAmount * (decimal)coefficient.SincomeTax;
+            }
+
+            if (employee.SchemeTypeId == (int)SchemeTypeEnum.Pension)
+            {
+                calculation.Gross = empCompAmount * (decimal)coefficient.Pgross;
+                calculation.Net = empCompAmount * (decimal)coefficient.Pnet;
+                calculation.Paid = empCompAmount * (decimal)coefficient.Ppaid;
+                calculation.PensionTax = empCompAmount * (decimal)coefficient.Ppension;
+                calculation.IncomeTax = empCompAmount * (decimal)coefficient.PincomeTax;
+            }
+
+            if (employee.RemainingGraceAmount > 0)
+            {
+                var rem = employee.RemainingGraceAmount - (calculation.Gross - calculation.PensionTax);
+                if (rem > 0)
+                {
+                    employee.RemainingGraceAmount = rem;
+                    calculation.RemainingGraceAmount = rem;
+                    calculation.IncomeTax = 0;
+                    calculation.Net = calculation.Gross - calculation.PensionTax;
+                }
+                else
+                {
+                    calculation.IncomeTax = (decimal)((calculation.Gross - calculation.PensionTax - employee.RemainingGraceAmount) / 5);
+                    calculation.Net = calculation.Gross - calculation.PensionTax - calculation.IncomeTax;
+                    employee.RemainingGraceAmount = 0;
+                    calculation.RemainingGraceAmount = 0;
+                }
+
+            }
+
+            return calculation;
+        }
         public Calculation GetCalculationObject(DateTime calculationDate, Guid? coefficientId, Employee employee, EmployeeComponent empComp)
         {
 
@@ -286,7 +360,8 @@ namespace Repository
             calculation.SchemeTypeId = empComp.SchemeTypeId;
             calculation.RemainingGraceAmount = 0;
 
-            Rate rate = new Rate(); ;
+            Rate rate = new Rate();
+            decimal exchangeRate = 1;
             if (empComp.Currency > 1)
             {
                 rate = RepositoryContext.Rates.Include(r => r.Currency).FirstOrDefault(r => r.CurrencyId == empComp.Currency
@@ -296,14 +371,19 @@ namespace Repository
                     throw new Exception("გადმოცემული თარიღისთვის კურსი ვერ მოიძებნა");
 
                 }
+                exchangeRate = (decimal)rate.ExchangeRate;
 
             }
+            else
+            {
+                calculation.Currency = empComp.Currency.ToString();
+            }
 
-            calculation.Currency = rate.Currency.Currency1;
+           
             calculation.GrossForeign = empComp.Amount;
             calculation.ExchangeRate = rate.ExchangeRate;
 
-            empComp.Amount = (decimal)(empComp.Amount * rate.ExchangeRate);
+            empComp.Amount = (decimal)(empComp.Amount * exchangeRate);
 
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
             {
@@ -323,7 +403,7 @@ namespace Repository
                 calculation.IncomeTax = empCompAmount * (decimal)coefficient.PincomeTax;
             }
 
-            if (employee.RemainingGraceAmount > 0)
+            if (employee.RemainingGraceAmount > 0  && calculation.Net > 0 && component.IgnoreIncome == false)
             {
                 var rem = employee.RemainingGraceAmount - (calculation.Gross - calculation.PensionTax);
                 if (rem > 0)

@@ -4,6 +4,7 @@ using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PayrollServer.Models;
 using PayrollServer.Models.DTOs;
 using System;
@@ -34,7 +35,7 @@ namespace PayrollServer.Controllers
         [HttpGet]
         public IEnumerable<Rate> GetAllRates()
         {
-            var rates = _repositoryContext.Rates.ToList();
+            var rates = _repositoryContext.Rates.Include(r => r.Currency).ToList();
 
 
             return rates;

@@ -4,14 +4,16 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Entities.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230317112423_addTypeInComponent1")]
+    partial class addTypeInComponent1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,9 +356,6 @@ namespace Entities.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
-
-                    b.Property<bool?>("IgnoreIncome")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
