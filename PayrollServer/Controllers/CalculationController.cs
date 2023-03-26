@@ -323,13 +323,19 @@ namespace PayrollServer.Controllers
         public Result DeleteCalculations([FromQuery] DeleteParams deleteParams)
         {
             var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
-            if(deleteParams.CalculationPeriod != null)
+            if (deleteParams.CalculationPeriod != null)
             {
                 items = items.Where(r => r.PayrollYear == deleteParams.CalculationPeriod.Value.Year &&
                                 r.PayrollMonth == deleteParams.CalculationPeriod.Value.Month);
             }
 
+            var employee = _repositoryContext.Employees.Where(r => r.Id == deleteParams.Id).FirstOrDefault();
+            if (employee != null)
+            {
+                employee.RemainingGraceAmount = employee.GraceAmount;
+            }
 
+            _repositoryContext.Employees.Update(employee);
             _repositoryContext.Calculations.RemoveRange(items);
             _repositoryContext.SaveChanges();
             _logger.LogInfo($"Calculation deleted");
@@ -345,7 +351,55 @@ namespace PayrollServer.Controllers
         {
 
             var item = _repositoryContext.Calculations.Where(r => r.Id == id).FirstOrDefault();
-            item.DateDeleted = DateTime.Now;
+            //item.DateDeleted = DateTime.Now;
+
+            var nextCalculations = _repositoryContext.Calculations.Where(r => r.PayrollYear == item.PayrollYear
+                                && r.CalculationDate > item.CalculationDate)
+                                .OrderBy(r=>r.CalculationDate);
+            var employee = _repositoryContext.Employees.Where(r => r.Id == item.EmployeeId).FirstOrDefault();
+
+            var lastCalc = _repositoryContext.Calculations.Where(r=>r.EmployeeId == item.EmployeeId && r.PayrollYear == item.PayrollYear
+                        && r.CalculationDate < item.CalculationDate)
+                        .OrderByDescending(r => r.CalculationDate)//.ThenBy(r => r.DateCreated)
+                                   .FirstOrDefault();
+
+            var correctRemaining = employee.GraceAmount;
+            if(lastCalc == null)
+            {
+                correctRemaining = employee.GraceAmount;
+            }
+            else
+            {
+                correctRemaining = lastCalc.RemainingGraceAmount;
+            }
+            if(employee == null)
+            {
+                return new Result(false, 0, "Employee Null");
+            }
+
+            var remaining = correctRemaining - (item.Gross - item.PensionTax);
+            if (!nextCalculations.Any())
+            {
+                employee.RemainingGraceAmount = correctRemaining;
+            }
+
+            foreach (var calc in nextCalculations)
+            {
+                //employee.RemainingGraceAmount = remaining;
+                //calc.RemainingGraceAmount = remaining;
+                if(correctRemaining > 0)
+                {
+                    calc.IncomeTax = 0;
+                    calc.Net = calc.Gross - calc.PensionTax;
+                    calc.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax);
+                    employee.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax); ;
+                }
+                correctRemaining = correctRemaining - (calc.Gross - calc.PensionTax);
+            }
+
+            _repositoryContext.Calculations.Remove(item);
+            _repositoryContext.Employees.Update(employee);
+            _repositoryContext.Calculations.UpdateRange(nextCalculations);
 
             _repositoryContext.SaveChanges();
             _logger.LogInfo($"Calculation deleted");

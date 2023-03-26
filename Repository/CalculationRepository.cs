@@ -402,7 +402,18 @@ namespace Repository
                 calculation.PensionTax = empCompAmount * (decimal)coefficient.Ppension;
                 calculation.IncomeTax = empCompAmount * (decimal)coefficient.PincomeTax;
             }
-
+            //mimdinare kalkulacia
+            var correctRemaining = employee.GraceAmount;
+            var lastCalc = RepositoryContext.Calculations.Where(r => r.EmployeeId == calculation.EmployeeId
+                        && r.PayrollYear == calculation.PayrollYear
+                       && r.CalculationDate < calculation.CalculationDate)
+                       .OrderByDescending(r => r.CalculationDate)//.ThenBy(r => r.DateCreated)
+                                  .FirstOrDefault();
+            if (lastCalc == null)
+            {
+                correctRemaining = employee.GraceAmount;
+            }
+            
             if (employee.RemainingGraceAmount > 0  && calculation.Net > 0 && component.IgnoreIncome == false)
             {
                 var rem = employee.RemainingGraceAmount - (calculation.Gross - calculation.PensionTax);
@@ -422,6 +433,27 @@ namespace Repository
                 }
 
             }
+
+            //shemdegi kalkulacia
+            var nextCalculations = RepositoryContext.Calculations.Where(r => r.PayrollYear == calculation.PayrollYear
+                                && r.CalculationDate > calculation.CalculationDate)
+                                .OrderBy(r => r.CalculationDate);
+
+            foreach (var calc in nextCalculations)
+            {
+                //employee.RemainingGraceAmount = remaining;
+                //calc.RemainingGraceAmount = remaining;
+                if(calculation.RemainingGraceAmount > 0)
+                {
+                    calc.IncomeTax = 0;
+                    calc.Net = calc.Gross - calc.PensionTax;
+                    calc.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax);
+                    employee.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax); ;
+                }
+                correctRemaining = correctRemaining - (calc.Gross - calc.PensionTax);
+            }
+
+
 
             return calculation;
         }
