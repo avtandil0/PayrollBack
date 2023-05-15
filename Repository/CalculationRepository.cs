@@ -21,6 +21,38 @@ namespace Repository
         {
         }
 
+        public void CreateCalculationWithComponent(CalculationFilter calculationFilter, DateTime calculationDate, Guid componentId,
+             decimal amount, int currency)
+        {
+
+
+            var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null)).Where(r => r.DateDeleted == null);
+
+            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            {
+                employees = employees.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
+            }
+
+            if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            {
+                employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+            }
+
+            var currentTime = DateTime.Now;
+            foreach (var emp in employees)
+            {
+                var component = RepositoryContext.Components.Where(r => r.Id == componentId && r.DateDeleted == null).FirstOrDefault();
+
+                var calculation = GetCalculationObject(calculationDate, component.CoefficientId, emp, null, component, amount, currency);
+
+                Create(calculation);
+
+            }
+
+
+
+            Save();
+        }
         public void CreateCalculation(CalculationFilter calculationFilter, DateTime calculationDate)
         {
 
@@ -62,7 +94,7 @@ namespace Repository
                     }
 
 
-                    var calculation = GetCalculationObject(calculationDate, component.CoefficientId, emp, empComp);
+                    var calculation = GetCalculationObject(calculationDate, component.CoefficientId, emp, empComp, null, null, null);
 
                     Create(calculation);
 
@@ -192,7 +224,8 @@ namespace Repository
 
                     var component = RepositoryContext.Components.Where(r => r.Id == paidHelper.ComponentID).FirstOrDefault();
 
-                    var calculation = GetCalculationObject(paidHelper.PaidDate, component.CoefficientId, employee, employeeComponent);
+                    var calculation = GetCalculationObject(paidHelper.PaidDate, component.CoefficientId, employee, employeeComponent,
+                                                                null, null, null);
 
                     var lastPaid = RepositoryContext.Calculations
                         .Where(r => r.DateDeleted == null && r.EmployeeId == employee.Id && r.EmployeeComponentId == paidHelper.ComponentID)
@@ -311,35 +344,45 @@ namespace Repository
 
             return calculation;
         }
-        public Calculation GetCalculationObject(DateTime calculationDate, Guid? coefficientId, Employee employee, EmployeeComponent empComp)
+        public Calculation GetCalculationObject(DateTime calculationDate, Guid? coefficientId, Employee employee,
+            EmployeeComponent empComp, Component? newComponent, decimal? newAmount, int? newCurrency)
         {
 
             var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == coefficientId && r.DateDeleted == null).FirstOrDefault();
 
             Calculation calculation = new Calculation();
-
-            var amount = empComp.Amount;
-
+            decimal amount = 0;
+            if (empComp != null)
+            {
+                amount = empComp.Amount;
+            }
+            if (newAmount != null)
+            {
+                amount = (decimal)newAmount;
+            }
 
             var empCompAmount = amount;
-            if (empComp.PaymentDaysTypeId == (int)Entities.Enumerations.PaymentDaysType.CalendarDay)
+            if (empComp != null)
             {
-                var currentDate = DateTime.Now;
-                if ((empComp.StartDate.Month == currentDate.Month && empComp.StartDate.Year == currentDate.Year))
+                if (empComp.PaymentDaysTypeId == (int)Entities.Enumerations.PaymentDaysType.CalendarDay)
                 {
-                    var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
-                    var workingDays = daysInMonth - empComp.StartDate.Day;
+                    var currentDate = DateTime.Now;
+                    if ((empComp.StartDate.Month == calculationDate.Month && empComp.StartDate.Year == calculationDate.Year))
+                    {
+                        var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
+                        var workingDays = daysInMonth - empComp.StartDate.Day;
 
-                    empCompAmount = empComp.Amount / daysInMonth * workingDays;
-                }
-                if ((empComp.EndDate.Month == currentDate.Month && empComp.EndDate.Year == currentDate.Year))
-                {
-                    var daysInMonth = DateTime.DaysInMonth(empComp.EndDate.Year, empComp.EndDate.Month);
-                    var workingDays = daysInMonth - empComp.EndDate.Day;
+                        empCompAmount = empComp.Amount / daysInMonth * workingDays;
+                    }
+                    if ((empComp.EndDate?.Month == calculationDate.Month && empComp.EndDate?.Year == calculationDate.Year))
+                    {
+                        var daysInMonth = DateTime.DaysInMonth((int)(empComp.EndDate?.Year), (int)(empComp.EndDate?.Month));
+                        var workingDays = daysInMonth - empComp.EndDate?.Day;
 
-                    empCompAmount = empComp.Amount / daysInMonth * workingDays;
+                    }
                 }
             }
+
 
             empCompAmount = Math.Round(empCompAmount, 2);
 
@@ -348,43 +391,90 @@ namespace Repository
             calculation.DateCreated = DateTime.Now;
 
             calculation.EmployeeId = employee.Id;
-            calculation.EmployeeComponentId = empComp.Id;
+            Guid? EmployeeComponentId = null;
+            if (empComp != null)
+            {
+                EmployeeComponentId = empComp.Id;
+            }
+            calculation.EmployeeComponentId = EmployeeComponentId;
 
-            var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId).FirstOrDefault();
+            Component? component = null;
+
+            if (newComponent == null)
+            {
+                component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId).FirstOrDefault();
+            }
+            else
+            {
+                component = newComponent;
+            }
 
             calculation.ResId = employee.ResId;
             calculation.CompCode = component.Name;
 
             calculation.PayrollYear = calculationDate.Year;
             calculation.PayrollMonth = calculationDate.Month;
-            calculation.SchemeTypeId = empComp.SchemeTypeId;
+            int? SchemeTypeId = null;
+            if (empComp != null)
+            {
+                SchemeTypeId = empComp.SchemeTypeId;
+            }
+
+            calculation.SchemeTypeId = SchemeTypeId;
             calculation.RemainingGraceAmount = 0;
 
             Rate rate = new Rate();
             decimal exchangeRate = 1;
-            if (empComp.Currency > 1)
+            if (empComp != null)
             {
-                rate = RepositoryContext.Rates.Include(r => r.Currency).FirstOrDefault(r => r.CurrencyId == empComp.Currency
-                                                       && calculationDate == r.Date);
-                if (rate == null)
+                if (empComp.Currency > 1)
                 {
-                    throw new Exception("გადმოცემული თარიღისთვის კურსი ვერ მოიძებნა");
+                    rate = RepositoryContext.Rates.Include(r => r.Currency).FirstOrDefault(r => r.CurrencyId == empComp.Currency
+                                                           && calculationDate == r.Date);
+                    if (rate == null)
+                    {
+                        throw new Exception("გადმოცემული თარიღისთვის კურსი ვერ მოიძებნა");
+
+                    }
+                    exchangeRate = (decimal)rate.ExchangeRate;
 
                 }
-                exchangeRate = (decimal)rate.ExchangeRate;
-
+                else
+                {
+                    calculation.Currency = empComp.Currency.ToString();
+                }
             }
             else
             {
-                calculation.Currency = empComp.Currency.ToString();
+                if (newCurrency > 1)
+                {
+                    rate = RepositoryContext.Rates.Include(r => r.Currency).FirstOrDefault(r => r.CurrencyId == newCurrency
+                                                           && calculationDate == r.Date);
+                    if (rate == null)
+                    {
+                        throw new Exception("გადმოცემული თარიღისთვის კურსი ვერ მოიძებნა");
+
+                    }
+                    exchangeRate = (decimal)rate.ExchangeRate;
+                }
+
+            }
+
+
+            if (exchangeRate > 1)
+            {
+                calculation.GrossForeign = empComp?.Amount;
+                calculation.ExchangeRate = rate.ExchangeRate;
             }
 
            
-            calculation.GrossForeign = empComp.Amount;
-            calculation.ExchangeRate = rate.ExchangeRate;
 
-            empComp.Amount = (decimal)(empComp.Amount * exchangeRate);
+            if(empComp != null)
+            {
+                empComp.Amount = (decimal)(empComp.Amount * exchangeRate);
+            }
 
+            calculation.BaseValue = empComp.Amount;
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
             {
                 calculation.Gross = empCompAmount * (decimal)coefficient.Sgross;
@@ -402,7 +492,7 @@ namespace Repository
                 calculation.PensionTax = empCompAmount * (decimal)coefficient.Ppension;
                 calculation.IncomeTax = empCompAmount * (decimal)coefficient.PincomeTax;
             }
-            //mimdinare kalkulacia
+            //მიმდინარე კალკულაცია
             var correctRemaining = employee.GraceAmount;
             var lastCalc = RepositoryContext.Calculations.Where(r => r.EmployeeId == calculation.EmployeeId
                         && r.PayrollYear == calculation.PayrollYear
@@ -413,11 +503,16 @@ namespace Repository
             {
                 correctRemaining = employee.GraceAmount;
             }
-            
-            if (employee.RemainingGraceAmount > 0  && calculation.Net > 0 && component.IgnoreIncome == false)
+            else
             {
-                var rem = employee.RemainingGraceAmount - (calculation.Gross - calculation.PensionTax);
-                if (rem > 0)
+                correctRemaining = lastCalc.RemainingGraceAmount;
+            }
+
+            if (correctRemaining > 0 && calculation.Net > 0 && component.IgnoreIncome == false)
+            {
+                var rem = correctRemaining - (calculation.Gross - calculation.PensionTax);
+                correctRemaining = rem;
+                if (rem >= 0)
                 {
                     employee.RemainingGraceAmount = rem;
                     calculation.RemainingGraceAmount = rem;
@@ -434,7 +529,7 @@ namespace Repository
 
             }
 
-            //shemdegi kalkulacia
+            //მომდევნო კალკულაციები
             var nextCalculations = RepositoryContext.Calculations.Where(r => r.PayrollYear == calculation.PayrollYear
                                 && r.CalculationDate > calculation.CalculationDate)
                                 .OrderBy(r => r.CalculationDate);
@@ -443,17 +538,24 @@ namespace Repository
             {
                 //employee.RemainingGraceAmount = remaining;
                 //calc.RemainingGraceAmount = remaining;
-                if(calculation.RemainingGraceAmount > 0)
+                if (correctRemaining > 0)
                 {
                     calc.IncomeTax = 0;
                     calc.Net = calc.Gross - calc.PensionTax;
                     calc.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax);
                     employee.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax); ;
                 }
+                else
+                {
+                    calc.IncomeTax = (decimal)((calc.Gross - calc.PensionTax - employee.RemainingGraceAmount) / 5);
+                    calc.Net = calc.Gross - calc.PensionTax - calc.IncomeTax;
+                    employee.RemainingGraceAmount = 0;
+                    calc.RemainingGraceAmount = 0;
+                }
                 correctRemaining = correctRemaining - (calc.Gross - calc.PensionTax);
             }
 
-
+            RepositoryContext.Calculations.UpdateRange(nextCalculations);
 
             return calculation;
         }

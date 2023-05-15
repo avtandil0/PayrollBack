@@ -19,7 +19,7 @@ namespace Entities.Models
         public Guid? CostCenterId { get; set; }
         public int? PaymentDaysTypeId { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int? SchemeTypeId { get; set; }
         public decimal Amount { get; set; }
         public int Currency { get; set; }

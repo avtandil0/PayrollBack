@@ -16,6 +16,7 @@ namespace Entities.Models
         public int? PayrollMonth { get; set; }
         public DateTime? CalculationDate { get; set; }
         public int? SchemeTypeId { get; set; }
+        public decimal BaseValue { get; set; }
         public decimal Gross { get; set; }
         public decimal Net { get; set; }
         public decimal Paid { get; set; }

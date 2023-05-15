@@ -42,7 +42,7 @@ namespace PayrollServer.Controllers
             foreach (var comp in employeeDTO.EmployeeComponents)
             {
                 comp.Status = new ObjectStatus();
-                if (comp.StartDate.Date <= current.Date && comp.EndDate.Date >= current.Date)
+                if (comp.StartDate.Date <= current.Date && comp.EndDate?.Date >= current.Date)
                 {
                     comp.Status.Value = 1;
                 }
@@ -54,7 +54,7 @@ namespace PayrollServer.Controllers
                     {
                         comp.Status.FieldNames.Add("StartDate");
                     }
-                    if (comp.EndDate.Date < current.Date)
+                    if (comp.EndDate?.Date < current.Date)
                     {
                         comp.Status.FieldNames.Add("EndDate");
                     }
@@ -73,7 +73,7 @@ namespace PayrollServer.Controllers
             var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
 
             IEnumerable<EmployeeDTO> calculationDTOs = _mapper.Map<IEnumerable<EmployeeDTO>>(employees);
-
+            
             return calculationDTOs;
         }
 

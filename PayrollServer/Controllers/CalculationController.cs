@@ -54,10 +54,17 @@ namespace PayrollServer.Controllers
 
         [HttpGet]
         [Route("GetDeclaration")]
-        public IEnumerable<PayrollReportDatum> GetDeclaration()
+        public IEnumerable<PayrollReportDatum> GetDeclaration(int year, int month)
         {
-            var declarations = _repositoryContext.PayrollReportData.ToList();
-
+            var declarations = _repositoryContext.PayrollReportData.Select(r => r);
+            if (year != null)
+            {
+                declarations = declarations.Where(r => r.PayrollYear == year);
+            }
+            if (month != null)
+            {
+                declarations = declarations.Where(r => r.Period == month);
+            }
             return declarations;
         }
 
@@ -121,6 +128,27 @@ namespace PayrollServer.Controllers
             }
 
             return new Result(false, 0, "Errorr ! ! !");
+
+        }
+
+        [HttpPost]
+        [Route("addCalculation/{calculationDate}/{componentId}/{amount}/{currency}")]
+        public Result addCalculation([FromBody] CalculationFilter calculationFilter, DateTime calculationDate,
+                Guid componentId, decimal amount, int currency)
+        {
+
+            try
+            {
+                _repository.Calculation.CreateCalculationWithComponent(calculationFilter, calculationDate, componentId, amount, currency);
+
+            }
+            catch (Exception e)
+            {
+                return new Result(false, 0, e.Message);
+            }
+
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
 
@@ -355,16 +383,16 @@ namespace PayrollServer.Controllers
 
             var nextCalculations = _repositoryContext.Calculations.Where(r => r.PayrollYear == item.PayrollYear
                                 && r.CalculationDate > item.CalculationDate)
-                                .OrderBy(r=>r.CalculationDate);
+                                .OrderBy(r => r.CalculationDate);
             var employee = _repositoryContext.Employees.Where(r => r.Id == item.EmployeeId).FirstOrDefault();
 
-            var lastCalc = _repositoryContext.Calculations.Where(r=>r.EmployeeId == item.EmployeeId && r.PayrollYear == item.PayrollYear
+            var lastCalc = _repositoryContext.Calculations.Where(r => r.EmployeeId == item.EmployeeId && r.PayrollYear == item.PayrollYear
                         && r.CalculationDate < item.CalculationDate)
                         .OrderByDescending(r => r.CalculationDate)//.ThenBy(r => r.DateCreated)
                                    .FirstOrDefault();
 
             var correctRemaining = employee.GraceAmount;
-            if(lastCalc == null)
+            if (lastCalc == null)
             {
                 correctRemaining = employee.GraceAmount;
             }
@@ -372,7 +400,7 @@ namespace PayrollServer.Controllers
             {
                 correctRemaining = lastCalc.RemainingGraceAmount;
             }
-            if(employee == null)
+            if (employee == null)
             {
                 return new Result(false, 0, "Employee Null");
             }
@@ -387,7 +415,7 @@ namespace PayrollServer.Controllers
             {
                 //employee.RemainingGraceAmount = remaining;
                 //calc.RemainingGraceAmount = remaining;
-                if(correctRemaining > 0)
+                if (correctRemaining > 0)
                 {
                     calc.IncomeTax = 0;
                     calc.Net = calc.Gross - calc.PensionTax;
@@ -407,6 +435,7 @@ namespace PayrollServer.Controllers
             return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
+
 
 
         [HttpPost]

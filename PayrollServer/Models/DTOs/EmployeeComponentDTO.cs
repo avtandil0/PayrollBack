@@ -19,7 +19,7 @@ namespace PayrollServer.Models.DTOs
         public int PaymentDaysTypeId { get; set; }
         public string PaymentDaysTypeName { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public int SchemeTypeId { get; set; }
         public string SchemeTypeName { get; set; }
         public decimal Amount { get; set; }
