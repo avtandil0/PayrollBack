@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Entities;
 
 namespace PayrollServer.Controllers
 {
@@ -19,26 +20,30 @@ namespace PayrollServer.Controllers
         private ILoggerManager _logger;
         private IRepositoryWrapper _repository;
         private readonly IMapper _mapper;
+        private RepositoryContext _repositoryContext;
 
 
-        public ComponentController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+        public ComponentController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper, RepositoryContext repositoryContext)
         {
             _logger = logger;
             _repository = repository;
             _mapper = mapper;
+            _repositoryContext = repositoryContext;
         }
 
         [HttpGet]
         public IEnumerable<ComponentDTO> GetAllComponents()
         {
             var components = _repository.Component.GetAllComponents();
+            var componentTypes = _repositoryContext.ComponentTypes.ToList();
 
             IEnumerable<ComponentDTO> componentDTOs = _mapper.Map<IEnumerable<ComponentDTO>>(components);
             
             var current = DateTime.Now;
             foreach (var comp in componentDTOs)
             {
-                comp.TypeName = comp.Type == 1 ? "დარიცხვა" : "დაკავება";
+                var ctn = componentTypes.Find(r => r.Id == comp.Type);
+                comp.TypeName = ctn.Name;
                 comp.Status = new ObjectStatus();
                 if (comp.StartDate.Date <= current.Date && comp.EndDate.Date >= current.Date)
                 {

@@ -366,20 +366,24 @@ namespace Repository
             {
                 if (empComp.PaymentDaysTypeId == (int)Entities.Enumerations.PaymentDaysType.CalendarDay)
                 {
-                    var currentDate = DateTime.Now;
-                    if ((empComp.StartDate.Month == calculationDate.Month && empComp.StartDate.Year == calculationDate.Year))
+                    if (empComp.Component.Type != 2)
                     {
-                        var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
-                        var workingDays = daysInMonth - empComp.StartDate.Day;
+                        var currentDate = DateTime.Now;
+                        if ((empComp.StartDate.Month == calculationDate.Month && empComp.StartDate.Year == calculationDate.Year))
+                        {
+                            var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
+                            var workingDays = daysInMonth - empComp.StartDate.Day;
 
-                        empCompAmount = empComp.Amount / daysInMonth * workingDays;
-                    }
-                    if ((empComp.EndDate?.Month == calculationDate.Month && empComp.EndDate?.Year == calculationDate.Year))
-                    {
-                        var daysInMonth = DateTime.DaysInMonth((int)(empComp.EndDate?.Year), (int)(empComp.EndDate?.Month));
-                        var workingDays = daysInMonth - empComp.EndDate?.Day;
+                            empCompAmount = empComp.Amount / daysInMonth * (workingDays + 1);
+                        }
+                        if ((empComp.EndDate?.Month == calculationDate.Month && empComp.EndDate?.Year == calculationDate.Year))
+                        {
+                            var daysInMonth = DateTime.DaysInMonth((int)(empComp.EndDate?.Year), (int)(empComp.EndDate?.Month));
+                            var workingDays = daysInMonth - empComp.EndDate?.Day;
 
+                        }
                     }
+
                 }
             }
 
@@ -467,9 +471,9 @@ namespace Repository
                 calculation.ExchangeRate = rate.ExchangeRate;
             }
 
-           
 
-            if(empComp != null)
+
+            if (empComp != null)
             {
                 empComp.Amount = (decimal)(empComp.Amount * exchangeRate);
             }

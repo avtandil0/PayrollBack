@@ -39,6 +39,25 @@ namespace PayrollServer.Controllers
                 query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName));
             }
 
+            if(calculationFilter.DepartmentId != null && calculationFilter.DepartmentId.Count() > 0)
+            {
+                query = query.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId));
+            }
+
+            if (calculationFilter.CalculationPeriod != null)
+            {
+                query = query.Where(r => r.Calculations
+                            .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                                && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+
+                //query = query.Include(r => r.Calculations.Where(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                //     && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+                //query = query.Include(r => r.Calculations).Where(c => c.Calculations
+                //            .Where(k => k.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                //                     && k.PayrollYear == calculationFilter.CalculationPeriod.Value.Year)));
+            }
+
+
             return query.Include(r => r.EmployeeComponents.Where(k => k.DateDeleted == null))
                             .ThenInclude(r => r.Component).Where(d => d.DateDeleted == null).ToList();
         }
