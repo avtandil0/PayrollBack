@@ -145,7 +145,7 @@ namespace Repository
 
             if (!string.IsNullOrEmpty(calculationFilter.LastName))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName)).ToList();
+                query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
             }
 
             if (calculationFilter.DepartmentId != null)
