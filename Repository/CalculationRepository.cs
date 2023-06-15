@@ -478,7 +478,16 @@ namespace Repository
                 empComp.Amount = (decimal)(empComp.Amount * exchangeRate);
             }
 
-            calculation.BaseValue = empComp.Amount;
+            if(empComp != null)
+            {
+                calculation.BaseValue = empComp.Amount;
+            }
+            else
+            {
+                calculation.BaseValue = (decimal)newAmount;
+            }
+
+            
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
             {
                 calculation.Gross = empCompAmount * (decimal)coefficient.Sgross;

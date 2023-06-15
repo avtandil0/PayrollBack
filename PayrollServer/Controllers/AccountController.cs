@@ -72,6 +72,7 @@ namespace PayrollServer.Controllers
                 FirstName = "Admin",
                 LastName = "Admin",
                 UserName = "admin",
+                
             };
 
             var result = await userManager.CreateAsync(admin, "Admin123#");
