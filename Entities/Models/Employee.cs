@@ -34,6 +34,7 @@ namespace Entities.Models
         public int? EmployeeGraceTypeId { get; set; }
         public decimal? RemainingGraceAmount { get; set; }
         public decimal? GraceAmount { get; set; }
+        public decimal? GraceAmountPercent { get; set; }
         public byte[] Avatar { get; set; }
 
         public virtual Department Department { get; set; }

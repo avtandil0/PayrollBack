@@ -51,6 +51,7 @@ namespace Repository
             com.DebitAccountId = component.DebitAccountId;
             com.StartDate = component.StartDate;
             com.EndDate = component.EndDate;
+            com.Code = component.Code;
 
             Update(com);
             Save();

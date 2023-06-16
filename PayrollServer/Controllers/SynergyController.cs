@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PayrollServer.Models.DTOs;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace PayrollServer.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class SynergyController : ControllerBase

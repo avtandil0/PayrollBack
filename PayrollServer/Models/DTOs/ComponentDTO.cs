@@ -11,6 +11,7 @@ namespace PayrollServer.Models.DTOs
         public string Name { get; set; }
         public Guid? CreditAccountId { get; set; }
         public string CreditAccountName { get; set; }
+        public string Code { get; set; }
         public Guid? DebitAccountId { get; set; }
         public string DebitAccountName { get; set; }
         public Guid? CoefficientId { get; set; }

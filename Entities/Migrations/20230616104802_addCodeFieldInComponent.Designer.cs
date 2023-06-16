@@ -4,14 +4,16 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Entities.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230616104802_addCodeFieldInComponent")]
+    partial class addCodeFieldInComponent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -526,9 +528,6 @@ namespace Entities.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<decimal?>("GraceAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("GraceAmountPercent")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("LandIso")

@@ -6,6 +6,8 @@ using Entities.FilterModels;
 using Entities.HelperModels;
 using Entities.Models;
 using ExcelLibrary.SpreadSheet;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -23,6 +25,7 @@ using System.Threading.Tasks;
 
 namespace PayrollServer.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class CalculationController : ControllerBase
