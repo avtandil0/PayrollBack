@@ -38,6 +38,7 @@ namespace Repository
             var dep = FindByCondition(r=> r.Id == department.Id).FirstOrDefault();
 
             dep.Name = department.Name;
+            dep.Code = department.Code;
             dep.DateChange = DateTime.Now;
             Update(dep);
             Save();

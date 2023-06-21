@@ -57,20 +57,59 @@ namespace Repository
         {
 
 
-            var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null)).Where(r => r.DateDeleted == null);
+            //var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null)).Where(r => r.DateDeleted == null);
+
+            //if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            //{
+            //    employees = employees.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
+            //}
+
+            //if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            //{
+            //    employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+            //}
+
+            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+                                                     .Include(r => r.EmployeeComponents)
+                                                     .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList();
+
 
             if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {
-                employees = employees.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName)).ToList();
             }
 
             if (!string.IsNullOrEmpty(calculationFilter.LastName))
             {
-                employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+                query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
             }
 
+            if (calculationFilter.DepartmentId != null)
+            {
+                query = query.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId)).ToList();
+            }
+
+            //if (calculationFilter.CalculationPeriod != null)
+            //{
+            //    query = query.Where(r => r.Calculations
+            //                .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+            //                    && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+
+            //    //query = query.where(r => new Employee
+            //    //{
+            //    //    FirstName = r.FirstName,
+            //    //    LastName = r.LastName,
+            //    //    Id = r.Id,
+            //    //    EmployeeComponents = r.EmployeeComponents.Where(c => c.DateDeleted == null).ToList()
+            //    //}).ToList();
+            //}
+
+
+
+
+
             var currentTime = DateTime.Now;
-            foreach (var emp in employees)
+            foreach (var emp in query)
             {
                 foreach (var empComp in emp.EmployeeComponents)
                 {
@@ -414,7 +453,7 @@ namespace Repository
             }
 
             calculation.ResId = employee.ResId;
-            calculation.CompCode = component.Name;
+            calculation.CompCode = component.Code;
 
             calculation.PayrollYear = calculationDate.Year;
             calculation.PayrollMonth = calculationDate.Month;

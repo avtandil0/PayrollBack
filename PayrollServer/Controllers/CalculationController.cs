@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace PayrollServer.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class CalculationController : ControllerBase
@@ -228,7 +228,7 @@ namespace PayrollServer.Controllers
                             .Where(r => personalNumbers.Contains(r.PersonalNumber))
                             .ToList();
 
-                var grossComponent = _repositoryContext.Components.First(r => r.Name.Trim() == componentName.Trim());
+                var grossComponent = _repositoryContext.Components.First(r => r.Code.Trim() == componentName.Trim());
 
                 //var empComp = _repositoryContext.EmployeeComponents.
                 var currentDate = DateTime.Now;
@@ -290,6 +290,7 @@ namespace PayrollServer.Controllers
 
             calculation.ResId = employee.ResId;
             calculation.CompCode = component.Name;
+            calculation.CompType = component.Type;
 
             calculation.PayrollYear = calculationDate.Year;
             calculation.PayrollMonth = calculationDate.Month;

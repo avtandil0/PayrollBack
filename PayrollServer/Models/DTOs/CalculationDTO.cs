@@ -11,6 +11,8 @@ namespace PayrollServer.Models.DTOs
         public int? ResId { get; set; }
         public Guid? EmployeeId { get; set; }
         public string FirstName { get; set; }
+        public string CompCode { get; set; }
+
         public string LastName { get; set; }
         public DateTime CalculationPeriod { get; set; }
         public DateTime CalculationDate { get; set; }

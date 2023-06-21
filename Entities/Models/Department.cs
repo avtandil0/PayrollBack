@@ -14,6 +14,7 @@ namespace Entities.Models
 
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Code { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }

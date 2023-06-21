@@ -47,6 +47,7 @@ namespace PayrollServer.Controllers
         {
             public Guid DepId { get; set; }
             public string DepName { get; set; }
+            public string DepCode { get; set; }
             public List<DepChildren> Children { get; set; }
         }
 
@@ -61,6 +62,7 @@ namespace PayrollServer.Controllers
             {
                 DepId = r.Id,
                 DepName = r.Name,
+                DepCode = r.Code,
                 Children = r.Employees.Where(e => e.DateDeleted == null).Select(e => new DepChildren
                 {
                     Id = e.Id,

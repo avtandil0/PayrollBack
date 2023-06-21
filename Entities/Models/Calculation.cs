@@ -12,6 +12,7 @@ namespace Entities.Models
         public Guid? EmployeeComponentId { get; set; }
         public int? ResId { get; set; }
         public string CompCode { get; set; }
+        public int? CompType { get; set; }
         public int? PayrollYear { get; set; }
         public int? PayrollMonth { get; set; }
         public DateTime? CalculationDate { get; set; }
