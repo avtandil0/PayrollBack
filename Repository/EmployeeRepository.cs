@@ -69,7 +69,7 @@ namespace Repository
             Save();
         }
 
-        public IEnumerable<Employee> GetAllEmployees()
+        public IQueryable<Employee> GetAllEmployees()
         {
             return GetAllIncluded(r => r.Department, r => r.SchemeType)
                     .Where(r => r.DateDeleted == null)

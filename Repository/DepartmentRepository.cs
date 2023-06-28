@@ -15,7 +15,7 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Department> GetAllDepartments()
+        public IQueryable<Department> GetAllDepartments()
         {
             //return FindByCondition(r => r.DateDeleted == null)
             //    .OrderByDescending(ow => ow.DateCreated);

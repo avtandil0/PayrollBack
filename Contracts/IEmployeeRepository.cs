@@ -10,7 +10,7 @@ namespace Contracts
 {
     public interface IEmployeeRepository : IRepositoryBase<Employee>
     {
-        IEnumerable<Employee> GetAllEmployees();
+        IQueryable<Employee> GetAllEmployees();
         Employee GetEmployeeById(Guid id);
         IEnumerable<Employee> GetEmployeeByDepartment(Guid depId);
         IEnumerable<Employee> GetCalculationByFilter(CalculationFilter calculationFilter);
