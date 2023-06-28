@@ -17,6 +17,7 @@ namespace Contracts
 
         ApplicationUser GetUser(Guid id);
         Task Update(ApplicationUser applicationUser, Guid Role);
+        void Delete(ApplicationUser applicationUser);
         ApplicationUser GetApplicationUser(string userName);
 
 

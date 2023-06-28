@@ -253,6 +253,23 @@ namespace PayrollServer.Controllers
             return new Result(true, 1, "წარმატებით დასრულდა");
         }
 
+        [HttpDelete]
+        [Route("Delete")]
+        public async Task<Result> Delete([FromBody] UserDTO model)
+        {
+
+
+            var user = _mapper.Map<UserDTO, ApplicationUser>(model);
+
+
+             userRepository.Delete(user);
+
+            //_logger.LogInfo($"Update Department id = &{department.Id}");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+        }
+
+
         [HttpGet]
         [Route("getAllUser")]
         public IEnumerable<UserModel> GetAllUser()

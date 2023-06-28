@@ -39,7 +39,7 @@ namespace PayrollServer.Controllers
 
             if (!string.IsNullOrEmpty(calculationFilter.LastName))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+                query = query.Where(r => r.LastName.Contains(calculationFilter.LastName));
             }
 
             if(calculationFilter.DepartmentId != null && calculationFilter.DepartmentId.Count() > 0)
@@ -60,9 +60,10 @@ namespace PayrollServer.Controllers
                 //                     && k.PayrollYear == calculationFilter.CalculationPeriod.Value.Year)));
             }
 
-
-            return query.Include(r => r.EmployeeComponents.Where(k => k.DateDeleted == null))
-                            .ThenInclude(r => r.Component).Where(d => d.DateDeleted == null).ToList();
+            var data = query.Include(r => r.EmployeeComponents.Where(k => k.DateDeleted == null))
+                            .ThenInclude(r => r.Component).AsNoTracking().Where(d => d.DateDeleted == null);
+            var dataC = data.Count();
+            return data;
         }
        
 
