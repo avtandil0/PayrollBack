@@ -138,15 +138,15 @@ namespace Repository
                                                     .ThenInclude(r => r.EmployeeComponent)
                                                     .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList(); 
 
-            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            if (!string.IsNullOrEmpty(calculationFilter.Name))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName)).ToList() ;
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.Name) || r.LastName.Contains(calculationFilter.Name)).ToList() ;
             }
 
-            if (!string.IsNullOrEmpty(calculationFilter.LastName))
-            {
-                query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
-            }
+            //if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            //{
+            //    query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
+            //}
 
             if (calculationFilter.DepartmentId != null)
             {

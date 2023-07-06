@@ -33,9 +33,9 @@ namespace Repository
                 employees = employees.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
             }
 
-            if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {
-                employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
+                employees = employees.Where(r => r.LastName.Contains(calculationFilter.LastName));
             }
 
             var currentTime = DateTime.Now;
@@ -69,20 +69,20 @@ namespace Repository
             //    employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
             //}
 
-            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+                    var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
                                                      .Include(r => r.EmployeeComponents)
                                                      .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList();
 
 
-            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            if (!string.IsNullOrEmpty(calculationFilter.Name))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName)).ToList();
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.Name) || r.LastName.Contains(calculationFilter.Name)).ToList();
             }
 
-            if (!string.IsNullOrEmpty(calculationFilter.LastName))
-            {
-                query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
-            }
+            //if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            //{
+            //    query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
+            //}
 
             if (calculationFilter.DepartmentId != null)
             {

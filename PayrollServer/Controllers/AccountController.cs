@@ -253,6 +253,32 @@ namespace PayrollServer.Controllers
             return new Result(true, 1, "წარმატებით დასრულდა");
         }
 
+
+        public class ChangePassWordObject
+        {
+            public string UserName { get; set; }
+            public string CurrentPassword { get; set; }
+            public string NewPassword { get; set; }
+        }
+         [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<Result> ChangePassword(ChangePassWordObject model)
+        {
+           
+
+            var username = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await userManager.FindByNameAsync(model.UserName);
+
+            var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                return await GetToken(user.UserName, model.NewPassword);
+            }
+
+            return new Result(false, -1, "დაფიქსირდა შეცდომა");
+
+        }
+
         [HttpDelete]
         [Route("Delete")]
         public async Task<Result> Delete([FromBody] UserDTO model)

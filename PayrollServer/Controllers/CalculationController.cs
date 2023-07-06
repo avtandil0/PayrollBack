@@ -344,7 +344,32 @@ namespace PayrollServer.Controllers
             return calculation;
         }
 
-        //public DateTime? CalculationPeriod { get; set; }
+        [HttpDelete]
+        [Route("deleteCalculationsByFiler")]
+        public Result DeleteCalculationsByFiler([FromQuery] CalculationFilter calculationFilter)
+        {
+            //var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
+            var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
+
+            var calculations = new List<Calculation>();
+            foreach (var employee in employees)
+            {
+                calculations.AddRange(employee.Calculations);
+                if (employee != null)
+                {
+                    employee.RemainingGraceAmount = employee.GraceAmount;
+                }
+            }
+            
+
+            _repositoryContext.Employees.UpdateRange(employees);
+            _repositoryContext.Calculations.RemoveRange(calculations);
+            _repositoryContext.SaveChanges();
+            _logger.LogInfo($"Calculation deleted");
+
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
         public class DeleteParams
         {
             public Guid Id { get; set; }
