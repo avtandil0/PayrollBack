@@ -167,7 +167,7 @@ namespace PayrollServer
 
             repositoryContext.Database.Migrate();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

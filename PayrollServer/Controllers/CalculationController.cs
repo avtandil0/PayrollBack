@@ -182,8 +182,8 @@ namespace PayrollServer.Controllers
         }
 
         [HttpPost]
-        [Route("CreateEmployeeFromFile")]
-        public async Task<Result> CreateEmployeeFromFileAsync([FromForm] IFormFile file)
+        [Route("CreateEmployeeFromFile/{date}")]
+        public async Task<List<string>> CreateEmployeeFromFileAsync([FromForm] IFormFile file, DateTime date)
         {
 
             //var rootFolder = @"E:\Files";//@"D:\Files";
@@ -224,9 +224,19 @@ namespace PayrollServer.Controllers
 
 
                 var personalNumbers = employees.Select(x => x.PersonalNumber.Trim()).Distinct().ToList();
+
+
+                var employeesPersonalNumbers = _repositoryContext.Employees.Select(r => r.PersonalNumber);
+                var empFromDbNotContains = personalNumbers.Where(r => !employeesPersonalNumbers.Contains(r));
+
+                if (empFromDbNotContains.Count() > 0)
+                {
+                    return empFromDbNotContains.ToList();
+                }
                 var empFromDb = _repositoryContext.Employees
                             .Where(r => personalNumbers.Contains(r.PersonalNumber))
                             .ToList();
+
 
                 var grossComponent = _repositoryContext.Components.First(r => r.Code.Trim() == componentName.Trim());
 
@@ -240,7 +250,7 @@ namespace PayrollServer.Controllers
                     var emp = empFromDb.FirstOrDefault(r => r.PersonalNumber == item.PersonalNumber);
                     if (emp != null)
                     {
-                        var calculation = GetCalculationObjectForFile(currentDate, grossComponent, emp, item.Amount);
+                        var calculation = GetCalculationObjectForFile(date, grossComponent, emp, item.Amount);
                         calculations.Add(calculation);
                     }
 
@@ -264,7 +274,7 @@ namespace PayrollServer.Controllers
             //}
 
 
-            return new Result(true, 1, "წარმატებით დასრულდა");
+            return new List<string>();
 
         }
 
@@ -480,6 +490,46 @@ namespace PayrollServer.Controllers
 
         }
 
+        public string getBiki(string bankAccountNumber)
+        {
+            if (bankAccountNumber.Contains("TB"))
+            {
+                return "TBCBGE22";
+            }
+            if (bankAccountNumber.Contains("BG"))
+            {
+                return "BAGAGE22";
+            }
+            if (bankAccountNumber.Contains("BS"))
+            {
+                return "CBASGE22";
+            }
+            if (bankAccountNumber.Contains("CR"))
+            {
+                return "CRTUGE22";
+            }
+            if (bankAccountNumber.Contains("LB"))
+            {
+                return "LBRTGE22";
+            }
+            if (bankAccountNumber.Contains("PC"))
+            {
+                return "MIBGGE22";
+            }
+            if (bankAccountNumber.Contains("VT"))
+            {
+                return "UGEBGE22";
+            }
+            if (bankAccountNumber.Contains("PB"))
+            {
+                return "PAHAGE22";
+            }
+
+            return "BNLNGE22";
+
+
+        }
+
         [HttpGet]
         [Route("generateExcel")]
         public FileStreamResult GenerateExcel([FromQuery] CalculationFilter calculationFilter)
@@ -550,7 +600,7 @@ namespace PayrollServer.Controllers
             foreach (var employee in employees)
             {
                 workSheet.Cells[recordIndex, 1].Value = employee.BankAccountNumber;
-                workSheet.Cells[recordIndex, 2].Value = "TBCBGE22"; // biki
+                workSheet.Cells[recordIndex, 2].Value = getBiki(employee.BankAccountNumber); // biki
                 workSheet.Cells[recordIndex, 3].Value = String.Format("{0} {1}", employee.FirstName, employee.LastName);
                 workSheet.Cells[recordIndex, 4].Value = "xelfasi"; //  daniSnuleba
                 workSheet.Cells[recordIndex, 5].Value = employee.Calculations.Sum(r => r.Net);

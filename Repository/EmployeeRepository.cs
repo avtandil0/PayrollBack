@@ -161,6 +161,7 @@ namespace Repository
 
                 query = query.Select(r => new Employee
                 {
+                    BankAccountNumber = r.BankAccountNumber,
                     FirstName = r.FirstName,
                     LastName = r.LastName,
                     Id = r.Id,

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Repository
 {
@@ -21,22 +22,45 @@ namespace Repository
         {
         }
 
-        public void CreateCalculationWithComponent(CalculationFilter calculationFilter, DateTime calculationDate, Guid componentId,
-             decimal amount, int currency)
+        public IQueryable<Employee> GetEmployeeByFilter(CalculationFilter calculationFilter, bool withCalculations=true)
         {
-
-
-            var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null)).Where(r => r.DateDeleted == null);
+            var employees =  RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+                                                     .Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null))
+                                                     .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null);
 
             if (!string.IsNullOrEmpty(calculationFilter.FirstName))
             {
                 employees = employees.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
             }
 
-            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            if (!string.IsNullOrEmpty(calculationFilter.LastName))
             {
                 employees = employees.Where(r => r.LastName.Contains(calculationFilter.LastName));
             }
+
+            if (calculationFilter.DepartmentId != null && calculationFilter.DepartmentId.Count() > 0)
+            {
+                employees = employees.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId));
+            }
+
+            if (withCalculations == true && calculationFilter.CalculationPeriod != null)
+            {
+                employees = employees.Where(r => r.Calculations
+                            .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
+                                && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+
+
+            }
+
+            return employees;
+        }
+
+        public void CreateCalculationWithComponent(CalculationFilter calculationFilter, DateTime calculationDate, Guid componentId,
+             decimal amount, int currency)
+        {
+
+
+            var employees = GetEmployeeByFilter(calculationFilter, false);
 
             var currentTime = DateTime.Now;
             foreach (var emp in employees)
@@ -56,56 +80,7 @@ namespace Repository
         public void CreateCalculation(CalculationFilter calculationFilter, DateTime calculationDate)
         {
 
-
-            //var employees = RepositoryContext.Employees.Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null)).Where(r => r.DateDeleted == null);
-
-            //if (!string.IsNullOrEmpty(calculationFilter.FirstName))
-            //{
-            //    employees = employees.Where(r => r.FirstName.Contains(calculationFilter.FirstName));
-            //}
-
-            //if (!string.IsNullOrEmpty(calculationFilter.LastName))
-            //{
-            //    employees = employees.Where(r => r.FirstName.Contains(calculationFilter.LastName));
-            //}
-
-                    var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
-                                                     .Include(r => r.EmployeeComponents)
-                                                     .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList();
-
-
-            if (!string.IsNullOrEmpty(calculationFilter.Name))
-            {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.Name) || r.LastName.Contains(calculationFilter.Name)).ToList();
-            }
-
-            //if (!string.IsNullOrEmpty(calculationFilter.LastName))
-            //{
-            //    query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
-            //}
-
-            if (calculationFilter.DepartmentId != null)
-            {
-                query = query.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId)).ToList();
-            }
-
-            //if (calculationFilter.CalculationPeriod != null)
-            //{
-            //    query = query.Where(r => r.Calculations
-            //                .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
-            //                    && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
-
-            //    //query = query.where(r => new Employee
-            //    //{
-            //    //    FirstName = r.FirstName,
-            //    //    LastName = r.LastName,
-            //    //    Id = r.Id,
-            //    //    EmployeeComponents = r.EmployeeComponents.Where(c => c.DateDeleted == null).ToList()
-            //    //}).ToList();
-            //}
-
-
-
+            var query = GetEmployeeByFilter(calculationFilter, false);
 
 
             var currentTime = DateTime.Now;
@@ -517,7 +492,7 @@ namespace Repository
                 empComp.Amount = (decimal)(empComp.Amount * exchangeRate);
             }
 
-            if(empComp != null)
+            if (empComp != null)
             {
                 calculation.BaseValue = empComp.Amount;
             }
@@ -526,7 +501,7 @@ namespace Repository
                 calculation.BaseValue = (decimal)newAmount;
             }
 
-            
+
             if (employee.SchemeTypeId == (int)SchemeTypeEnum.Standart)
             {
                 calculation.Gross = empCompAmount * (decimal)coefficient.Sgross;
@@ -560,6 +535,8 @@ namespace Repository
                 correctRemaining = lastCalc.RemainingGraceAmount;
             }
 
+            correctRemaining = correctRemaining == null ? 0 : correctRemaining;
+
             if (correctRemaining > 0 && calculation.Net > 0 && component.IgnoreIncome == false)
             {
                 var rem = correctRemaining - (calculation.Gross - calculation.PensionTax);
@@ -590,6 +567,7 @@ namespace Repository
             {
                 //employee.RemainingGraceAmount = remaining;
                 //calc.RemainingGraceAmount = remaining;
+                var employeeRemainingGraceAmount = employee.RemainingGraceAmount == null? 0 : employee.RemainingGraceAmount;
                 if (correctRemaining > 0)
                 {
                     calc.IncomeTax = 0;
@@ -599,7 +577,7 @@ namespace Repository
                 }
                 else
                 {
-                    calc.IncomeTax = (decimal)((calc.Gross - calc.PensionTax - employee.RemainingGraceAmount) / 5);
+                    calc.IncomeTax = (decimal)((calc.Gross - calc.PensionTax - employeeRemainingGraceAmount) / 5);
                     calc.Net = calc.Gross - calc.PensionTax - calc.IncomeTax;
                     employee.RemainingGraceAmount = 0;
                     calc.RemainingGraceAmount = 0;

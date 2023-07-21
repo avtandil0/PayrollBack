@@ -28,7 +28,7 @@ namespace Repository
         {
             var cs = db.Users.Where(r => r.Id == applicationUser.Id).FirstOrDefault();
 
-            cs.DateDeleted = DateTime.Now;
+            db.Users.Remove(cs);
 
             db.SaveChanges();
         }
