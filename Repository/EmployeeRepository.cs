@@ -178,6 +178,23 @@ namespace Repository
                 }).ToList();
             }
 
+            if (calculationFilter.ComponentId != null)
+            {
+                calculationFilter.ComponentId = calculationFilter.ComponentId.Select(r => r.ToLower()).ToList();
+
+                foreach (var item in query)
+                {
+                    item.Calculations = item.Calculations.Where(child => calculationFilter.ComponentId.Contains(child.CompCode.ToLower())).ToList();
+                }
+                //query = query.SelectMany(r => r.Calculations.Any(c => calculationFilter.ComponentId.Contains(c.CompCode.ToLower()))).ToList();
+            }
+
+            if (calculationFilter.Calculated == true)
+            {
+                query = query.Where(r => r.Calculations.Count() > 0).ToList();
+                //query = query.SelectMany(r => r.Calculations.Any(c => calculationFilter.ComponentId.Contains(c.CompCode.ToLower()))).ToList();
+            }
+
             return query.OrderByDescending(r => r.DateCreated);
         }
 

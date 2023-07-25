@@ -9,8 +9,9 @@ namespace Entities.FilterModels
         public string Name { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool Calculated { get; set; }
         public List<Guid> DepartmentId { get; set; }
-        public Guid ComponentId { get; set; }
+        public List<string> ComponentId { get; set; }
         public DateTime? CalculationPeriod { get; set; }
     }
 }
