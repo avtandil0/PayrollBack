@@ -134,15 +134,29 @@ namespace PayrollServer.Controllers
 
         }
 
+
+        public class AddComponentObject
+        {
+            public decimal Amount { get; set; }
+            public Guid ComponentId { get; set; }
+            public int Currency { get; set; }
+            public DateTime Date{ get; set; }
+        }
+        public class addCalculationParams
+        {
+            public List<Guid> EmployeeIds { get; set; }
+            public AddComponentObject AddComponentObject { get; set; }
+        }
         [HttpPost]
-        [Route("addCalculation/{calculationDate}/{componentId}/{amount}/{currency}")]
-        public Result addCalculation([FromBody] CalculationFilter calculationFilter, DateTime calculationDate,
-                Guid componentId, decimal amount, int currency)
+        [Route("addCalculation")]
+        public Result AddCalculation([FromBody] addCalculationParams addCalculationParams)
         {
 
             try
             {
-                _repository.Calculation.CreateCalculationWithComponent(calculationFilter, calculationDate, componentId, amount, currency);
+                _repository.Calculation.CreateCalculationWithComponent(addCalculationParams.EmployeeIds,
+                        addCalculationParams.AddComponentObject.Date, addCalculationParams.AddComponentObject.ComponentId,
+                        addCalculationParams.AddComponentObject.Amount, addCalculationParams.AddComponentObject.Currency);
 
             }
             catch (Exception e)
@@ -151,18 +165,19 @@ namespace PayrollServer.Controllers
             }
 
 
-            return new Result(true, 1, "წარმატებით დასრულდა");
+            return new Result(true, 1, String.Format("კალკულაცია წარმატებით დასრულდა {0} თანამშრომელზე.",
+                         addCalculationParams.EmployeeIds.Count()));
 
         }
 
         [HttpPost]
         [Route("calculate/{calculationDate}")]
-        public Result CreateEmployee([FromBody] CalculationFilter calculationFilter, DateTime calculationDate)
+        public Result CreateEmployee([FromBody] List<Guid> employeeIds, DateTime calculationDate)
         {
 
             try
             {
-                _repository.Calculation.CreateCalculation(calculationFilter, calculationDate);
+                _repository.Calculation.CreateCalculation(employeeIds, calculationDate);
 
             }
             catch (Exception e)
@@ -171,19 +186,33 @@ namespace PayrollServer.Controllers
             }
 
 
-            return new Result(true, 1, "წარმატებით დასრულდა");
+            return new Result(true, 1, String.Format("კალკულაცია წარმატებით დასრულდა {0} თანამშრომელზე.",
+                         employeeIds.Count()));
 
         }
 
-        class FileEmployee
+        public class FileEmployee
         {
+            public string Fullname { get; set; }
+            public string GLAccount { get; set; }
+            public string Project { get; set; }
+            public string CostCenter { get; set; }
+            public string CostUnit { get; set; }
             public string PersonalNumber { get; set; }
             public Decimal Amount { get; set; }
+            public string Component { get; set; }
+        }
+
+        public class CreateEmployeeFromFileResult
+        {
+            public List<FileEmployee> Employees { get; set; }
+            public bool Success { get; set; }
+            public string Message { get; set; }
         }
 
         [HttpPost]
         [Route("CreateEmployeeFromFile/{date}")]
-        public async Task<List<string>> CreateEmployeeFromFileAsync([FromForm] IFormFile file, DateTime date)
+        public async Task<CreateEmployeeFromFileResult> CreateEmployeeFromFileAsync([FromForm] IFormFile file, DateTime date)
         {
 
             //var rootFolder = @"E:\Files";//@"D:\Files";
@@ -197,6 +226,8 @@ namespace PayrollServer.Controllers
             //    await file.CopyToAsync(fileStream);
             //}
 
+
+            var employeeCounts = 0;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
             {
@@ -215,8 +246,14 @@ namespace PayrollServer.Controllers
                 {
                     FileEmployee fileEmployee = new FileEmployee
                     {
+                        Fullname = workSheet.Cells[i, 2].Value.ToString(),
+                        GLAccount = workSheet.Cells[i, 3].Value.ToString(),
+                        Project = workSheet.Cells[i, 4].Value.ToString(),
+                        CostCenter = workSheet.Cells[i, 5].Value.ToString(),
+                        CostUnit = workSheet.Cells[i, 6].Value.ToString(),
+                        PersonalNumber = workSheet.Cells[i, 7].Value.ToString(),
                         Amount = Decimal.Parse(workSheet.Cells[i, 8].Value.ToString()),
-                        PersonalNumber = workSheet.Cells[i, 7].Value.ToString()
+                        Component = workSheet.Cells[i, 9].Value.ToString(),
                     };
 
                     employees.Add(fileEmployee);
@@ -231,7 +268,12 @@ namespace PayrollServer.Controllers
 
                 if (empFromDbNotContains.Count() > 0)
                 {
-                    return empFromDbNotContains.ToList();
+                    return new CreateEmployeeFromFileResult
+                    {
+                        Employees = employees.Where(r => empFromDbNotContains.Contains(r.PersonalNumber)).ToList(),
+                        Success = false
+
+                    };
                 }
                 var empFromDb = _repositoryContext.Employees
                             .Where(r => personalNumbers.Contains(r.PersonalNumber))
@@ -252,6 +294,7 @@ namespace PayrollServer.Controllers
                     {
                         var calculation = GetCalculationObjectForFile(date, grossComponent, emp, item.Amount);
                         calculations.Add(calculation);
+                        employeeCounts++;
                     }
 
                 }
@@ -274,7 +317,11 @@ namespace PayrollServer.Controllers
             //}
 
 
-            return new List<string>();
+            return new CreateEmployeeFromFileResult
+            {
+                Success = true,
+                Message = String.Format("კალკულაცია წარმატებით დასრულდა {0} თანამშრომელზე", employeeCounts)
+            };
 
         }
 
@@ -354,50 +401,114 @@ namespace PayrollServer.Controllers
             return calculation;
         }
 
-        [HttpDelete]
-        [Route("deleteCalculationsByFiler")]
-        public Result DeleteCalculationsByFiler([FromQuery] CalculationFilter calculationFilter)
+        public class DeleteParamsByFiler
         {
-            //var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
-            var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
-
-            var calculations = new List<Calculation>();
-            foreach (var employee in employees)
-            {
-                calculations.AddRange(employee.Calculations);
-                if (employee != null)
-                {
-                    employee.RemainingGraceAmount = employee.GraceAmount;
-                }
-            }
-            
-
-            _repositoryContext.Employees.UpdateRange(employees);
-            _repositoryContext.Calculations.RemoveRange(calculations);
-            _repositoryContext.SaveChanges();
-            _logger.LogInfo($"Calculation deleted");
-
-            return new Result(true, 1, "წარმატებით დასრულდა");
-
-        }
-        public class DeleteParams
-        {
-            public Guid Id { get; set; }
+            public List<Guid> employeeIds { get; set; }
             public DateTime? CalculationPeriod { get; set; }
         }
-        [HttpDelete]
-        [Route("deleteCalculations")]
-        public Result DeleteCalculations([FromQuery] DeleteParams deleteParams)
+
+        [HttpPost]
+        [Route("deleteCalculationsByFiler")]
+        public Result DeleteCalculationsByFiler([FromBody] DeleteParamsByFiler deleteParams )
+        {
+            //var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
+
+            //var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
+            //var employees = _repositoryContext.Employees.Where(r => deleteParams.employeeIds.Contains(r.Id)).Include(r => r.Calculations);
+
+            //var calculations = new List<Calculation>();
+            //foreach (var employee in employees)
+            //{
+            //    calculations.AddRange(employee.Calculations);
+            //    if (employee != null)
+            //    {
+            //        employee.RemainingGraceAmount = employee.GraceAmount;
+            //    }
+            //}
+
+
+
+            //_repositoryContext.Employees.UpdateRange(employees);
+            //_repositoryContext.Calculations.RemoveRange(calculations);
+            //_repositoryContext.SaveChanges();
+            //_logger.LogInfo($"Calculation deleted");
+
+            foreach (var item in deleteParams.employeeIds)
+            {
+                deleteCalculationsByFilter(new DeleteParams {Id = item, CalculationPeriod= deleteParams.CalculationPeriod});
+            }
+
+            return new Result(true, 1, String.Format("წარმატებით დასრულდა {0} თანამშრომელზე.", deleteParams.employeeIds.Count()));
+
+        }
+
+        public Result deleteCalculationsByFilter(DeleteParams deleteParams)
         {
             var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
+            var employee = _repositoryContext.Employees.Where(r => r.Id == deleteParams.Id).FirstOrDefault();
+
             if (deleteParams.CalculationPeriod != null)
             {
                 items = items.Where(r => r.PayrollYear == deleteParams.CalculationPeriod.Value.Year &&
                                 r.PayrollMonth == deleteParams.CalculationPeriod.Value.Month);
+
+
+                var nextCalculations = _repositoryContext.Calculations.Where(r => r.EmployeeId == employee.Id &&
+                               r.PayrollYear == deleteParams.CalculationPeriod.Value.Year
+                                && r.CalculationDate.Value.Month > deleteParams.CalculationPeriod.Value.Month)
+                               .OrderBy(r => r.CalculationDate).ThenBy(r => r.DateCreated);
+
+                var lastCalc = _repositoryContext.Calculations.Where(r => r.EmployeeId == employee.Id &&
+                               r.PayrollYear == deleteParams.CalculationPeriod.Value.Year
+                                && r.CalculationDate.Value.Month < deleteParams.CalculationPeriod.Value.Month)
+                               .OrderByDescending(r => r.CalculationDate).ThenByDescending(r => r.DateCreated)
+                               .FirstOrDefault();
+
+                var correctRemaining = employee.GraceAmount;
+                if (lastCalc == null)
+                {
+                    correctRemaining = employee.GraceAmount;
+                }
+                else
+                {
+                    correctRemaining = lastCalc.RemainingGraceAmount;
+                }
+                if (employee == null)
+                {
+                    return new Result(false, 0, "Employee Null");
+                }
+
+                if (!nextCalculations.Any())
+                {
+                    employee.RemainingGraceAmount = correctRemaining;
+                }
+
+                foreach (var calc in nextCalculations)
+                {
+                    var employeeRemainingGraceAmount = employee.RemainingGraceAmount == null ? 0 : employee.RemainingGraceAmount;
+                    if (correctRemaining > 0)
+                    {
+                        calc.IncomeTax = 0;
+                        calc.Net = calc.Gross - calc.PensionTax;
+                        calc.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax);
+                        employee.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax); ;
+                    }
+                    else
+                    {
+                        calc.IncomeTax = (decimal)((calc.Gross - calc.PensionTax - employeeRemainingGraceAmount) / 5);
+                        calc.Net = calc.Gross - calc.PensionTax - calc.IncomeTax;
+                        employee.RemainingGraceAmount = 0;
+                        calc.RemainingGraceAmount = 0;
+                    }
+                    correctRemaining = correctRemaining - (calc.Gross - calc.PensionTax);
+                }
+
+                _repositoryContext.Calculations.UpdateRange(nextCalculations);
+
+
             }
 
-            var employee = _repositoryContext.Employees.Where(r => r.Id == deleteParams.Id).FirstOrDefault();
-            if (employee != null)
+            if (deleteParams.CalculationPeriod == null)
             {
                 employee.RemainingGraceAmount = employee.GraceAmount;
             }
@@ -408,8 +519,22 @@ namespace PayrollServer.Controllers
             _logger.LogInfo($"Calculation deleted");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
+        }
+        public class DeleteParams
+        {
+            public Guid Id { get; set; }
+            public DateTime? CalculationPeriod { get; set; }
+        }
+        [HttpDelete]
+        [Route("deleteCalculations")]
+        public Result DeleteCalculations([FromQuery] DeleteParams deleteParams)
+        {
+
+            deleteCalculationsByFilter(deleteParams);
+            return new Result(true, 0, "Error !");
 
         }
+
 
 
         [HttpDelete]
@@ -420,15 +545,21 @@ namespace PayrollServer.Controllers
             var item = _repositoryContext.Calculations.Where(r => r.Id == id).FirstOrDefault();
             //item.DateDeleted = DateTime.Now;
 
-            var nextCalculations = _repositoryContext.Calculations.Where(r => r.PayrollYear == item.PayrollYear
-                                && r.CalculationDate > item.CalculationDate)
-                                .OrderBy(r => r.CalculationDate);
+            var nextCalculations = _repositoryContext.Calculations.Where(r => r.EmployeeId == item.EmployeeId &&
+                                r.PayrollYear == item.PayrollYear
+                                && ((r.CalculationDate > item.CalculationDate)
+                                    || (r.CalculationDate >= item.CalculationDate && r.DateCreated > item.DateCreated)))
+                                .OrderBy(r => r.CalculationDate).ThenBy(r => r.DateCreated);
+
+
             var employee = _repositoryContext.Employees.Where(r => r.Id == item.EmployeeId).FirstOrDefault();
 
-            var lastCalc = _repositoryContext.Calculations.Where(r => r.EmployeeId == item.EmployeeId && r.PayrollYear == item.PayrollYear
-                        && r.CalculationDate < item.CalculationDate)
-                        .OrderByDescending(r => r.CalculationDate)//.ThenBy(r => r.DateCreated)
-                                   .FirstOrDefault();
+            var lastCalc = _repositoryContext.Calculations.Where(r => r.EmployeeId == item.EmployeeId
+                        && r.PayrollYear == item.PayrollYear
+                       && ((r.CalculationDate < item.CalculationDate)
+                       || (r.CalculationDate <= item.CalculationDate && r.DateCreated < item.DateCreated)))
+                       .OrderByDescending(r => r.CalculationDate).ThenByDescending(r => r.DateCreated)
+                                  .FirstOrDefault();
 
             var correctRemaining = employee.GraceAmount;
             if (lastCalc == null)
@@ -444,7 +575,6 @@ namespace PayrollServer.Controllers
                 return new Result(false, 0, "Employee Null");
             }
 
-            var remaining = correctRemaining - (item.Gross - item.PensionTax);
             if (!nextCalculations.Any())
             {
                 employee.RemainingGraceAmount = correctRemaining;
@@ -452,8 +582,7 @@ namespace PayrollServer.Controllers
 
             foreach (var calc in nextCalculations)
             {
-                //employee.RemainingGraceAmount = remaining;
-                //calc.RemainingGraceAmount = remaining;
+                var employeeRemainingGraceAmount = employee.RemainingGraceAmount == null ? 0 : employee.RemainingGraceAmount;
                 if (correctRemaining > 0)
                 {
                     calc.IncomeTax = 0;
@@ -461,9 +590,16 @@ namespace PayrollServer.Controllers
                     calc.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax);
                     employee.RemainingGraceAmount = correctRemaining - (calc.Gross - calc.PensionTax); ;
                 }
+                else
+                {
+                    calc.IncomeTax = (decimal)((calc.Gross - calc.PensionTax - employeeRemainingGraceAmount) / 5);
+                    calc.Net = calc.Gross - calc.PensionTax - calc.IncomeTax;
+                    employee.RemainingGraceAmount = 0;
+                    calc.RemainingGraceAmount = 0;
+                }
                 correctRemaining = correctRemaining - (calc.Gross - calc.PensionTax);
             }
-
+            
             _repositoryContext.Calculations.Remove(item);
             _repositoryContext.Employees.Update(employee);
             _repositoryContext.Calculations.UpdateRange(nextCalculations);

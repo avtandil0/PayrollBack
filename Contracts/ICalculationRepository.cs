@@ -11,8 +11,8 @@ namespace Contracts
     {
         IEnumerable<Calculation> GetAllCalculation();
         IEnumerable<Calculation> GetCalculationByFilter(CalculationFilter calculationFilter);
-        void CreateCalculation(CalculationFilter calculation, DateTime calculationDate);
-        void CreateCalculationWithComponent(CalculationFilter calculation, DateTime calculationDate, Guid compponentId,
+        void CreateCalculation(List<Guid> employeeIds, DateTime calculationDate);
+        void CreateCalculationWithComponent(List<Guid> employeeIds, DateTime calculationDate, Guid compponentId,
             decimal amount, int currency);
         void Paid(PaidHelper paidHelper);
         void UpdateCalculation(Calculation calculation);

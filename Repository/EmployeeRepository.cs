@@ -134,13 +134,15 @@ namespace Repository
             //           };
 
 
-            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null)
+                                                    //.OrderByDescending(r => r.CalculationDate)
+                                                    )
                                                     .ThenInclude(r => r.EmployeeComponent)
-                                                    .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList(); 
+                                                    .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList();
 
             if (!string.IsNullOrEmpty(calculationFilter.Name))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.Name) || r.LastName.Contains(calculationFilter.Name)).ToList() ;
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.Name) || r.LastName.Contains(calculationFilter.Name)).ToList();
             }
 
             //if (!string.IsNullOrEmpty(calculationFilter.LastName))
@@ -153,6 +155,11 @@ namespace Repository
                 query = query.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId)).ToList();
             }
 
+            //if (calculationFilter.ComponentId != null)
+            //{
+            //    query = query.Where(r => r.).ToList();
+            //}
+
             if (calculationFilter.CalculationPeriod != null)
             {
                 //query = query.Where(r => r.Calculations
@@ -162,6 +169,7 @@ namespace Repository
                 query = query.Select(r => new Employee
                 {
                     BankAccountNumber = r.BankAccountNumber,
+                    RemainingGraceAmount = r.RemainingGraceAmount,
                     FirstName = r.FirstName,
                     LastName = r.LastName,
                     Id = r.Id,
@@ -177,12 +185,12 @@ namespace Repository
         {
             return RepositoryContext.Employees.Where(r => r.DepartmentId == depId && r.DateDeleted == null);
         }
-        
+
         public void UpdateEmployeeAvatar(EmployeeAvatar avatar)
         {
             var emp = RepositoryContext.Employees.Where(r => r.Id == avatar.UserId).FirstOrDefault();
 
-            if(emp != null)
+            if (emp != null)
             {
                 emp.Avatar = avatar.File;
                 emp.DateChange = DateTime.Now;
@@ -240,7 +248,7 @@ namespace Repository
                         MobilePhone = item.TelnrPrv,
                         DateCreated = DateTime.Now,
                         LandIso = item.LandIso,
-                        Position =item.Position
+                        Position = item.Position
                     };
 
                     Create(employee);

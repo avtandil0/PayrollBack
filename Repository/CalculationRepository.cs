@@ -55,12 +55,24 @@ namespace Repository
             return employees;
         }
 
-        public void CreateCalculationWithComponent(CalculationFilter calculationFilter, DateTime calculationDate, Guid componentId,
+
+        public IQueryable<Employee> GetEmployeeBId(List<Guid> employeeIds)
+        {
+            var employees = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+                                                     .Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null))
+                                                     .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null);
+
+
+            return employees;
+        }
+
+
+        public void CreateCalculationWithComponent(List<Guid> employeeIds, DateTime calculationDate, Guid componentId,
              decimal amount, int currency)
         {
 
 
-            var employees = GetEmployeeByFilter(calculationFilter, false);
+            var employees = RepositoryContext.Employees.Where(r => employeeIds.Contains(r.Id));
 
             var currentTime = DateTime.Now;
             foreach (var emp in employees)
@@ -77,10 +89,10 @@ namespace Repository
 
             Save();
         }
-        public void CreateCalculation(CalculationFilter calculationFilter, DateTime calculationDate)
+        public void CreateCalculation(List<Guid> employeeIds, DateTime calculationDate)
         {
 
-            var query = GetEmployeeByFilter(calculationFilter, false);
+            var query = RepositoryContext.Employees.Where(r => employeeIds.Contains(r.Id)).Include(r => r.EmployeeComponents).ThenInclude(r => r.Component);
 
 
             var currentTime = DateTime.Now;
@@ -404,9 +416,10 @@ namespace Repository
 
             empCompAmount = Math.Round(empCompAmount, 2);
 
+            var currentTime = DateTime.Now;
             calculation.Id = Guid.NewGuid();
             calculation.CalculationDate = calculationDate;
-            calculation.DateCreated = DateTime.Now;
+            calculation.DateCreated = currentTime;
 
             calculation.EmployeeId = employee.Id;
             Guid? EmployeeComponentId = null;
@@ -523,8 +536,8 @@ namespace Repository
             var correctRemaining = employee.GraceAmount;
             var lastCalc = RepositoryContext.Calculations.Where(r => r.EmployeeId == calculation.EmployeeId
                         && r.PayrollYear == calculation.PayrollYear
-                       && r.CalculationDate < calculation.CalculationDate)
-                       .OrderByDescending(r => r.CalculationDate)//.ThenBy(r => r.DateCreated)
+                       && r.CalculationDate <= calculation.CalculationDate)
+                       .OrderByDescending(r => r.CalculationDate).ThenByDescending(r => r.DateCreated)
                                   .FirstOrDefault();
             if (lastCalc == null)
             {
@@ -559,9 +572,10 @@ namespace Repository
             }
 
             //მომდევნო კალკულაციები
-            var nextCalculations = RepositoryContext.Calculations.Where(r => r.PayrollYear == calculation.PayrollYear
+            var nextCalculations = RepositoryContext.Calculations.Where(r => r.EmployeeId == employee.Id &&
+                                r.PayrollYear == calculation.PayrollYear
                                 && r.CalculationDate > calculation.CalculationDate)
-                                .OrderBy(r => r.CalculationDate);
+                                .OrderBy(r => r.CalculationDate).ThenBy(r => r.DateCreated);
 
             foreach (var calc in nextCalculations)
             {
