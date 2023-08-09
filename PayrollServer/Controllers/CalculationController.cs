@@ -246,14 +246,14 @@ namespace PayrollServer.Controllers
                 {
                     FileEmployee fileEmployee = new FileEmployee
                     {
-                        Fullname = workSheet.Cells[i, 2].Value.ToString(),
-                        GLAccount = workSheet.Cells[i, 3].Value.ToString(),
-                        Project = workSheet.Cells[i, 4].Value.ToString(),
-                        CostCenter = workSheet.Cells[i, 5].Value.ToString(),
-                        CostUnit = workSheet.Cells[i, 6].Value.ToString(),
-                        PersonalNumber = workSheet.Cells[i, 7].Value.ToString(),
-                        Amount = Decimal.Parse(workSheet.Cells[i, 8].Value.ToString()),
-                        Component = workSheet.Cells[i, 9].Value.ToString(),
+                        Fullname = workSheet.Cells[i, 2].Value?.ToString(),
+                        GLAccount = workSheet.Cells[i, 3].Value?.ToString(),
+                        Project = workSheet.Cells[i, 4].Value?.ToString(),
+                        CostCenter = workSheet.Cells[i, 5].Value?.ToString(),
+                        CostUnit = workSheet.Cells[i, 6].Value?.ToString(),
+                        PersonalNumber = workSheet.Cells[i, 7].Value?.ToString(),
+                        Amount = Decimal.Parse(workSheet.Cells[i, 8].Value?.ToString()),
+                        Component = workSheet.Cells[i, 9].Value?.ToString(),
                     };
 
                     employees.Add(fileEmployee);
@@ -733,13 +733,33 @@ namespace PayrollServer.Controllers
 
             var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
 
+            if(calculationFilter.NotIncludes != null && calculationFilter.NotIncludes.Count() > 0)
+            {
+                employees = employees.Where(r => !calculationFilter.NotIncludes.Contains(r.Id));
+            }
+
             foreach (var employee in employees)
             {
+                decimal paids = 0;
+                decimal nets = 0;
+                foreach (var item in employee.Calculations)
+                {
+                    if (item.EmployeeComponent == null)
+                    {
+                        continue;
+                    }
+                    if (item.EmployeeComponent.Component.Name.ToLower().Contains("paid"))
+                    {
+                        paids += item.Paid;
+                    }
+
+                    nets += item.Net;
+                }
                 workSheet.Cells[recordIndex, 1].Value = employee.BankAccountNumber;
                 workSheet.Cells[recordIndex, 2].Value = getBiki(employee.BankAccountNumber); // biki
                 workSheet.Cells[recordIndex, 3].Value = String.Format("{0} {1}", employee.FirstName, employee.LastName);
                 workSheet.Cells[recordIndex, 4].Value = "xelfasi"; //  daniSnuleba
-                workSheet.Cells[recordIndex, 5].Value = employee.Calculations.Sum(r => r.Net);
+                workSheet.Cells[recordIndex, 5].Value = paids + nets;
                 recordIndex++;
             }
 

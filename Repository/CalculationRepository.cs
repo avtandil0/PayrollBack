@@ -303,7 +303,7 @@ namespace Repository
             Calculation calculation = new Calculation();
 
 
-
+            calculation.CompType = component.Type;
             var empCompAmount = amount;
 
             empCompAmount = Math.Round(empCompAmount, 2);
@@ -377,6 +377,8 @@ namespace Repository
             var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == coefficientId && r.DateDeleted == null).FirstOrDefault();
 
             Calculation calculation = new Calculation();
+            
+
             decimal amount = 0;
             if (empComp != null)
             {
@@ -439,6 +441,8 @@ namespace Repository
             {
                 component = newComponent;
             }
+
+            calculation.CompType = component.Type;
 
             calculation.ResId = employee.ResId;
             calculation.CompCode = component.Code;

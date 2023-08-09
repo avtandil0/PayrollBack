@@ -12,6 +12,7 @@ namespace Entities.FilterModels
         public bool Calculated { get; set; }
         public List<Guid> DepartmentId { get; set; }
         public List<string> ComponentId { get; set; }
+        public List<Guid> NotIncludes { get; set; }
         public DateTime? CalculationPeriod { get; set; }
     }
 }
