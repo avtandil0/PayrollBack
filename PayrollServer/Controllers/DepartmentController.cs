@@ -72,10 +72,26 @@ namespace PayrollServer.Controllers
             return result1;
         }
 
+        public class FilterParams
+        {
+            public string Code { get; set; }
+            public string Name { get; set; }
+        }
+
         [HttpGet]
-        public IEnumerable<DepartmentDTO> GetAllDepartments()
+        public IEnumerable<DepartmentDTO> GetAllDepartments([FromQuery] FilterParams filterParams)
         {
             var departmenrts = _repository.Department.GetAllDepartments();
+
+            if(!String.IsNullOrEmpty(filterParams.Code))
+            {
+                departmenrts = departmenrts.Where(r => r.Code.Contains(filterParams.Code));
+            }
+
+            if (!String.IsNullOrEmpty(filterParams.Name))
+            {
+                departmenrts = departmenrts.Where(r => r.Name.Contains(filterParams.Name));
+            }
 
             IEnumerable<DepartmentDTO> departmentDTOs = _mapper.Map<IEnumerable<DepartmentDTO>>(departmenrts);
 

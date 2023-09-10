@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class UserRepository :  IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RepositoryContext db;
@@ -22,6 +22,15 @@ namespace Repository
         {
             this.userManager = userManager;
             this.db = repositoryContext;
+        }
+
+        public void Delete(ApplicationUser applicationUser)
+        {
+            var cs = db.Users.Where(r => r.Id == applicationUser.Id).FirstOrDefault();
+
+            db.Users.Remove(cs);
+
+            db.SaveChanges();
         }
 
         public IEnumerable<ApplicationUser> Filter()
@@ -92,6 +101,6 @@ namespace Repository
 
         }
 
-
+      
     }
 }

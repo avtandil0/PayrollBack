@@ -40,7 +40,7 @@ namespace PayrollServer.Controllers
             var employees = _repository.Employee.GetEmployeeById(id);
 
             EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employees);
-            
+
             var current = DateTime.Now;
             foreach (var comp in employeeDTO.EmployeeComponents)
             {
@@ -76,7 +76,7 @@ namespace PayrollServer.Controllers
             var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
 
             IEnumerable<EmployeeDTO> calculationDTOs = _mapper.Map<IEnumerable<EmployeeDTO>>(employees);
-            
+
             return calculationDTOs;
         }
 
@@ -93,19 +93,41 @@ namespace PayrollServer.Controllers
             return employeeDTOs;
         }
 
+
+        public class FilterParams
+        {
+            public string ResId { get; set; }
+            public string Name { get; set; }
+            public List<Guid> departments { get; set; }
+        }
+
         [HttpGet]
-        public IEnumerable<EmployeeDTO> GetAllEmployees()
+        public IEnumerable<EmployeeDTO> GetAllEmployees([FromQuery] FilterParams filterParams)
         {
             var employees = _repository.Employee.GetAllEmployees();
+
+            if (!string.IsNullOrEmpty(filterParams.Name))
+            {
+                employees = employees.Where(r => r.FirstName.Contains(filterParams.Name) || r.LastName.Contains(filterParams.Name));
+            }
+            if (!string.IsNullOrEmpty(filterParams.ResId))
+            {
+                employees = employees.Where(r => r.ResId == Int16.Parse(filterParams.ResId));
+            }
+            if (filterParams.departments != null && filterParams.departments.Count() > 0)
+            {
+                employees = employees.Where(r => filterParams.departments.Contains((Guid)r.DepartmentId));
+            }
 
             IEnumerable<EmployeeDTO> employeeDTOs = _mapper.Map<IEnumerable<EmployeeDTO>>(employees);
 
             _logger.LogInfo($"Returned all Employees from database.");
 
             return employeeDTOs;
+
         }
 
-        
+
         [HttpPost]
         [Route("uploadAvatar")]
         public async Task<Result> UploadAvatarAsync([FromForm] Avatar avatar)
@@ -121,9 +143,9 @@ namespace PayrollServer.Controllers
             // _logger.LogInfo($"Created new Employee.");
 
             return new Result(true, 1, "წარმატებით დასრულდა");
-        
+
         }
-        
+
         [HttpPost]
         public EmployeeDTO CreateEmployee([FromBody] EmployeeDTO employeeDTO)
         {

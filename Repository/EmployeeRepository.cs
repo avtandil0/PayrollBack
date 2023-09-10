@@ -69,7 +69,7 @@ namespace Repository
             Save();
         }
 
-        public IEnumerable<Employee> GetAllEmployees()
+        public IQueryable<Employee> GetAllEmployees()
         {
             return GetAllIncluded(r => r.Department, r => r.SchemeType)
                     .Where(r => r.DateDeleted == null)
@@ -134,24 +134,31 @@ namespace Repository
             //           };
 
 
-            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+            var query = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null)
+                                                    //.OrderByDescending(r => r.CalculationDate)
+                                                    )
                                                     .ThenInclude(r => r.EmployeeComponent)
-                                                    .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList(); 
+                                                    .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null).ToList();
 
-            if (!string.IsNullOrEmpty(calculationFilter.FirstName))
+            if (!string.IsNullOrEmpty(calculationFilter.Name))
             {
-                query = query.Where(r => r.FirstName.Contains(calculationFilter.FirstName)).ToList() ;
+                query = query.Where(r => r.FirstName.Contains(calculationFilter.Name) || r.LastName.Contains(calculationFilter.Name)).ToList();
             }
 
-            if (!string.IsNullOrEmpty(calculationFilter.LastName))
-            {
-                query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
-            }
+            //if (!string.IsNullOrEmpty(calculationFilter.LastName))
+            //{
+            //    query = query.Where(r => r.LastName.Contains(calculationFilter.LastName)).ToList();
+            //}
 
             if (calculationFilter.DepartmentId != null)
             {
                 query = query.Where(r => calculationFilter.DepartmentId.Contains((Guid)r.DepartmentId)).ToList();
             }
+
+            //if (calculationFilter.ComponentId != null)
+            //{
+            //    query = query.Where(r => r.).ToList();
+            //}
 
             if (calculationFilter.CalculationPeriod != null)
             {
@@ -161,12 +168,31 @@ namespace Repository
 
                 query = query.Select(r => new Employee
                 {
+                    BankAccountNumber = r.BankAccountNumber,
+                    RemainingGraceAmount = r.RemainingGraceAmount,
                     FirstName = r.FirstName,
                     LastName = r.LastName,
                     Id = r.Id,
                     Calculations = r.Calculations.Where(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
                      && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year).ToList()
                 }).ToList();
+            }
+
+            if (calculationFilter.ComponentId != null)
+            {
+                calculationFilter.ComponentId = calculationFilter.ComponentId.Select(r => r.ToLower()).ToList();
+
+                foreach (var item in query)
+                {
+                    item.Calculations = item.Calculations.Where(child => calculationFilter.ComponentId.Contains(child.CompCode.ToLower())).ToList();
+                }
+                //query = query.SelectMany(r => r.Calculations.Any(c => calculationFilter.ComponentId.Contains(c.CompCode.ToLower()))).ToList();
+            }
+
+            if (calculationFilter.Calculated == true)
+            {
+                query = query.Where(r => r.Calculations.Count() > 0).ToList();
+                //query = query.SelectMany(r => r.Calculations.Any(c => calculationFilter.ComponentId.Contains(c.CompCode.ToLower()))).ToList();
             }
 
             return query.OrderByDescending(r => r.DateCreated);
@@ -176,12 +202,12 @@ namespace Repository
         {
             return RepositoryContext.Employees.Where(r => r.DepartmentId == depId && r.DateDeleted == null);
         }
-        
+
         public void UpdateEmployeeAvatar(EmployeeAvatar avatar)
         {
             var emp = RepositoryContext.Employees.Where(r => r.Id == avatar.UserId).FirstOrDefault();
 
-            if(emp != null)
+            if (emp != null)
             {
                 emp.Avatar = avatar.File;
                 emp.DateChange = DateTime.Now;
@@ -239,7 +265,7 @@ namespace Repository
                         MobilePhone = item.TelnrPrv,
                         DateCreated = DateTime.Now,
                         LandIso = item.LandIso,
-                        Position =item.Position
+                        Position = item.Position
                     };
 
                     Create(employee);
