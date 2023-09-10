@@ -27,6 +27,8 @@ namespace Entities.Models
         public DateTime DateCreated { get; set; }
         public DateTime? DateChange { get; set; }
         public DateTime? DateDeleted { get; set; }
+        public DateTime? ContractStartDate { get; set; }
+        public DateTime? ContractEndDate { get; set; }
         public int? ResId { get; set; }
         public string Position { get; set; }
         public string LandIso { get; set; }

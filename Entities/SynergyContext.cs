@@ -21,19 +21,46 @@ namespace Entities
         public virtual DbSet<Bnkkop> Bnkkops { get; set; }
         public virtual DbSet<Hrjbtl> Hrjbtls { get; set; }
         public virtual DbSet<Humre> Humres { get; set; }
+        public virtual DbSet<HumresAudit> HumresAudits { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=AZENAISHVILI1;database=811;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
+                optionsBuilder.UseSqlServer("Server=RNKLAP01;database=789;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<HumresAudit>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("humres_audit");
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dateCreated");
+
+                entity.Property(e => e.FieldName)
+                    .HasMaxLength(50)
+                    .HasColumnName("fieldName");
+
+                entity.Property(e => e.Id).HasColumnName("id"); 
+                entity.Property(e => e.ResId).HasColumnName("res_id"); 
+
+                entity.Property(e => e.NewValue)
+                    .HasMaxLength(50)
+                    .HasColumnName("newValue");
+
+                entity.Property(e => e.OldValue)
+                    .HasMaxLength(50)
+                    .HasColumnName("oldValue");
+            });
 
             modelBuilder.Entity<Bnkkop>(entity =>
             {
