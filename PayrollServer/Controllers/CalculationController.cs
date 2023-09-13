@@ -787,6 +787,78 @@ namespace PayrollServer.Controllers
 
 
 
+        [HttpGet]
+        [Route("downloadCalculations")]
+        public FileStreamResult DownloadCalculations([FromQuery] CalculationFilter calculationFilter)
+        {
+
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            ExcelPackage excel = new ExcelPackage();
+
+            // name of the sheet
+            var workSheet = excel.Workbook.Worksheets.Add("Sheet1");
+
+           
+            workSheet.TabColor = System.Drawing.Color.Black;
+            workSheet.DefaultRowHeight = 12;
+
+
+            // Header of the Excel sheet
+            workSheet.Cells[1, 1].Value = "ResId";
+            workSheet.Cells[1, 2].Value = "Full Name";
+            workSheet.Cells[1, 3].Value = "Gross";
+            workSheet.Cells[1, 4].Value = "Net";
+            workSheet.Cells[1, 5].Value = "Paid";
+            workSheet.Cells[1, 6].Value = "IncomeTax";
+            workSheet.Cells[1, 7].Value = "PensionTax";
+            workSheet.Cells[1, 8].Value = "Deduction";
+            workSheet.Cells[1, 9].Value = "RemainingGraceAmount";
+            workSheet.Cells[1, 10].Value = "Total Balance";
+
+
+            var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
+
+
+            int recordIndex = 3;
+
+            IEnumerable<EmployeeDTO> employeeDTOs = _mapper.Map<IEnumerable<EmployeeDTO>>(employees);
+
+
+
+            foreach (var employee in employeeDTOs)
+            {
+               
+                workSheet.Cells[recordIndex, 1].Value = employee.ResId;
+                workSheet.Cells[recordIndex, 2].Value = String.Format("{0} {1}", employee.FirstName, employee.LastName);
+                workSheet.Cells[recordIndex, 3].Value = employee.Calculations.Sum(r => r.Gross);
+                workSheet.Cells[recordIndex, 4].Value = employee.Calculations.Sum(r => r.Net);
+                workSheet.Cells[recordIndex, 5].Value = employee.Calculations.Sum(r => r.Paid);
+                workSheet.Cells[recordIndex, 6].Value = employee.Calculations.Sum(r => r.PensionTax);
+                workSheet.Cells[recordIndex, 7].Value = employee.Calculations.Sum(r => r.IncomeTax);
+                workSheet.Cells[recordIndex, 8].Value = employee.Calculations.Sum(r => r.EmployeeComponent.Component.Type == 2? r.Net : 0);
+                workSheet.Cells[recordIndex, 9].Value = employee.RemainingGraceAmount;
+                workSheet.Cells[recordIndex, 9].Value = 0;
+                recordIndex++;
+            }
+
+
+            var stream = new MemoryStream(excel.GetAsByteArray());
+
+            var mimeType = "Application/vnm.ms-excel";
+            var fileStreamResult = new FileStreamResult(stream, mimeType);
+            fileStreamResult.FileDownloadName = string.Format("To Bank BOG {0:yyyy_MM_dd_HH_mm_ss}.xlsx", DateTime.Now);
+
+            stream.Seek(0, SeekOrigin.Begin);
+
+
+            return fileStreamResult;
+
+        }
+
+
+
 
     }
 }
