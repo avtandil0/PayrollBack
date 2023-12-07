@@ -22,9 +22,9 @@ namespace Repository
         {
         }
 
-        public IQueryable<Employee> GetEmployeeByFilter(CalculationFilter calculationFilter, bool withCalculations=true)
+        public IQueryable<Employee> GetEmployeeByFilter(CalculationFilter calculationFilter, bool withCalculations = true)
         {
-            var employees =  RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
+            var employees = RepositoryContext.Employees.Include(r => r.Calculations.Where(r => r.DateDeleted == null).OrderByDescending(r => r.CalculationDate))
                                                      .Include(r => r.EmployeeComponents.Where(r => r.DateDeleted == null))
                                                      .ThenInclude(r => r.Component).Where(r => r.DateDeleted == null);
 
@@ -102,7 +102,11 @@ namespace Repository
                 {
                     var component = RepositoryContext.Components.Where(r => r.Id == empComp.ComponentId && r.DateDeleted == null).FirstOrDefault();
 
-                    if (empComp.StartDate > currentTime || empComp.EndDate < currentTime)
+                    //if (empComp.StartDate > currentTime || empComp.EndDate < currentTime)
+                    if (empComp.StartDate > new DateTime(calculationDate.Year, calculationDate.Month,
+                                            DateTime.DaysInMonth(calculationDate.Year, calculationDate.Month))
+                        || empComp.EndDate.Value < new DateTime(calculationDate.Year, calculationDate.Month,
+                                            1))
                     {
                         continue;
                     }
@@ -222,7 +226,6 @@ namespace Repository
 
             var employees = RepositoryContext.Employees.Where(r => r.DateDeleted == null &&
                                     bankAccounts.Contains(r.BankAccountNumber));
-
 
 
 
@@ -377,7 +380,7 @@ namespace Repository
             var coefficient = RepositoryContext.Coefficients.Where(r => r.Id == coefficientId && r.DateDeleted == null).FirstOrDefault();
 
             Calculation calculation = new Calculation();
-            
+
 
             decimal amount = 0;
             if (empComp != null)
@@ -397,6 +400,7 @@ namespace Repository
                     if (empComp.Component.Type != 2)
                     {
                         var currentDate = DateTime.Now;
+
                         if ((empComp.StartDate.Month == calculationDate.Month && empComp.StartDate.Year == calculationDate.Year))
                         {
                             var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
@@ -407,8 +411,19 @@ namespace Repository
                         if ((empComp.EndDate?.Month == calculationDate.Month && empComp.EndDate?.Year == calculationDate.Year))
                         {
                             var daysInMonth = DateTime.DaysInMonth((int)(empComp.EndDate?.Year), (int)(empComp.EndDate?.Month));
-                            var workingDays = daysInMonth - empComp.EndDate?.Day;
+                            //var workingDays = daysInMonth - empComp.EndDate?.Day;
+                            var workingDays = empComp.StartDate.Month < calculationDate.Month ?
+                                    empComp.EndDate?.Day : empComp.EndDate.Value.Day - empComp.StartDate.Day + 1;
+                            empCompAmount = (decimal)(empComp.Amount / daysInMonth * (workingDays + 1));
 
+                        }
+                        if ((empComp.StartDate.Month == calculationDate.Month && empComp.StartDate.Year == calculationDate.Year)
+                           && (empComp.EndDate.Value.Month == calculationDate.Month && empComp.EndDate.Value.Year == calculationDate.Year))
+                        {
+                            var daysInMonth = DateTime.DaysInMonth(empComp.StartDate.Year, empComp.StartDate.Month);
+                            var workingDays = empComp.EndDate.Value.Day - empComp.StartDate.Day;
+
+                            empCompAmount = empComp.Amount / daysInMonth * (workingDays + 1);
                         }
                     }
 
@@ -585,7 +600,7 @@ namespace Repository
             {
                 //employee.RemainingGraceAmount = remaining;
                 //calc.RemainingGraceAmount = remaining;
-                var employeeRemainingGraceAmount = employee.RemainingGraceAmount == null? 0 : employee.RemainingGraceAmount;
+                var employeeRemainingGraceAmount = employee.RemainingGraceAmount == null ? 0 : employee.RemainingGraceAmount;
                 if (correctRemaining > 0)
                 {
                     calc.IncomeTax = 0;

@@ -86,7 +86,7 @@ namespace Entities.Models
         public double PurLimit { get; set; }
         public double Fte { get; set; }
         public string Picturefilename { get; set; }
-        public string PictureThumbnailFilename { get; set; }
+        //public string PictureThumbnailFilename { get; set; }
         public string Freefield1 { get; set; }
         public string Freefield2 { get; set; }
         public string Freefield3 { get; set; }
@@ -116,7 +116,7 @@ namespace Entities.Models
         public string Rating { get; set; }
         public string UserGroup { get; set; }
         public byte[] Picture { get; set; }
-        public byte[] PictureThumbnail { get; set; }
+        //public byte[] PictureThumbnail { get; set; }
         public string BtwNummer { get; set; }
         public byte? IsPersonalAccount { get; set; }
         public int Scale { get; set; }
@@ -163,23 +163,23 @@ namespace Entities.Models
         public string JobCategory { get; set; }
         public DateTime? AdjustedHireDate { get; set; }
         public int PortalCreator { get; set; }
-        public string HomePageUrl { get; set; }
-        public string InternetUrl { get; set; }
-        public string AttachmentType { get; set; }
-        public Guid? AttachmentId { get; set; }
-        public int VacancyQuantity { get; set; }
-        public int ParentId { get; set; }
+        //public string HomePageUrl { get; set; }
+        //public string InternetUrl { get; set; }
+        //public string AttachmentType { get; set; }
+        //public Guid? AttachmentId { get; set; }
+        //public int VacancyQuantity { get; set; }
+        //public int ParentId { get; set; }
         public short? Division { get; set; }
-        public byte UserLicenseType { get; set; }
-        public string SipUri { get; set; }
-        public double AnnualSalary { get; set; }
+        //public byte UserLicenseType { get; set; }
+        //public string SipUri { get; set; }
+        //public double AnnualSalary { get; set; }
         public DateTime Syscreated { get; set; }
         public int Syscreator { get; set; }
         public DateTime Sysmodified { get; set; }
         public int Sysmodifier { get; set; }
         public Guid Sysguid { get; set; }
         public byte[] Timestamp { get; set; }
-        public DateTime? DateOfDead { get; set; }
-        public string OfficialName { get; set; }
+        //public DateTime? DateOfDead { get; set; }
+        //public string OfficialName { get; set; }
     }
 }

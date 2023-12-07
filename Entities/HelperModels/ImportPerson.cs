@@ -11,5 +11,6 @@ namespace Entities.HelperModels
         public string Destination { get; set; }
         public string FullName { get; set; }
         public string Amount { get; set; }
+        public string PersonalNumber { get; set; }
     }
 }

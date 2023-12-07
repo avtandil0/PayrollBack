@@ -45,9 +45,12 @@ namespace PayrollServer.Controllers
             foreach (var comp in employeeDTO.EmployeeComponents)
             {
                 comp.Status = new ObjectStatus();
-                if (comp.StartDate.Date <= current.Date && comp.EndDate?.Date >= current.Date)
+                if (comp.StartDate.Date <= current.Date)
                 {
-                    comp.Status.Value = 1;
+                    if(comp.EndDate  == null || comp.EndDate?.Date >= current.Date)
+                    {
+                        comp.Status.Value = 1;
+                    }
                 }
                 else
                 {

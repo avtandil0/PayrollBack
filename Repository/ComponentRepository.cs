@@ -52,6 +52,7 @@ namespace Repository
             com.StartDate = component.StartDate;
             com.EndDate = component.EndDate;
             com.Code = component.Code;
+            com.Type = component.Type;
 
             Update(com);
             Save();

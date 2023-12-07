@@ -13,6 +13,7 @@ namespace Entities.Models
         }
 
         public Guid Id { get; set; }
+        public int Hid { get; set; }
         public Guid? EmployeeId { get; set; }
         public Guid? ComponentId { get; set; }
         public Guid? ProjectId { get; set; }

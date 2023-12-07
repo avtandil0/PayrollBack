@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using PayrollServer.Models;
@@ -79,10 +80,59 @@ namespace PayrollServer.Controllers
             string connectionString = "Server=AZENAISHVILI1;database=PayrollNew;Trusted_Connection=True;User ID=PayrollModule;Password=NewPass1;";
             try
             {
-                var rowsAffected = _repositoryContext.Database.ExecuteSqlRaw(query);
+                //var rowsAffected = _repositoryContext.Database.ExecuteSqlRaw(query);
 
 
-                return new Result(true, 1, rowsAffected.ToString() + " row(s) affected");
+                //return new Result(true, 1, rowsAffected.ToString() + " row(s) affected");
+
+                var returnValue = new SqlParameter
+                {
+                    ParameterName = "@ReturnValue",
+                    SqlDbType = System.Data.SqlDbType.Int,
+                    Direction = System.Data.ParameterDirection.Output
+                };
+                var numberOfRowsAffected = 0;
+                var rowsAffected = _repositoryContext.Database.ExecuteSqlRaw("EXEC produce_payroll_report_data @ReturnValue OUTPUT", returnValue);
+
+                if (returnValue.Value != null)
+                {
+                    numberOfRowsAffected = (int)returnValue.Value;
+                }
+
+
+                return new Result(true, 1, numberOfRowsAffected.ToString() + " row(s) affected");
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(e.Message);
+
+            }
+
+            return new Result(false, 0, "Errorr ! ! !");
+
+        }
+
+        [HttpPost]
+        [Route("deleteAndCalculateForDeclaration")]
+        public Result deleteAndCalculateForDeclaration()
+        {
+            var currentDate = DateTime.Now;
+            string deleteQuery = @"delete from payroll_report_data where payrollYear = " + currentDate.Year;
+            string query = @" produce_payroll_report_data";
+            try
+            {
+                var returnValue = new SqlParameter
+                {
+                    ParameterName = "@ReturnValue",
+                    SqlDbType = System.Data.SqlDbType.Int,
+                    Direction = System.Data.ParameterDirection.Output
+                };
+                var rowsAffected = _repositoryContext.Database.ExecuteSqlRaw(deleteQuery);
+                rowsAffected = _repositoryContext.Database.ExecuteSqlRaw("EXEC produce_payroll_report_data @ReturnValue OUTPUT", returnValue);
+                int numberOfRowsAffected = (int)returnValue.Value;
+
+
+                return new Result(true, 1, numberOfRowsAffected.ToString() + " row(s) affected");
             }
             catch (Exception e)
             {
@@ -140,7 +190,7 @@ namespace PayrollServer.Controllers
             public decimal Amount { get; set; }
             public Guid ComponentId { get; set; }
             public int Currency { get; set; }
-            public DateTime Date{ get; set; }
+            public DateTime Date { get; set; }
         }
         public class addCalculationParams
         {
@@ -194,6 +244,7 @@ namespace PayrollServer.Controllers
         public class FileEmployee
         {
             public string Fullname { get; set; }
+            public string ResId { get; set; }
             public string GLAccount { get; set; }
             public string Project { get; set; }
             public string CostCenter { get; set; }
@@ -229,55 +280,77 @@ namespace PayrollServer.Controllers
 
             var employeeCounts = 0;
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
             {
+
                 ExcelWorksheet workSheet = package.Workbook.Worksheets["Summary"];
                 //var rootFolder = appConfig.Value.FileLocationConfig.Location;//@"D:\Files";
 
+                if (workSheet == null)
+                {
+                    return new CreateEmployeeFromFileResult
+                    {
+                        Success = false,
+                        Message = String.Format("ფაილის შაბლონი არასწორია! დამუშავება ვერ მოხერხდა!")
+                    };
+                }
                 int totalRows = workSheet.Dimension.Rows;
                 var rowLength = workSheet.Dimension.End.Row;
 
 
                 List<FileEmployee> employees = new List<FileEmployee>();
 
-                var componentName = workSheet.Cells[3, 9].Value.ToString();
+                var componentName = workSheet.Cells[3, 10].Value.ToString();
 
-                for (int i = 2; i <= rowLength; i++)
+                for (int i = 3; i <= rowLength; i++)
                 {
+                    var cc = workSheet.Cells[i, 9].Value?.ToString();
                     FileEmployee fileEmployee = new FileEmployee
                     {
                         Fullname = workSheet.Cells[i, 2].Value?.ToString(),
-                        GLAccount = workSheet.Cells[i, 3].Value?.ToString(),
-                        Project = workSheet.Cells[i, 4].Value?.ToString(),
-                        CostCenter = workSheet.Cells[i, 5].Value?.ToString(),
-                        CostUnit = workSheet.Cells[i, 6].Value?.ToString(),
-                        PersonalNumber = workSheet.Cells[i, 7].Value?.ToString(),
-                        Amount = Decimal.Parse(workSheet.Cells[i, 8].Value?.ToString()),
-                        Component = workSheet.Cells[i, 9].Value?.ToString(),
+                        ResId = workSheet.Cells[i, 3].Value?.ToString(),
+                        GLAccount = workSheet.Cells[i, 4].Value?.ToString(),
+                        Project = workSheet.Cells[i, 5].Value?.ToString(),
+                        CostCenter = workSheet.Cells[i, 6].Value?.ToString(),
+                        CostUnit = workSheet.Cells[i, 7].Value?.ToString(),
+                        PersonalNumber = workSheet.Cells[i, 8].Value?.ToString(),
+                        Amount = Decimal.Parse(workSheet.Cells[i, 9].Value?.ToString()),
+                        Component = workSheet.Cells[i, 10].Value?.ToString(),
                     };
 
                     employees.Add(fileEmployee);
                 }
 
 
-                var personalNumbers = employees.Select(x => x.PersonalNumber.Trim()).Distinct().ToList();
+                /////////////////////////////////////////////////////////////
+                var resIds = employees.Select(x => x.ResId?.Trim()).Distinct().ToList();
+                var PerIds = employees.Select(x => x.PersonalNumber?.Trim()).Distinct().ToList();
 
 
-                var employeesPersonalNumbers = _repositoryContext.Employees.Select(r => r.PersonalNumber);
-                var empFromDbNotContains = personalNumbers.Where(r => !employeesPersonalNumbers.Contains(r));
+                var empResIds = _repositoryContext.Employees.Where(r => resIds.Contains(r.ResId.ToString()));
+                var empPerIds = _repositoryContext.Employees.Where(r => PerIds.Contains(r.ResId.ToString()));
 
-                if (empFromDbNotContains.Count() > 0)
-                {
-                    return new CreateEmployeeFromFileResult
-                    {
-                        Employees = employees.Where(r => empFromDbNotContains.Contains(r.PersonalNumber)).ToList(),
-                        Success = false
+                ///////////////////////////////////////////////////////////
 
-                    };
-                }
-                var empFromDb = _repositoryContext.Employees
-                            .Where(r => personalNumbers.Contains(r.PersonalNumber))
-                            .ToList();
+                //var personalNumbers = employees.Select(x => x.PersonalNumber.Trim()).Distinct().ToList();
+
+
+                //var employeesPersonalNumbers = _repositoryContext.Employees.Select(r => r.PersonalNumber);
+                //var empFromDbNotContains = personalNumbers.Where(r => !employeesPersonalNumbers.Contains(r));
+
+                //if (empFromDbNotContains.Count() > 0)
+                //{
+                //    return new CreateEmployeeFromFileResult
+                //    {
+                //        Employees = employees.Where(r => empFromDbNotContains.Contains(r.PersonalNumber)).ToList(),
+                //        Success = false
+
+                //    };
+                //}
+                //var empFromDb = _repositoryContext.Employees
+                //            .Where(r => personalNumbers.Contains(r.PersonalNumber))
+                //            .ToList();
 
 
                 var grossComponent = _repositoryContext.Components.First(r => r.Code.Trim() == componentName.Trim());
@@ -287,12 +360,13 @@ namespace PayrollServer.Controllers
 
                 List<Calculation> calculations = new List<Calculation>();
 
-                foreach (var item in employees)
+                foreach (var item in empResIds)
                 {
-                    var emp = empFromDb.FirstOrDefault(r => r.PersonalNumber == item.PersonalNumber);
+                    var emp = employees.FirstOrDefault(r => r.PersonalNumber == item.PersonalNumber
+                                                && Int16.Parse(r.ResId) == item.ResId);
                     if (emp != null)
                     {
-                        var calculation = GetCalculationObjectForFile(date, grossComponent, emp, item.Amount);
+                        var calculation = GetCalculationObjectForFile(date, grossComponent, item, emp.Amount);
                         calculations.Add(calculation);
                         employeeCounts++;
                     }
@@ -409,7 +483,7 @@ namespace PayrollServer.Controllers
 
         [HttpPost]
         [Route("deleteCalculationsByFiler")]
-        public Result DeleteCalculationsByFiler([FromBody] DeleteParamsByFiler deleteParams )
+        public Result DeleteCalculationsByFiler([FromBody] DeleteParamsByFiler deleteParams)
         {
             //var items = _repositoryContext.Calculations.Where(r => r.EmployeeId == deleteParams.Id);
 
@@ -435,7 +509,7 @@ namespace PayrollServer.Controllers
 
             foreach (var item in deleteParams.employeeIds)
             {
-                deleteCalculationsByFilter(new DeleteParams {Id = item, CalculationPeriod= deleteParams.CalculationPeriod});
+                deleteCalculationsByFilter(new DeleteParams { Id = item, CalculationPeriod = deleteParams.CalculationPeriod });
             }
 
             return new Result(true, 1, String.Format("წარმატებით დასრულდა {0} თანამშრომელზე.", deleteParams.employeeIds.Count()));
@@ -531,7 +605,7 @@ namespace PayrollServer.Controllers
         {
 
             deleteCalculationsByFilter(deleteParams);
-            return new Result(true, 0, "Error !");
+            return new Result(true, 0, "წარმატებით დასრულდა !");
 
         }
 
@@ -599,7 +673,7 @@ namespace PayrollServer.Controllers
                 }
                 correctRemaining = correctRemaining - (calc.Gross - calc.PensionTax);
             }
-            
+
             _repositoryContext.Calculations.Remove(item);
             _repositoryContext.Employees.Update(employee);
             _repositoryContext.Calculations.UpdateRange(nextCalculations);
@@ -617,6 +691,43 @@ namespace PayrollServer.Controllers
         [Route("paid")]
         public Result CreateEmployee([FromBody] PaidHelper paidDTO)
         {
+
+            var bankAccounts = paidDTO.Persons.Select(a => a.BankAccountNumber);
+
+            var existingBankAccountsEmployee = _repositoryContext.Employees.Where(r => r.DateDeleted == null &&
+                                   bankAccounts.Contains(r.BankAccountNumber));
+
+            var existingBankAccounts = existingBankAccountsEmployee.Select(p => p.BankAccountNumber);
+
+            List<string> nonExistingBankAccounts = bankAccounts
+                                                    .Except(existingBankAccounts)
+                                                    .ToList();
+
+
+            if (nonExistingBankAccounts.Count() > 0)
+            {
+                return new Result(false, 10, string.Join(", ", nonExistingBankAccounts));
+            }
+
+            List<string> nonExistingPersonalNumbers = new List<string>();
+            var empList = paidDTO.Persons;
+            foreach (var emp in existingBankAccountsEmployee)
+            {
+                var ex = empList.FirstOrDefault(r => r.BankAccountNumber == emp.BankAccountNumber);
+
+                if (ex != null)
+                {
+                    if (emp.PersonalNumber.Trim() != ex.PersonalNumber.Trim())
+                    {
+                        nonExistingPersonalNumbers.Add(emp.PersonalNumber.Trim());
+                    }
+                }
+            }
+
+            if (nonExistingPersonalNumbers.Count() > 0)
+            {
+                return new Result(false, 20, string.Join(", ", string.Join(", ", nonExistingPersonalNumbers)));
+            }
 
             _repository.Calculation.Paid(paidDTO);
 
@@ -733,7 +844,7 @@ namespace PayrollServer.Controllers
 
             var employees = _repository.Employee.GetCalculationByFilter(calculationFilter);
 
-            if(calculationFilter.NotIncludes != null && calculationFilter.NotIncludes.Count() > 0)
+            if (calculationFilter.NotIncludes != null && calculationFilter.NotIncludes.Count() > 0)
             {
                 employees = employees.Where(r => !calculationFilter.NotIncludes.Contains(r.Id));
             }
@@ -744,20 +855,20 @@ namespace PayrollServer.Controllers
                 decimal nets = 0;
                 foreach (var item in employee.Calculations)
                 {
-                    if (item.EmployeeComponent == null)
-                    {
-                        continue;
-                    }
-                    if (item.EmployeeComponent.Component.Name.ToLower().Contains("paid"))
-                    {
-                        paids += item.Paid;
-                    }
+                    //if (item.EmployeeComponent == null)
+                    //{
+                    //    continue;
+                    //}
+                    //if (item.EmployeeComponent.Component.Name.ToLower().Contains("paid"))
+                    //{
+                    //    paids += item.Paid;
+                    //}
 
                     nets += item.Net;
                 }
                 workSheet.Cells[recordIndex, 1].Value = employee.BankAccountNumber;
                 workSheet.Cells[recordIndex, 2].Value = getBiki(employee.BankAccountNumber); // biki
-                workSheet.Cells[recordIndex, 3].Value = String.Format("{0} {1}", employee.FirstName, employee.LastName);
+                workSheet.Cells[recordIndex, 3].Value = String.Format("{0} {1} - ({2})", employee.FirstName, employee.LastName, employee.ResId);
                 workSheet.Cells[recordIndex, 4].Value = "xelfasi"; //  daniSnuleba
                 workSheet.Cells[recordIndex, 5].Value = paids + nets;
                 recordIndex++;
@@ -785,7 +896,21 @@ namespace PayrollServer.Controllers
 
         }
 
+        public decimal getToTalBalance(EmployeeDTO employeeDTO)
+        {
+            decimal paids = 0;
+            foreach (var item in employeeDTO.Calculations)
+            {
+                if (item.EmployeeComponent != null && item.EmployeeComponent.Component.Name.ToLower().Contains("paid"))
+                {
+                    paids += item.Paid;
+                }
+            }
 
+            decimal sum = employeeDTO.Calculations.Sum(r => r.Net);
+
+            return sum + paids;
+        }
 
         [HttpGet]
         [Route("downloadCalculations")]
@@ -800,7 +925,7 @@ namespace PayrollServer.Controllers
             // name of the sheet
             var workSheet = excel.Workbook.Worksheets.Add("Sheet1");
 
-           
+
             workSheet.TabColor = System.Drawing.Color.Black;
             workSheet.DefaultRowHeight = 12;
 
@@ -829,7 +954,7 @@ namespace PayrollServer.Controllers
 
             foreach (var employee in employeeDTOs)
             {
-               
+
                 workSheet.Cells[recordIndex, 1].Value = employee.ResId;
                 workSheet.Cells[recordIndex, 2].Value = String.Format("{0} {1}", employee.FirstName, employee.LastName);
                 workSheet.Cells[recordIndex, 3].Value = employee.Calculations.Sum(r => r.Gross);
@@ -837,9 +962,9 @@ namespace PayrollServer.Controllers
                 workSheet.Cells[recordIndex, 5].Value = employee.Calculations.Sum(r => r.Paid);
                 workSheet.Cells[recordIndex, 6].Value = employee.Calculations.Sum(r => r.PensionTax);
                 workSheet.Cells[recordIndex, 7].Value = employee.Calculations.Sum(r => r.IncomeTax);
-                workSheet.Cells[recordIndex, 8].Value = employee.Calculations.Sum(r => r.EmployeeComponent.Component.Type == 2? r.Net : 0);
+                workSheet.Cells[recordIndex, 8].Value = employee.Calculations.Sum(r => r.EmployeeComponent?.Component.Type == 2 ? r.Net : 0);
                 workSheet.Cells[recordIndex, 9].Value = employee.RemainingGraceAmount;
-                workSheet.Cells[recordIndex, 9].Value = 0;
+                workSheet.Cells[recordIndex, 10].Value = getToTalBalance(employee);
                 recordIndex++;
             }
 

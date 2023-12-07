@@ -165,9 +165,16 @@ namespace Repository
                 //query = query.Where(r => r.Calculations
                 //            .Any(c => c.PayrollMonth == calculationFilter.CalculationPeriod.Value.Month
                 //                && c.PayrollYear == calculationFilter.CalculationPeriod.Value.Year));
+                //query = query.Where((r) => r.EmployeeComponents.Where(empComp =>
+                //     empComp.StartDate > new DateTime(calculationFilter.CalculationPeriod.Value.Year,
+                //     calculationFilter.CalculationPeriod.Value.Month,
+                //     DateTime.DaysInMonth(calculationFilter.CalculationPeriod.Value.Year, calculationFilter.CalculationPeriod.Value.Month))
+                //     || empComp.EndDate.Value < new DateTime(calculationFilter.CalculationPeriod.Value.Year,
+                //                                calculationFilter.CalculationPeriod.Value.Month, 1)).Count() > 0).ToList();
 
                 query = query.Select(r => new Employee
                 {
+                    ResId = r.ResId,
                     BankAccountNumber = r.BankAccountNumber,
                     RemainingGraceAmount = r.RemainingGraceAmount,
                     FirstName = r.FirstName,

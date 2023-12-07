@@ -404,7 +404,9 @@ namespace Entities
 
                 entity.HasIndex(e => e.SchemeTypeId, "IX_EmployeeComponents_SchemeTypeId");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedNever(); 
+                entity.Property(e => e.Hid).HasColumnName("Hid");
+
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
 

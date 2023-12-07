@@ -22,6 +22,7 @@ namespace Entities
         public virtual DbSet<Hrjbtl> Hrjbtls { get; set; }
         public virtual DbSet<Humre> Humres { get; set; }
         public virtual DbSet<HumresAudit> HumresAudits { get; set; }
+        public virtual DbSet<AbsencesAudit> AbsencesAudits { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +36,32 @@ namespace Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+
+            modelBuilder.Entity<AbsencesAudit>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("Absences_audit");
+
+                entity.Property(e => e.DateCreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("dateCreated");
+
+                entity.Property(e => e.FieldName)
+                    .HasMaxLength(50)
+                    .HasColumnName("fieldName");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.NewValue)
+                    .HasMaxLength(50)
+                    .HasColumnName("newValue");
+
+                entity.Property(e => e.OldValue)
+                    .HasMaxLength(50)
+                    .HasColumnName("oldValue");
+            });
 
             modelBuilder.Entity<HumresAudit>(entity =>
             {
@@ -50,8 +77,8 @@ namespace Entities
                     .HasMaxLength(50)
                     .HasColumnName("fieldName");
 
-                entity.Property(e => e.Id).HasColumnName("id"); 
-                entity.Property(e => e.ResId).HasColumnName("res_id"); 
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.ResId).HasColumnName("res_id");
 
                 entity.Property(e => e.NewValue)
                     .HasMaxLength(50)
@@ -351,11 +378,11 @@ namespace Entities
 
                 entity.Property(e => e.Assistant).HasColumnName("assistant");
 
-                entity.Property(e => e.AttachmentId).HasColumnName("AttachmentID");
+                //entity.Property(e => e.AttachmentId).HasColumnName("AttachmentID");
 
-                entity.Property(e => e.AttachmentType)
-                    .HasMaxLength(1)
-                    .IsFixedLength(true);
+                //entity.Property(e => e.AttachmentType)
+                    //.HasMaxLength(1)
+                    //.IsFixedLength(true);
 
                 entity.Property(e => e.Bankac0)
                     .HasMaxLength(34)
@@ -450,7 +477,7 @@ namespace Entities
                     .HasMaxLength(30)
                     .HasColumnName("crdnr");
 
-                entity.Property(e => e.DateOfDead).HasColumnType("datetime");
+                //entity.Property(e => e.DateOfDead).HasColumnType("datetime");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(255)
@@ -575,9 +602,9 @@ namespace Entities
                     .HasColumnName("geb_pl")
                     .UseCollation("SQL_Latin1_General_CP1_CI_AI");
 
-                entity.Property(e => e.HomePageUrl)
-                    .HasMaxLength(255)
-                    .HasColumnName("HomePageURL");
+                //entity.Property(e => e.HomePageUrl)
+                //    .HasMaxLength(255)
+                //    .HasColumnName("HomePageURL");
 
                 entity.Property(e => e.Identiteit)
                     .HasMaxLength(20)
@@ -589,9 +616,9 @@ namespace Entities
                     .IsFixedLength(true)
                     .UseCollation("SQL_Latin1_General_CP1_CI_AI");
 
-                entity.Property(e => e.InternetUrl)
-                    .HasMaxLength(255)
-                    .HasColumnName("InternetURL");
+                //entity.Property(e => e.InternetUrl)
+                //    .HasMaxLength(255)
+                //    .HasColumnName("InternetURL");
 
                 entity.Property(e => e.Internetac)
                     .HasMaxLength(60)
@@ -701,17 +728,17 @@ namespace Entities
 
                 entity.Property(e => e.Notes).HasColumnName("notes");
 
-                entity.Property(e => e.OfficialName)
-                    .IsRequired()
-                    .HasMaxLength(3)
-                    .HasDefaultValueSql("(N'01')")
-                    .IsFixedLength(true);
+                //entity.Property(e => e.OfficialName)
+                //    .IsRequired()
+                //    .HasMaxLength(3)
+                //    .HasDefaultValueSql("(N'01')")
+                //    .IsFixedLength(true);
 
                 entity.Property(e => e.OldNtfullName)
                     .HasMaxLength(64)
                     .HasColumnName("OldNTFullName");
 
-                entity.Property(e => e.ParentId).HasColumnName("ParentID");
+                //entity.Property(e => e.ParentId).HasColumnName("ParentID");
 
                 entity.Property(e => e.Partner)
                     .HasMaxLength(64)
@@ -721,7 +748,7 @@ namespace Entities
 
                 entity.Property(e => e.Payempl).HasColumnName("payempl");
 
-                entity.Property(e => e.PictureThumbnailFilename).HasMaxLength(128);
+                //entity.Property(e => e.PictureThumbnailFilename).HasMaxLength(128);
 
                 entity.Property(e => e.Picturefilename)
                     .HasMaxLength(128)
@@ -794,9 +821,9 @@ namespace Entities
 
                 entity.Property(e => e.SignatureFile).HasMaxLength(128);
 
-                entity.Property(e => e.SipUri)
-                    .HasMaxLength(255)
-                    .HasColumnName("SipURI");
+                //entity.Property(e => e.SipUri)
+                //    .HasMaxLength(255)
+                //    .HasColumnName("SipURI");
 
                 entity.Property(e => e.SkypeId)
                     .HasMaxLength(60)
@@ -886,7 +913,7 @@ namespace Entities
                     .HasMaxLength(255)
                     .HasColumnName("usr_id2");
 
-                entity.Property(e => e.VacancyQuantity).HasDefaultValueSql("((1))");
+                //entity.Property(e => e.VacancyQuantity).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.VacancyStartDate).HasColumnType("datetime");
 

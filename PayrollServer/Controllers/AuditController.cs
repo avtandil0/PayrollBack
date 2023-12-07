@@ -33,7 +33,7 @@ namespace PayrollServer.Controllers
         private readonly IMapper _mapper;
 
 
-        public AuditController(IRepositoryWrapper repositoryWrapper ,SynergyContext repositoryContext, ISynergyRepository sRepository, RepositoryContext payrollContext, ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
+        public AuditController(IRepositoryWrapper repositoryWrapper, SynergyContext repositoryContext, ISynergyRepository sRepository, RepositoryContext payrollContext, ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
         {
             _repositoryWrapper = repositoryWrapper;
             _repositoryContext = repositoryContext;
@@ -52,6 +52,14 @@ namespace PayrollServer.Controllers
             return humresAudits;
         }
 
+        [HttpGet]
+        [Route("getAllAbsencesAudit")]
+        public IEnumerable<AbsencesAudit> getAllAbsencesAudit()
+        {
+            var humresAudits = _repositoryContext.AbsencesAudits.OrderByDescending(r => r.DateCreated).ToList();
+            return humresAudits;
+        }
+
 
 
         [HttpPut]
@@ -65,7 +73,7 @@ namespace PayrollServer.Controllers
                 return new Result(false, 1, "This Employee does not exist in Payroll");
             }
 
-            if(humresAudit.FieldName == "sur_name")
+            if (humresAudit.FieldName == "sur_name")
             {
                 emp.LastName = humresAudit.NewValue;
             }
@@ -77,7 +85,7 @@ namespace PayrollServer.Controllers
 
             if (humresAudit.FieldName == "ldatindienst")
             {
-                emp.ContractStartDate = DateTime.Parse( humresAudit.NewValue);
+                emp.ContractStartDate = DateTime.Parse(humresAudit.NewValue);
             }
 
             if (humresAudit.FieldName == "ldatuitdienst")
@@ -100,6 +108,71 @@ namespace PayrollServer.Controllers
             return new Result(true, 1, "წარმატებით დასრულდა");
 
         }
+
+
+
+        [HttpPut]
+        [Route("updateComponent")]
+        public Result UpdateComponent(AbsencesAudit absencesAudit)
+        {
+            var component = _payrollContext.EmployeeComponents.FirstOrDefault(r => r.Hid == absencesAudit.Hid);
+
+            if (component == null)
+            {
+                return new Result(false, 1, "This Component does not exist in Payroll");
+            }
+
+            var currentDate = DateTime.Now;
+
+            if (absencesAudit.FieldName == "StartDate")
+            {
+                component.StartDate = DateTime.Parse(absencesAudit.NewValue);
+            }
+
+            if (absencesAudit.FieldName == "EndDate")
+            {
+                component.EndDate = DateTime.Parse(absencesAudit.NewValue);
+            }
+
+            if (absencesAudit.FieldName == "Amount")
+            {
+                component.EndDate = currentDate.AddDays(-1);
+                var EmpComp = new EmployeeComponent
+                {
+                    Id = Guid.NewGuid(),
+                    Hid = component.Hid,
+                    EndDate = null,
+                    Amount = decimal.Parse(absencesAudit.NewValue),
+                    CashAmount = component.CashAmount,
+                    ComponentId = component.ComponentId,
+                    Currency = component.Currency,
+                    DateCreated = currentDate,
+                    EmployeeId = component.EmployeeId,
+                    IsPermanent = component.IsPermanent,
+                    PaidByCash = component.PaidByCash,
+                    PaidMultiple = component.PaidMultiple,
+                    PaymentDaysType = component.PaymentDaysType,
+                    PaymentDaysTypeId = component.PaymentDaysTypeId,
+                    SchemeTypeId = component.SchemeTypeId,
+                    CostCenterId = component.CostCenterId,
+                    ProjectId = component.ProjectId,
+                    StartDate = currentDate
+
+                };
+
+                _payrollContext.EmployeeComponents.Add(EmpComp);
+            }
+
+
+
+
+
+
+            _payrollContext.SaveChanges();
+            return new Result(true, 1, "წარმატებით დასრულდა");
+
+        }
+
 
 
     }
