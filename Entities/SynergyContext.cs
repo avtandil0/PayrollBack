@@ -24,6 +24,8 @@ namespace Entities
         public virtual DbSet<HumresAudit> HumresAudits { get; set; }
         public virtual DbSet<AbsencesAudit> AbsencesAudits { get; set; }
 
+        public virtual DbSet<Absence> Absences { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -37,6 +39,385 @@ namespace Entities
         {
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
+            modelBuilder.Entity<Absence>(entity =>
+            {
+                entity.HasKey(e => e.Id)
+                    .IsClustered(false);
+
+                entity.HasIndex(e => new { e.Approver, e.Type }, "Approver_Type");
+
+                entity.HasIndex(e => new { e.Syscreated, e.CustomerId, e.CustomerResellerId }, "CreatedCustomerAndReseller");
+
+                entity.HasIndex(e => e.CustomerContactId, "CustomerContactID");
+
+                entity.HasIndex(e => new { e.CustomerId, e.Type }, "CustomerID_Type");
+
+                entity.HasIndex(e => new { e.CustomerResellerId, e.Type }, "CustomerResellerID_Type");
+
+                entity.HasIndex(e => e.DocumentId, "DocumentID");
+
+                entity.HasIndex(e => new { e.EmpId, e.Type }, "EmpID_Type")
+                    .IsClustered();
+
+                entity.HasIndex(e => e.EntryGuid, "EntryGuid");
+
+                entity.HasIndex(e => e.ExchangeLink, "ExchangeLink");
+
+                entity.HasIndex(e => e.FinancialEntryKey, "FinancialEntryGuid");
+
+                entity.HasIndex(e => e.Hid, "HID");
+
+                entity.HasIndex(e => new { e.EmpId, e.Status }, "IXAbsences_EmpIDStatus");
+
+                entity.HasIndex(e => e.InvoiceAccount, "InvoiceAccount");
+
+                entity.HasIndex(e => e.ItemCode2, "ItemCode_2");
+
+                entity.HasIndex(e => new { e.ItemCode, e.Type, e.Status }, "ItemCode_Type_Status");
+
+                entity.HasIndex(e => e.ItemNumberId, "ItemNumberID");
+
+                entity.HasIndex(e => e.OrderNumber, "OrderNumber");
+
+                entity.HasIndex(e => e.ParentRequest, "ParentRequest");
+
+                entity.HasIndex(e => new { e.ProcessNumber, e.Status, e.BillCustomer }, "ProcessNumberStatusBilling");
+
+                entity.HasIndex(e => new { e.Processor, e.Type }, "Processor_Type");
+
+                entity.HasIndex(e => e.ProjectNumber, "ProjectNumber");
+
+                entity.HasIndex(e => e.PurchaseNumber, "PurchaseNumber");
+
+                entity.HasIndex(e => new { e.Realizer, e.Type }, "Realizer_Type");
+
+                entity.HasIndex(e => e.ReferenceNumber, "ReferenceNumber");
+
+                entity.HasIndex(e => new { e.RejectedBy, e.Type }, "RejectedBy_Type");
+
+                entity.HasIndex(e => e.RelatedRequestId, "RelatedRequestID");
+
+                entity.HasIndex(e => new { e.SecurityLevel, e.Syscreated }, "SecurityLevel_syscreated");
+
+                entity.HasIndex(e => new { e.Type, e.Buildup }, "Type_BuildUp");
+
+                entity.HasIndex(e => new { e.Type, e.EmpId, e.Syscreated }, "Type_EmpID_Syscreated");
+
+                entity.HasIndex(e => new { e.Type, e.StartDate }, "Type_StartDate");
+
+                entity.HasIndex(e => new { e.Type, e.Syscreated }, "Type_syscreated");
+
+                entity.HasIndex(e => e.Syscreated, "syscreated");
+
+                entity.HasIndex(e => new { e.Syscreator, e.Type }, "syscreator_Type");
+
+                entity.HasIndex(e => new { e.Syscreator, e.Syscreated }, "syscreator_syscreated");
+
+                entity.HasIndex(e => e.Sysmodified, "sysmodified");
+
+                entity.HasIndex(e => e.Timestamp, "timestamp");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedNever()
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.AbsenceBasis)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.AmountFc).HasColumnName("AmountFC");
+
+                entity.Property(e => e.AmountFcactual).HasColumnName("AmountFCActual");
+
+                entity.Property(e => e.Approved).HasColumnType("datetime");
+
+                entity.Property(e => e.Currency)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.CurrencyActual)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.CustomerContactId).HasColumnName("CustomerContactID");
+
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.CustomerResellerId).HasColumnName("CustomerResellerID");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Division)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.DocumentId).HasColumnName("DocumentID");
+
+                entity.Property(e => e.DocumentId2).HasColumnName("DocumentID_2");
+
+                entity.Property(e => e.EmpId).HasColumnName("EmpID");
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.EndDateActual).HasColumnType("datetime");
+
+                entity.Property(e => e.ExchangeLink)
+                    .HasMaxLength(512)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FreeBoolField01).HasColumnName("FreeBoolField_01");
+
+                entity.Property(e => e.FreeBoolField02).HasColumnName("FreeBoolField_02");
+
+                entity.Property(e => e.FreeBoolField03).HasColumnName("FreeBoolField_03");
+
+                entity.Property(e => e.FreeBoolField04).HasColumnName("FreeBoolField_04");
+
+                entity.Property(e => e.FreeBoolField05).HasColumnName("FreeBoolField_05");
+
+                entity.Property(e => e.FreeDateField01)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FreeDateField_01");
+
+                entity.Property(e => e.FreeDateField02)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FreeDateField_02");
+
+                entity.Property(e => e.FreeDateField03)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FreeDateField_03");
+
+                entity.Property(e => e.FreeDateField04)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FreeDateField_04");
+
+                entity.Property(e => e.FreeDateField05)
+                    .HasColumnType("datetime")
+                    .HasColumnName("FreeDateField_05");
+
+                entity.Property(e => e.FreeGuidField01).HasColumnName("FreeGuidField_01");
+
+                entity.Property(e => e.FreeGuidField02).HasColumnName("FreeGuidField_02");
+
+                entity.Property(e => e.FreeGuidField03).HasColumnName("FreeGuidField_03");
+
+                entity.Property(e => e.FreeGuidField04).HasColumnName("FreeGuidField_04");
+
+                entity.Property(e => e.FreeGuidField05).HasColumnName("FreeGuidField_05");
+
+                entity.Property(e => e.FreeGuidField06).HasColumnName("FreeGuidField_06");
+
+                entity.Property(e => e.FreeGuidField07).HasColumnName("FreeGuidField_07");
+
+                entity.Property(e => e.FreeGuidField08).HasColumnName("FreeGuidField_08");
+
+                entity.Property(e => e.FreeGuidField09).HasColumnName("FreeGuidField_09");
+
+                entity.Property(e => e.FreeGuidField10).HasColumnName("FreeGuidField_10");
+
+                entity.Property(e => e.FreeIntField01).HasColumnName("FreeIntField_01");
+
+                entity.Property(e => e.FreeIntField02).HasColumnName("FreeIntField_02");
+
+                entity.Property(e => e.FreeIntField03).HasColumnName("FreeIntField_03");
+
+                entity.Property(e => e.FreeIntField04).HasColumnName("FreeIntField_04");
+
+                entity.Property(e => e.FreeIntField05).HasColumnName("FreeIntField_05");
+
+                entity.Property(e => e.FreeNumberField01).HasColumnName("FreeNumberField_01");
+
+                entity.Property(e => e.FreeNumberField02).HasColumnName("FreeNumberField_02");
+
+                entity.Property(e => e.FreeNumberField03).HasColumnName("FreeNumberField_03");
+
+                entity.Property(e => e.FreeNumberField04).HasColumnName("FreeNumberField_04");
+
+                entity.Property(e => e.FreeNumberField05).HasColumnName("FreeNumberField_05");
+
+                entity.Property(e => e.FreeTextField01)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_01");
+
+                entity.Property(e => e.FreeTextField02)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_02");
+
+                entity.Property(e => e.FreeTextField03)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_03");
+
+                entity.Property(e => e.FreeTextField04)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_04");
+
+                entity.Property(e => e.FreeTextField05)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_05");
+
+                entity.Property(e => e.FreeTextField06)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_06");
+
+                entity.Property(e => e.FreeTextField07)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_07");
+
+                entity.Property(e => e.FreeTextField08)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_08");
+
+                entity.Property(e => e.FreeTextField09)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_09");
+
+                entity.Property(e => e.FreeTextField10)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_10");
+
+                entity.Property(e => e.FreeTextField11)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_11");
+
+                entity.Property(e => e.FreeTextField12)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_12");
+
+                entity.Property(e => e.FreeTextField13)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_13");
+
+                entity.Property(e => e.FreeTextField14)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_14");
+
+                entity.Property(e => e.FreeTextField15)
+                    .HasMaxLength(60)
+                    .IsUnicode(false)
+                    .HasColumnName("FreeTextField_15");
+
+                entity.Property(e => e.Hid)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("HID");
+
+                entity.Property(e => e.ItemCode)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ItemCode2)
+                    .HasMaxLength(30)
+                    .IsUnicode(false)
+                    .HasColumnName("ItemCode_2");
+
+                entity.Property(e => e.ItemCount2).HasColumnName("ItemCount_2");
+
+                entity.Property(e => e.ItemCountActual2).HasColumnName("ItemCountActual_2");
+
+                entity.Property(e => e.ItemCountry)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.ItemCountry2)
+                    .HasMaxLength(3)
+                    .IsUnicode(false)
+                    .HasColumnName("ItemCountry_2")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.ItemNumberId).HasColumnName("ItemNumberID");
+
+                entity.Property(e => e.ItemNumberId2).HasColumnName("ItemNumberID_2");
+
+                entity.Property(e => e.OrderNumber)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Priority).HasDefaultValueSql("(3)");
+
+                entity.Property(e => e.ProcessNumber)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Processed).HasColumnType("datetime");
+
+                entity.Property(e => e.ProjectNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PurchaseNumber)
+                    .HasMaxLength(30)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Realized).HasColumnType("datetime");
+
+                entity.Property(e => e.ReferenceNumber)
+                    .HasMaxLength(40)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Rejected).HasColumnType("datetime");
+
+                entity.Property(e => e.RelatedRequestId).HasColumnName("RelatedRequestID");
+
+                entity.Property(e => e.ReleaseId).HasColumnName("ReleaseID");
+
+                entity.Property(e => e.ReleaseId2).HasColumnName("ReleaseID_2");
+
+                entity.Property(e => e.RequestComments).IsUnicode(false);
+
+                entity.Property(e => e.SecurityLevel).HasDefaultValueSql("(10)");
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.StartDateActual).HasColumnType("datetime");
+
+                entity.Property(e => e.StatusChanged).HasColumnType("datetime");
+
+                entity.Property(e => e.Syscreated)
+                    .HasColumnType("datetime")
+                    .HasColumnName("syscreated")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Syscreator).HasColumnName("syscreator");
+
+                entity.Property(e => e.Sysmodified)
+                    .HasColumnType("datetime")
+                    .HasColumnName("sysmodified")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Sysmodifier).HasColumnName("sysmodifier");
+
+                entity.Property(e => e.TemplateId).HasColumnName("TemplateID");
+
+                entity.Property(e => e.Timestamp)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken()
+                    .HasColumnName("timestamp");
+
+                entity.Property(e => e.WorkflowComments).IsUnicode(false);
+            });
 
             modelBuilder.Entity<AbsencesAudit>(entity =>
             {
@@ -381,8 +762,8 @@ namespace Entities
                 //entity.Property(e => e.AttachmentId).HasColumnName("AttachmentID");
 
                 //entity.Property(e => e.AttachmentType)
-                    //.HasMaxLength(1)
-                    //.IsFixedLength(true);
+                //.HasMaxLength(1)
+                //.IsFixedLength(true);
 
                 entity.Property(e => e.Bankac0)
                     .HasMaxLength(34)
@@ -951,6 +1332,7 @@ namespace Entities
             modelBuilder.HasSequence<int>("SEQ_actrequestCode")
                 .StartsAt(1000)
                 .HasMin(0);
+
 
             OnModelCreatingPartial(modelBuilder);
         }
