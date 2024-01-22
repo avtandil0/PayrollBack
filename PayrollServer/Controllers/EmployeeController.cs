@@ -166,7 +166,7 @@ namespace PayrollServer.Controllers
 
         [HttpPost]
         [Route("importFromSynergy")]
-        public Result ImportFromSynergy([FromBody] List<int> humreIds)
+        public Result ImportFromSynergy([FromBody] List<int?> humreIds)
         {
             var humresFroSynergy = _sunergyRepository.GetHumresByIds(humreIds);
 

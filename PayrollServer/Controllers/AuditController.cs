@@ -100,7 +100,7 @@ namespace PayrollServer.Controllers
 
             if (humresAudit.FieldName == "NewRecord")
             {
-                var list = new List<int>();
+                var list = new List<int?>();
                 list.Add(humresAudit.ResId);
                 var humresFroSynergy = _synergyRepository.GetHumresByIds(list);
 
@@ -121,6 +121,13 @@ namespace PayrollServer.Controllers
             public int SynergyCompId { get; set; }
         }
 
+
+        public class CurrencyMapping
+        {
+            public int PayrollCurrency { get; set; }
+            public string SynergyCurrency { get; set; }
+        }
+
         [HttpPut]
         [Route("updateComponent")]
         public Result UpdateComponent(AbsencesAudit absencesAudit)
@@ -138,8 +145,15 @@ namespace PayrollServer.Controllers
                 if (absence != null)
                 {
                     var mapp = Configuration.GetSection("ComponentMapping").Get<List<CompponentMapping>>() ?? new List<CompponentMapping>();
+                    var mappCurrency = Configuration.GetSection("CurrencyMapping").Get<List<CurrencyMapping>>() 
+                        ?? new List<CurrencyMapping>();
 
+                    //var synergyProject = _repositoryContext.Prprojects.Where(r => r.ProjectNr == absence.ProjectNumber).FirstOrDefault();
+                    var payrollProject = _payrollContext.Projects.Where(r => r.Code == absence.ProjectNumber).FirstOrDefault();
+
+                   
                     var targetComponentId = mapp.Where(r => r.SynergyCompId == absence.Type).FirstOrDefault();
+                    var targetCurrency = mappCurrency.Where(r => r.SynergyCurrency == absence.Currency).FirstOrDefault();
                     var empComp = new EmployeeComponent
                     {
                         Id = Guid.NewGuid(),
@@ -149,10 +163,10 @@ namespace PayrollServer.Controllers
                         EndDate = absence.EndDate,
                         Amount = (decimal)absence.Amount,
                         DateCreated = DateTime.Now,
-                        ComponentId = targetComponentId.PayrollCompId,
-                        //Currency = absence.Currency,
-                        //ProjectId = absence.ProjectNumber,
-                        //CostCenterId = absence.freef
+                        ComponentId = targetComponentId?.PayrollCompId,
+                        Currency = targetCurrency?.PayrollCurrency ?? 1,
+                        ProjectId = payrollProject?.Id,
+                        CostCenterId = absence.FreeGuidField10,
                         IsPermanent = true,
 
                     };

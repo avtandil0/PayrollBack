@@ -11,6 +11,6 @@ namespace Contracts
     {
         IEnumerable<Humre> GetHumres();
         IEnumerable<Humre> GetHumresByFilter(HumreFilter humre);
-        IEnumerable<HumreHelper> GetHumresByIds(List<int> ids);
+        IEnumerable<HumreHelper> GetHumresByIds(List<int?> ids);
     }
 }

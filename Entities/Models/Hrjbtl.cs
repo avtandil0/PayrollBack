@@ -33,11 +33,11 @@ namespace Entities.Models
         public int ScaleMin { get; set; }
         public int ScaleMax { get; set; }
         public string WkcpRisk { get; set; }
-        public short? Division { get; set; }
         public DateTime Syscreated { get; set; }
         public int Syscreator { get; set; }
         public DateTime Sysmodified { get; set; }
         public int Sysmodifier { get; set; }
         public Guid Sysguid { get; set; }
+        public short? Division { get; set; }
     }
 }

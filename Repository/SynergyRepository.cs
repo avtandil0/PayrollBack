@@ -45,7 +45,7 @@ namespace Repository
             return query;
         }
 
-        public IEnumerable<HumreHelper> GetHumresByIds(List<int> ids)
+        public IEnumerable<HumreHelper> GetHumresByIds(List<int?> ids)
         {
             var res = from h in repository.Humres
                       join j in repository.Hrjbtls on h.JobTitle equals j.JobTitle
