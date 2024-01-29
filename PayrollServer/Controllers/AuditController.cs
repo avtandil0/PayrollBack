@@ -71,7 +71,21 @@ namespace PayrollServer.Controllers
         [Route("updateEmployee")]
         public Result UpdateEmployee(HumresAudit humresAudit)
         {
+
+            if (humresAudit.FieldName == "NewRecord")
+            {
+                var list = new List<int?>();
+                list.Add(humresAudit.ResId);
+                var humresFroSynergy = _synergyRepository.GetHumresByIds(list);
+
+
+                _repositoryWrapper.Employee.ImportEmployee(humresFroSynergy.ToList());
+                _payrollContext.SaveChanges();
+                return new Result(true, 1, "წარმატებით დასრულდა");
+            }
+
             var emp = _payrollContext.Employees.FirstOrDefault(r => r.ResId == humresAudit.ResId);
+
 
             if (emp == null)
             {
@@ -98,15 +112,7 @@ namespace PayrollServer.Controllers
                 emp.ContractEndDate = DateTime.Parse(humresAudit.NewValue);
             }
 
-            if (humresAudit.FieldName == "NewRecord")
-            {
-                var list = new List<int?>();
-                list.Add(humresAudit.ResId);
-                var humresFroSynergy = _synergyRepository.GetHumresByIds(list);
-
-
-                _repositoryWrapper.Employee.ImportEmployee(humresFroSynergy.ToList());
-            }
+            
 
 
             _payrollContext.SaveChanges();

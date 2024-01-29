@@ -51,7 +51,7 @@ namespace Repository
                       join j in repository.Hrjbtls on h.JobTitle equals j.JobTitle
                       //join b in repository.Bnkkops on h.Crdnr equals b.Crdnr into leftbh
                       //from x in leftbh.DefaultIfEmpty()
-                      where ids.Contains(h.Id)
+                      where ids.Contains(h.ResId)
                       select new HumreHelper
                       {
                           FirstName = h.FirstName,
